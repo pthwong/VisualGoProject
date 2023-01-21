@@ -77,8 +77,14 @@ function App(): JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Successful">
+            <Text>Hello World! </Text>
+            
             Successfully created VisualGo Project with React Native on both iOS & Android.
             Congrats!
+          </Section>
+
+          <Section title="Hello">
+            Hey Guys! What's up?
           </Section>
 
           <Section title="Step One">
