@@ -20,12 +20,12 @@ function App() {
         style={styles.logo}
         resizeMode="contain"></Image>
       <Text style={styles.title2}>睛明寶 Visual Go</Text>
-      <TouchableOpacity onPress={this.viPress}>
-        <Text style={styles.viBtn}>視障人士{'\n'}Visually Impaired</Text>
+      <TouchableOpacity style={styles.viBtn} onPress={this.viPress}>
+        <Text style={styles.btnTxt}>視障人士{'\n'}Visually Impaired</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={this.vtPress}>
-        <Text style={styles.vtBtn}>義工{'\n'}Volunteer</Text>
+      <TouchableOpacity style={styles.vtBtn} onPress={this.vtPress}>
+        <Text style={styles.btnTxt}>義工{'\n'}Volunteer</Text>
       </TouchableOpacity>
     </View>
   );
@@ -50,17 +50,14 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginLeft: '15%',
-    marginTop: '10%',
+    marginTop: '5%',
   },
   viBtn: {
     backgroundColor: '#97F9F9',
     color: 'black',
     width: '75%',
-    textAlign: 'center',
-    fontWeight: 'bold',
     marginLeft: '11%',
-    padding: '2%',
-    fontSize: 27,
+    padding: '1.5%',
     marginTop: '10%',
     borderRadius: 50,
   },
@@ -71,10 +68,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     marginLeft: '11%',
-    padding: '2%',
-    fontSize: 27,
+    padding: '1.5%',
     marginTop: '10%',
     borderRadius: 50,
+  },
+  btnTxt: {
+    color: 'black',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
   },
 });
 
