@@ -9,10 +9,16 @@ import {
   SafeAreaView,
 } from 'react-native';
 import InputField from '../../components/InputField';
+import {useNavigation} from '@react-navigation/native';
 
 function VILoginPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
+  const navigation = useNavigation();
+
+  regPress = () => {
+    navigation.navigate('VIRegPage');
+  };
 
   return (
     <View>
@@ -43,7 +49,7 @@ function VILoginPage() {
           }}
         />
 
-        <TouchableOpacity style={styles.regBtn} onPress={this.viPress}>
+        <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
           <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
         </TouchableOpacity>
       </View>
@@ -53,7 +59,7 @@ function VILoginPage() {
 
 const styles = StyleSheet.create({
   titleChi: {
-    marginTop: '20%',
+    marginTop: '10%',
     marginLeft: '5%',
     marginRight: '5%',
     fontSize: 30,
@@ -87,6 +93,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
+    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -96,6 +103,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
+    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',

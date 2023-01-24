@@ -2,10 +2,14 @@ import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Image} from 'react-native-elements';
 // import NavContainer from './NavContainer';
+import {useNavigation} from '@react-navigation/native';
 
 function Homepage() {
+  const navigation = useNavigation();
+
   viPress = () => {
-    alert('You are a Visually Impaired');
+    // alert('You are a Visually Impaired');
+    navigation.navigate('VILoginPage');
   };
 
   vtPress = () => {
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
     color: 'black',
     width: '75%',
     marginLeft: '11%',
-    padding: '1.5%',
+    padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
   },
@@ -68,7 +72,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     marginLeft: '11%',
-    padding: '1.5%',
+    padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
   },

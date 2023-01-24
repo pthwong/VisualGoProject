@@ -50,7 +50,7 @@ function VIRegPage() {
 
 const styles = StyleSheet.create({
   titleChi: {
-    marginTop: '20%',
+    marginTop: '10%',
     marginLeft: '5%',
     marginRight: '5%',
     fontSize: 30,
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
+    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',
