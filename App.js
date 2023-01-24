@@ -180,6 +180,7 @@ function App() {
           component={VIBottomTabs}
           options={{
             headerShown: false,
+            gestureEnabled: false,
           }}
         />
       </Stack.Navigator>
