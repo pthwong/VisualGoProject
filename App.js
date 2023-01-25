@@ -24,13 +24,13 @@ function VIBottomTabs() {
   return (
     <BottomTab.Navigator
       initialRouteName="VIHomepage"
-      // tabBarOptions={{
-      //   activeTintColor: '#97F9F9',
-      //   labelStyle: {
-      //     fontSize: 10,
-      //     height: 20,
-      //   },
-      // }}
+      tabBarOptions={{
+        activeTintColor: '#97F9F9',
+        labelStyle: {
+          fontSize: 10,
+          height: 20,
+        },
+      }}
       screenOptions={({route}) => ({
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
@@ -138,11 +138,17 @@ function VIBottomTabs() {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        options={{
+          backgroundColor: '#FFFFFF',
+        }}>
         <Stack.Screen
           name="Homepage"
           component={Homepage}
-          options={{headerShown: false, gestureEnabled: false}}
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="VILoginPage"
