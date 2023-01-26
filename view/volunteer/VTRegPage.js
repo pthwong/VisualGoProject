@@ -9,25 +9,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import InputField from '../../components/InputField';
-import {useNavigation} from '@react-navigation/native';
 
-function VILoginPage() {
+function VTRegPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
-  const navigation = useNavigation();
-
-  viLoginPress = () => {
-    navigation.navigate('VIPages');
-  };
-
-  regPress = () => {
-    navigation.navigate('VIRegPage');
-  };
 
   return (
     <View>
-      <Text style={styles.titleChi}>視障人士登入</Text>
-      <Text style={styles.titleEng}>Login for Visually Impaired</Text>
+      <Text style={styles.titleChi}>義工註冊</Text>
+      <Text style={styles.titleEng}>Registeration for Volunteers</Text>
 
       <View style={styles.inputField}>
         <Text style={styles.textField}>電郵地址 Email Address</Text>
@@ -35,25 +25,22 @@ function VILoginPage() {
           label={'輸入電郵地址 Enter your email address'}
           keyboardType="email-address"
         />
+        <Text style={styles.textField}>姓名 Name</Text>
+        <InputField label={'輸入姓名 Enter your name'} />
         <Text style={styles.textField}>密碼 Password</Text>
         <InputField
           label={'輸入密碼 Enter your Password'}
           inputType="password"
         />
-
-        <TouchableOpacity style={styles.loginBtn} onPress={this.viLoginPress}>
-          <Text style={styles.btnTxt}>登入 Login</Text>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            borderBottomColor: 'grey',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            marginTop: '10%',
-          }}
+        <Text style={styles.textField}>
+          請再次輸入密碼 Enter Password again
+        </Text>
+        <InputField
+          label={'請再次輸入密碼 Enter Password again'}
+          inputType="password"
         />
 
-        <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
+        <TouchableOpacity style={styles.regBtn} onPress={this.viPress}>
           <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
         </TouchableOpacity>
       </View>
@@ -85,22 +72,12 @@ const styles = StyleSheet.create({
   inputField: {
     border: 1,
     fontSize: 25,
-    marginTop: '20%',
+    marginTop: '10%',
     marginLeft: '5%',
     marginRight: '5%',
   },
-  loginBtn: {
-    backgroundColor: '#97F9F9',
-    color: 'black',
-    width: '75%',
-    marginLeft: '11%',
-    padding: '3%',
-    marginTop: '10%',
-    borderRadius: 50,
-    // shadowOpacity: 0.1,
-  },
   regBtn: {
-    backgroundColor: '#ffd63f',
+    backgroundColor: '#ADECC1',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
@@ -117,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VILoginPage;
+export default VTRegPage;

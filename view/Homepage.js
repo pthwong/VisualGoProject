@@ -13,7 +13,8 @@ function Homepage() {
   };
 
   vtPress = () => {
-    alert('You are a Volunteer');
+    // alert('You are a Volunteer');
+    navigation.navigate('VTLoginPage');
   };
 
   return (

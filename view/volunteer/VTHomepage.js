@@ -8,55 +8,24 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import InputField from '../../components/InputField';
 import {useNavigation} from '@react-navigation/native';
 
-function VILoginPage() {
+function VTHomepage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  viLoginPress = () => {
-    navigation.navigate('VIPages');
-  };
-
-  regPress = () => {
-    navigation.navigate('VIRegPage');
-  };
+  // regPress = () => {
+  //   navigation.navigate('VIRegPage');
+  // };
 
   return (
     <View>
-      <Text style={styles.titleChi}>視障人士登入</Text>
-      <Text style={styles.titleEng}>Login for Visually Impaired</Text>
-
-      <View style={styles.inputField}>
-        <Text style={styles.textField}>電郵地址 Email Address</Text>
-        <InputField
-          label={'輸入電郵地址 Enter your email address'}
-          keyboardType="email-address"
-        />
-        <Text style={styles.textField}>密碼 Password</Text>
-        <InputField
-          label={'輸入密碼 Enter your Password'}
-          inputType="password"
-        />
-
-        <TouchableOpacity style={styles.loginBtn} onPress={this.viLoginPress}>
-          <Text style={styles.btnTxt}>登入 Login</Text>
-        </TouchableOpacity>
-
-        <View
-          style={{
-            borderBottomColor: 'grey',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            marginTop: '10%',
-          }}
-        />
-
-        <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
-          <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.titleChi}>義工首頁</Text>
+      <Text style={styles.titleEng}>Homepage for Volunteers</Text>
+      {/* <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
+        <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -90,7 +59,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
   },
   loginBtn: {
-    backgroundColor: '#97F9F9',
+    backgroundColor: '#ADECC1',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
@@ -117,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VILoginPage;
+export default VTHomepage;

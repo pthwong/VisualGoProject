@@ -10,12 +10,22 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-//Page for Visually Impaired
+//Pages for Visually Impaired
 import VIHomepage from './view/visuallyImpaired/VIHomepage';
 import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
 import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
+
+//Pages for Volunteers
+import VTLoginPage from './view/volunteer/VTLoginPage';
+import VTRegPage from './view/volunteer/VTRegPage';
+import VTHomepage from './view/volunteer/VTHomepage';
+import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';
+import VTCommunityPage from './view/volunteer/VTCommunityPage';
+import VTPandemicPage from './view/volunteer/VTPandemicPage';
+import VTSettingsPage from './view/volunteer/VTSettingsPage';
+import {StyleSheet} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -24,14 +34,19 @@ function VIBottomTabs() {
   return (
     <BottomTab.Navigator
       initialRouteName="VIHomepage"
-      tabBarOptions={{
-        activeTintColor: '#97F9F9',
-        labelStyle: {
-          fontSize: 10,
+      screenOptions={({route}) => ({
+        tabBarActiveTintColor: '#97F9F9',
+        tabBarLabelStyle: {
+          fontSize: 12,
           height: 20,
         },
-      }}
-      screenOptions={({route}) => ({
+        tabBarStyle: {
+          height: 85,
+          shadowColor: '#171717',
+          shadowOffset: {width: -2, height: 4},
+          shadowOpacity: 2,
+          shadowRadius: 3,
+        },
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
           let iconOutput;
@@ -135,6 +150,127 @@ function VIBottomTabs() {
   );
 }
 
+function VTBottomTabs() {
+  return (
+    <BottomTab.Navigator
+      initialRouteName="VTHomepage"
+      screenOptions={({route}) => ({
+        tabBarActiveTintColor: '#ADECC1',
+        tabBarLabelStyle: {
+          fontSize: 12,
+          height: 20,
+        },
+        tabBarStyle: {
+          height: 85,
+          shadowColor: '#171717',
+          shadowOffset: {width: -2, height: 4},
+          shadowOpacity: 2,
+          shadowRadius: 3,
+        },
+
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          let iconOutput;
+          let routeName = route.name;
+
+          switch (routeName) {
+            case 'VTHomepage':
+              iconName = focused ? 'home' : 'home-outline';
+              iconOutput = (
+                <Ionicons name={iconName} size={size} color={color} />
+              );
+              break;
+            case 'VTVisualSuppPage':
+              iconName = focused ? 'eye' : 'eye-outline';
+              iconOutput = (
+                <Ionicons name={iconName} size={size} color={color} />
+              );
+              break;
+            case 'VTCommunityPage':
+              iconName = focused ? 'bell' : 'bell-outline';
+              iconOutput = (
+                <MaterialCommunityIcons
+                  name={iconName}
+                  size={size}
+                  color={color}
+                />
+              );
+              break;
+            case 'VTPandemicPage':
+              iconName = focused ? 'face-mask' : 'face-mask-outline';
+              iconOutput = (
+                <MaterialCommunityIcons
+                  name={iconName}
+                  size={size}
+                  color={color}
+                />
+              );
+              break;
+            case 'VTSettingsPage':
+              iconName = focused ? 'settings' : 'settings-outline';
+              iconOutput = (
+                <Ionicons name={iconName} size={size} color={color} />
+              );
+              break;
+          }
+
+          return iconOutput;
+        },
+      })}>
+      <BottomTab.Screen
+        name="VTHomepage"
+        component={VTHomepage}
+        options={{
+          headerStyle: {
+            backgroundColor: '#ADECC1',
+          },
+          title: '主頁',
+        }}
+      />
+      <BottomTab.Screen
+        name="VTVisualSuppPage"
+        component={VTVisualSuppPage}
+        options={{
+          headerStyle: {
+            backgroundColor: '#ADECC1',
+          },
+          title: '視覺支援',
+        }}
+      />
+      <BottomTab.Screen
+        name="VTCommunityPage"
+        component={VTCommunityPage}
+        options={{
+          headerStyle: {
+            backgroundColor: '#ADECC1',
+          },
+          title: '社區資訊',
+        }}
+      />
+      <BottomTab.Screen
+        name="VTPandemicPage"
+        component={VTPandemicPage}
+        options={{
+          headerStyle: {
+            backgroundColor: '#ADECC1',
+          },
+          title: '防疫資訊',
+        }}
+      />
+      <BottomTab.Screen
+        name="VTSettingsPage"
+        component={VTSettingsPage}
+        options={{
+          headerStyle: {
+            backgroundColor: '#ADECC1',
+          },
+          title: '設定',
+        }}
+      />
+    </BottomTab.Navigator>
+  );
+}
+
 function App() {
   return (
     <NavigationContainer>
@@ -165,6 +301,9 @@ function App() {
             // ),
             headerStyle: {
               backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
             },
             headerTitle: '',
             gestureEnabled: false,
@@ -177,6 +316,9 @@ function App() {
             headerTitle: '',
             headerStyle: {
               backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
             },
             gestureEnabled: false,
           }}
@@ -189,9 +331,56 @@ function App() {
             gestureEnabled: false,
           }}
         />
+        <Stack.Screen
+          name="VTLoginPage"
+          component={VTLoginPage}
+          options={{
+            headerShown: true,
+            // headerLeft: () => (
+            //   <Icon
+            //     name="angle-left"
+            //     size={30}
+            //     color="#1841c7"
+            //     onPress={navigation.goBack(null)}
+            //   />
+            // ),
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            headerTitle: '',
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTRegPage"
+          component={VTRegPage}
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTPages"
+          component={VTBottomTabs}
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 2,
+  },
+});
 
 export default App;

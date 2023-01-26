@@ -11,23 +11,23 @@ import {
 import InputField from '../../components/InputField';
 import {useNavigation} from '@react-navigation/native';
 
-function VILoginPage() {
+function VTLoginPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  viLoginPress = () => {
-    navigation.navigate('VIPages');
+  viPress = () => {
+    navigation.navigate('VTPages');
   };
 
   regPress = () => {
-    navigation.navigate('VIRegPage');
+    navigation.navigate('VTRegPage');
   };
 
   return (
     <View>
-      <Text style={styles.titleChi}>視障人士登入</Text>
-      <Text style={styles.titleEng}>Login for Visually Impaired</Text>
+      <Text style={styles.titleChi}>義工登入</Text>
+      <Text style={styles.titleEng}>Login for Volunteers</Text>
 
       <View style={styles.inputField}>
         <Text style={styles.textField}>電郵地址 Email Address</Text>
@@ -41,7 +41,7 @@ function VILoginPage() {
           inputType="password"
         />
 
-        <TouchableOpacity style={styles.loginBtn} onPress={this.viLoginPress}>
+        <TouchableOpacity style={styles.loginBtn} onPress={this.viPress}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
 
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
   },
   loginBtn: {
-    backgroundColor: '#97F9F9',
+    backgroundColor: '#ADECC1',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
@@ -117,4 +117,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VILoginPage;
+export default VTLoginPage;
