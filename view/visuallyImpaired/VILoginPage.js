@@ -1,5 +1,4 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
+import {React, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,16 +7,80 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import InputField from '../../components/InputField';
 import {useNavigation} from '@react-navigation/native';
 
 function VILoginPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
+  // const loginBtnHolder = true;
+
+  var emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*$/;
+
+  const [loginBtnHolder, setLoginBtnHolder] = useState(false);
+
+  const [email, setEmail] = useState('');
+
+  // let emailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+
+  const [password, setPassword] = useState('');
+
+  const [shownPasswordHolder, setShownPasswordHolder] = useState(true);
+
   const navigation = useNavigation();
 
+  // this.state = {
+  //   loginBtnHolder: true,
+  // };
+
+  // enableLoginBtn = () => {
+  //   this.setState({
+  //     loginBtnHolder: false,
+  //   });
+  // };
+
+  // validateEmail = email => {
+  //   let format = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  //   if (format.test(email) === false) {
+  //     console.log('Email is Not Correct');
+  //     this.setState({email: email});
+  //     return false;
+  //   } else {
+  //     this.setState({email: email});
+  //     console.log('Email is Correct');
+  //   }
+  // };
+
+  // // if (!email.trim() || !password.trim() || !emailFormat.test(email)) {
+  // if (!email.trim() || !password.trim()) {
+  //   alert('Empty email & password.');
+  //   // useEffect(() => {
+  //   //   console.log('Empty email & password.');
+  //   //   setLoginBtnHolder(loginBtnHolder);
+  //   // }, []);
+  // } else {
+  //   // useEffect(() => {
+  //   //   console.log('Completed');
+  //   //   setLoginBtnHolder(!loginBtnHolder);
+  //   // }, []);
+  // }
+
   viLoginPress = () => {
-    navigation.navigate('VIPages');
+    if (!email.trim() && !password.trim()) {
+      alert('請輸入電郵地址和密碼\nPlease enter your address and password');
+    } else if (!email.trim()) {
+      alert('請輸入電郵地址\nPlease enter your address');
+    } else if (!email.match(emailRegex)) {
+      alert(
+        '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
+      );
+    } else if (!password.trim()) {
+      alert('請輸入密碼\nPlease enter your password');
+    } else {
+      setEmail('');
+      setPassword('');
+      navigation.navigate('VIPages');
+    }
   };
 
   regPress = () => {
@@ -31,17 +94,59 @@ function VILoginPage() {
 
       <View style={styles.inputField}>
         <Text style={styles.textField}>電郵地址 Email Address</Text>
-        <InputField
-          label={'輸入電郵地址 Enter your email address'}
-          keyboardType="email-address"
-        />
-        <Text style={styles.textField}>密碼 Password</Text>
-        <InputField
-          label={'輸入密碼 Enter your Password'}
-          inputType="password"
-        />
 
-        <TouchableOpacity style={styles.loginBtn} onPress={this.viLoginPress}>
+        <View
+          style={{
+            flexDirection: 'row',
+            borderBottomColor: '#ccc',
+            borderBottomWidth: 1,
+            paddingBottom: 8,
+            marginBottom: 10,
+          }}>
+          <TextInput
+            placeholder={'輸入電郵地址 Enter your email address'}
+            style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+            onChangeText={email => setEmail(email)}
+            value={email}
+            keyboardType="email-address"
+          />
+        </View>
+
+        <Text style={styles.inputErr}>
+          請輸入電郵地址 Enter your email address
+        </Text>
+
+        <Text style={styles.textField}>密碼 Password</Text>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            borderBottomColor: '#ccc',
+            borderBottomWidth: 1,
+            paddingBottom: 8,
+            marginBottom: 10,
+          }}>
+          <TextInput
+            placeholder={'輸入密碼 Enter your password'}
+            style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+            secureTextEntry={true}
+            onChangeText={password => setPassword(password)}
+            value={password}
+          />
+        </View>
+
+        <Text style={styles.inputErr}>請輸入密碼 Enter your password</Text>
+
+        <TouchableOpacity
+          style={[
+            styles.loginBtn,
+            {
+              backgroundColor: loginBtnHolder ? 'grey' : '#97F9F9',
+              opacity: loginBtnHolder ? 0.5 : 1,
+            },
+          ]}
+          disabled={loginBtnHolder}
+          onPress={this.viLoginPress}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
 
@@ -90,7 +195,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
   },
   loginBtn: {
-    backgroundColor: '#97F9F9',
+    // backgroundColor: loginBtnHolder ? 'grey' : '#97F9F9',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
@@ -108,6 +213,11 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
+  },
+  inputErr: {
+    fontSize: 13,
+    color: 'red',
+    marginBottom: '5%',
   },
   btnTxt: {
     color: 'black',
