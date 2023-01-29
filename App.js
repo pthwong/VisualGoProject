@@ -3,8 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Homepage from './view/Homepage';
-import VILoginPage from './view/visuallyImpaired/VILoginPage';
-import VIRegPage from './view/visuallyImpaired/VIRegPage';
+
 import {View, Button} from 'react-native-elements';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,13 +11,15 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 //Pages for Visually Impaired
 import VIHomepage from './view/visuallyImpaired/VIHomepage';
+import VILoginPage from './view/visuallyImpaired/VILoginPage';
+import VIRegPage from './view/visuallyImpaired/VIRegPage';
 import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
 import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
 
 //Pages for Volunteers
-import VTLoginPage from './view/volunteer/VTLoginPage';
+import VTLoginPage from './view/volunteer/VTRegPage';
 import VTRegPage from './view/volunteer/VTRegPage';
 import VTHomepage from './view/volunteer/VTHomepage';
 import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';

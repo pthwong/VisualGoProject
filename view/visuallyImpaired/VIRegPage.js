@@ -1,5 +1,4 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
+import {React, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,50 +6,325 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  TouchableOpacityComponent,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from 'react-native';
-import InputField from '../../components/InputField';
+import {useNavigation} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {ScrollView} from 'react-native-gesture-handler';
 
 function VIRegPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
+  var emailRegex =
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
+  const [email, setEmail] = useState('');
+  const [isEnterEmail, setEnterEmail] = useState(true);
+  const [isValidEmail, setValidEmail] = useState(true);
+
+  const [name, setName] = useState('');
+  const [isEnterName, setEnterName] = useState(true);
+
+  const [firstPassword, setFirstPassword] = useState('');
+  const [isEnterFirstPassword, setEnterFirstPassword] = useState(true);
+  const [notShownFirstPasswordHolder, setNotShownFirstPasswordHolder] =
+    useState(true);
+
+  const [secondPassword, setSecondPassword] = useState('');
+  const [isEnterSecondPassword, setEnterSecondPassword] = useState(true);
+  const [notShownSecondPasswordHolder, setNotShownSecondPasswordHolder] =
+    useState(true);
+
+  const navigation = useNavigation();
+
+  const verifyEnterEmail = email => {
+    if (true) return true;
+    return false;
+  };
+
+  const verifyValidEmail = email => {
+    if (true) return true;
+    return false;
+  };
+
+  const verifyEnterName = name => {
+    if (true) return true;
+    return false;
+  };
+
+  const verifyPassword = password => {
+    if (true) return true;
+    return false;
+  };
+
+  const showPassword = notShownPasswordHolder => {
+    if (true) return true;
+    return false;
+  };
+
+  viRegPress = () => {
+    if (
+      !email.trim() &&
+      !email.match(emailRegex) &&
+      !name.trim() &&
+      !firstPassword.trim() &&
+      !secondPassword.trim()
+    ) {
+      setEnterEmail(false);
+      setValidEmail(true);
+      setEnterName(false);
+      setEnterFirstPassword(false);
+      setEnterSecondPassword(false);
+    } else if (!email.trim()) {
+      // alert('請輸入電郵地址\nPlease enter your address');
+      setEnterEmail(false);
+      setValidEmail(true);
+    } else if (!email.match(emailRegex)) {
+      // alert(
+      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
+      // );
+      setValidEmail(false);
+    } else if (!firstPassword.trim()) {
+      setEnterFirstPassword(false);
+    } else if (!secondPassword.trim()) {
+      setEnterSecondPassword(false);
+    } else {
+      setEmail('');
+      setName('');
+      setFirstPassword('');
+      setSecondPassword('');
+      navigation.navigate('VIPages');
+    }
+  };
+
+  showFirstPasswordPress = () => {
+    setNotShownFirstPasswordHolder(false);
+  };
+  hideFirstPasswordPress = () => {
+    setNotShownFirstPasswordHolder(true);
+  };
+
+  showSecondPasswordPress = () => {
+    setNotShownSecondPasswordHolder(false);
+  };
+  hideSecondPasswordPress = () => {
+    setNotShownSecondPasswordHolder(true);
+  };
 
   return (
-    <View>
-      <Text style={styles.titleChi}>視障人士註冊</Text>
-      <Text style={styles.titleEng}>Registeration for Visually Impaired</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
+      <ScrollView>
+        <Text style={styles.titleChi}>視障人士註冊</Text>
+        <Text style={styles.titleEng}>Register for Visually Impaired</Text>
 
-      <View style={styles.inputField}>
-        <Text style={styles.textField}>電郵地址 Email Address</Text>
-        <InputField
-          label={'輸入電郵地址 Enter your email address'}
-          keyboardType="email-address"
-        />
-        <Text style={styles.textField}>姓名 Name</Text>
-        <InputField label={'輸入姓名 Enter your name'} />
-        <Text style={styles.textField}>密碼 Password</Text>
-        <InputField
-          label={'輸入密碼 Enter your Password'}
-          inputType="password"
-        />
-        <Text style={styles.textField}>
-          請再次輸入密碼 Enter Password again
-        </Text>
-        <InputField
-          label={'請再次輸入密碼 Enter Password again'}
-          inputType="password"
-        />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inputField}>
+            <Text style={styles.textField}>電郵地址 Email Address</Text>
 
-        <TouchableOpacity style={styles.regBtn} onPress={this.viPress}>
-          <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomColor: '#ccc',
+                borderBottomWidth: 1,
+                paddingBottom: 8,
+                marginBottom: 10,
+              }}>
+              <TextInput
+                placeholder={'輸入電郵地址 Enter your email address'}
+                style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+                onChangeText={email => {
+                  setEmail(email);
+                  const isEntered = verifyEnterEmail(email);
+                  isEntered ? setEnterEmail(true) : setEnterEmail(false);
+                  const isValid = verifyValidEmail(email);
+                  isValid ? setValidEmail(true) : setValidEmail(false);
+                }}
+                value={email}
+                keyboardType="email-address"
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setEmail('');
+                }}
+                accessible={true}
+                accessibilityLabel={'清除電郵地址 Clear the email address'}>
+                <Ionicons name={'close-sharp'} size={25} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.inputErr}>
+              {isEnterEmail ? '' : '請輸入電郵地址 Enter your email address'}
+              {isValidEmail
+                ? ''
+                : '電郵地址格式錯誤 Invalid format of email address'}
+            </Text>
+
+            <Text style={styles.textField}>姓名 Name</Text>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomColor: '#ccc',
+                borderBottomWidth: 1,
+                paddingBottom: 8,
+                marginBottom: 10,
+              }}>
+              <TextInput
+                placeholder={'輸入姓名 Enter your name'}
+                style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+                onChangeText={name => {
+                  setName(name);
+                  const isEntered = verifyEnterName(name);
+                  isEntered ? setEnterName(true) : setEnterName(false);
+                }}
+                value={name}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setName('');
+                }}
+                accessible={true}
+                accessibilityLabel={'清除姓名 Clear the name'}>
+                <Ionicons name={'close-sharp'} size={25} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.inputErr}>
+              {isEnterName ? '' : '請輸入姓名 Enter your name'}
+            </Text>
+
+            <Text style={styles.textField}>
+              密碼 Password (請輸入最少八位數字)
+            </Text>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomColor: '#ccc',
+                borderBottomWidth: 1,
+                paddingBottom: 8,
+                marginBottom: 10,
+              }}>
+              <TextInput
+                placeholder={'輸入密碼 Enter your password'}
+                style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+                // secureTextEntry={true}
+                secureTextEntry={notShownFirstPasswordHolder}
+                onChangeText={firstPassword => {
+                  setFirstPassword(firstPassword);
+                  const isEntered = verifyPassword(firstPassword);
+                  isEntered ? setFirstPassword(true) : setFirstPassword(false);
+                }}
+                value={firstPassword}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setFirstPassword('');
+                }}
+                accessible={true}
+                accessibilityLabel={'清除密碼 Clear the password'}>
+                <Ionicons name={'close-sharp'} size={25} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessible={true}
+                accessibilityLabel={
+                  notShownFirstPasswordHolder
+                    ? '點選以展示密碼 Tap to show password'
+                    : '點選以隱藏密碼 Tap to hide password'
+                }
+                onPress={
+                  !notShownFirstPasswordHolder
+                    ? this.hideFirstPasswordPress
+                    : this.showFirstPasswordPress
+                }>
+                <Ionicons
+                  name={notShownFirstPasswordHolder ? 'eye' : 'eye-off-outline'}
+                  size={25}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.inputErr}>
+              {isEnterFirstPassword ? '' : '請輸入密碼 Enter your password'}
+            </Text>
+
+            <Text style={styles.textField}>
+              請再次輸入密碼 Enter Password again
+            </Text>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                borderBottomColor: '#ccc',
+                borderBottomWidth: 1,
+                paddingBottom: 8,
+                marginBottom: 10,
+                flex: 1,
+              }}>
+              <TextInput
+                placeholder={'請再次輸入密碼 Enter your password again'}
+                style={{flex: 1, paddingVertical: 0, fontSize: 18}}
+                // secureTextEntry={true}
+                secureTextEntry={notShownSecondPasswordHolder}
+                onChangeText={secondPassword => {
+                  setSecondPassword(secondPassword);
+                  const isEntered = verifyPassword(secondPassword);
+                  isEntered
+                    ? setSecondPassword(true)
+                    : setSecondPassword(false);
+                }}
+                value={secondPassword}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  setSecondPassword('');
+                }}
+                accessible={true}
+                accessibilityLabel={'清除密碼 Clear the password'}>
+                <Ionicons name={'close-sharp'} size={25} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessible={true}
+                accessibilityLabel={
+                  notShownSecondPasswordHolder
+                    ? '點選以展示密碼 Tap to show password'
+                    : '點選以隱藏密碼 Tap to hide password'
+                }
+                onPress={
+                  !notShownSecondPasswordHolder
+                    ? this.hideSecondPasswordPress
+                    : this.showSecondPasswordPress
+                }>
+                <Ionicons
+                  name={
+                    notShownSecondPasswordHolder ? 'eye' : 'eye-off-outline'
+                  }
+                  size={25}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.inputErr}>
+              {isEnterSecondPassword ? '' : '請輸入密碼 Enter your password'}
+            </Text>
+
+            <TouchableOpacity style={styles.regBtn} onPress={this.viRegPress}>
+              <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   titleChi: {
-    marginTop: '10%',
+    marginTop: '5%',
     marginLeft: '5%',
     marginRight: '5%',
     fontSize: 30,
@@ -81,10 +355,15 @@ const styles = StyleSheet.create({
     color: 'black',
     width: '75%',
     marginLeft: '11%',
-    padding: '3%',
+    padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
+  },
+  inputErr: {
+    fontSize: 16,
+    color: 'red',
+    marginBottom: '5%',
   },
   btnTxt: {
     color: 'black',

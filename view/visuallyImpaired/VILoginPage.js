@@ -6,76 +6,86 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  TouchableOpacityComponent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {ScrollView} from 'react-native-gesture-handler';
 
 function VILoginPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
-  // const loginBtnHolder = true;
-
   var emailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(.[a-zA-Z0-9-]+)*$/;
-
-  const [loginBtnHolder, setLoginBtnHolder] = useState(false);
+    /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
   const [email, setEmail] = useState('');
-
-  // let emailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  const [isEnterEmail, setEnterEmail] = useState(true);
+  const [isValidEmail, setValidEmail] = useState(true);
 
   const [password, setPassword] = useState('');
+  const [isEnterPassword, setEnterPassword] = useState(true);
 
-  const [shownPasswordHolder, setShownPasswordHolder] = useState(true);
+  const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
 
   const navigation = useNavigation();
 
-  // this.state = {
-  //   loginBtnHolder: true,
-  // };
+  const verifyEnterEmail = email => {
+    if (true) return true;
+    return false;
+  };
 
-  // enableLoginBtn = () => {
-  //   this.setState({
-  //     loginBtnHolder: false,
-  //   });
-  // };
+  const verifyValidEmail = email => {
+    if (true) return true;
+    return false;
+  };
 
-  // validateEmail = email => {
-  //   let format = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  //   if (format.test(email) === false) {
-  //     console.log('Email is Not Correct');
-  //     this.setState({email: email});
-  //     return false;
+  const verifyPassword = password => {
+    if (true) return true;
+    return false;
+  };
+
+  const showPassword = notShownPasswordHolder => {
+    if (true) return true;
+    return false;
+  };
+
+  // viLoginPress = () => {
+  //   if (!email.trim() && !password.trim()) {
+  //     alert('請輸入電郵地址和密碼\nPlease enter your address and password');
+  //     setEnterEmail(false);
+  //     setValidEmail(true);
+  //   } else if (!email.trim()) {
+  //     alert('請輸入電郵地址\nPlease enter your address');
+  //     setEnterEmail(false);
+  //     setValidEmail(true);
+  //   } else if (!email.match(emailRegex)) {
+  //     alert(
+  //       '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
+  //     );
+  //     setValidEmail(false);
+  //   } else if (!password.trim()) {
+  //     alert('請輸入密碼\nPlease enter your password');
   //   } else {
-  //     this.setState({email: email});
-  //     console.log('Email is Correct');
+  //     setEmail('');
+  //     setPassword('');
+  //     navigation.navigate('VIPages');
   //   }
   // };
 
-  // // if (!email.trim() || !password.trim() || !emailFormat.test(email)) {
-  // if (!email.trim() || !password.trim()) {
-  //   alert('Empty email & password.');
-  //   // useEffect(() => {
-  //   //   console.log('Empty email & password.');
-  //   //   setLoginBtnHolder(loginBtnHolder);
-  //   // }, []);
-  // } else {
-  //   // useEffect(() => {
-  //   //   console.log('Completed');
-  //   //   setLoginBtnHolder(!loginBtnHolder);
-  //   // }, []);
-  // }
-
   viLoginPress = () => {
-    if (!email.trim() && !password.trim()) {
-      alert('請輸入電郵地址和密碼\nPlease enter your address and password');
+    if (!email.trim() && !password.trim() && !email.match(emailRegex)) {
+      setEnterEmail(false);
+      setValidEmail(true);
+      setEnterPassword(false);
     } else if (!email.trim()) {
-      alert('請輸入電郵地址\nPlease enter your address');
+      // alert('請輸入電郵地址\nPlease enter your address');
+      setEnterEmail(false);
+      setValidEmail(true);
     } else if (!email.match(emailRegex)) {
-      alert(
-        '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-      );
+      // alert(
+      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
+      // );
+      setValidEmail(false);
     } else if (!password.trim()) {
-      alert('請輸入密碼\nPlease enter your password');
+      setEnterPassword(false);
     } else {
       setEmail('');
       setPassword('');
@@ -83,12 +93,32 @@ function VILoginPage() {
     }
   };
 
+  clearEmail = () => {
+    setEmail('');
+  };
+
+  clearPassword = () => {
+    setPassword('');
+  };
+
+  showPasswordPress = () => {
+    setNotShownPasswordHolder(false);
+  };
+  hidePasswordPress = () => {
+    setNotShownPasswordHolder(true);
+  };
+
   regPress = () => {
+    setEmail('');
+    setPassword('');
+    setEnterPassword(true);
+    setEnterEmail(true);
+    setValidEmail(true);
     navigation.navigate('VIRegPage');
   };
 
   return (
-    <View>
+    <ScrollView>
       <Text style={styles.titleChi}>視障人士登入</Text>
       <Text style={styles.titleEng}>Login for Visually Impaired</Text>
 
@@ -106,14 +136,29 @@ function VILoginPage() {
           <TextInput
             placeholder={'輸入電郵地址 Enter your email address'}
             style={{flex: 1, paddingVertical: 0, fontSize: 18}}
-            onChangeText={email => setEmail(email)}
+            onChangeText={email => {
+              setEmail(email);
+              const isEntered = verifyEnterEmail(email);
+              isEntered ? setEnterEmail(true) : setEnterEmail(false);
+              const isValid = verifyValidEmail(email);
+              isValid ? setValidEmail(true) : setValidEmail(false);
+            }}
             value={email}
             keyboardType="email-address"
           />
+          <TouchableOpacity
+            onPress={this.clearEmail}
+            accessible={true}
+            accessibilityLabel={'清除電郵地址 Clear the email address'}>
+            <Ionicons name={'close-sharp'} size={25} />
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.inputErr}>
-          請輸入電郵地址 Enter your email address
+          {isEnterEmail ? '' : '請輸入電郵地址 Enter your email address'}
+          {isValidEmail
+            ? ''
+            : '電郵地址格式錯誤 Invalid format of email address'}
         </Text>
 
         <Text style={styles.textField}>密碼 Password</Text>
@@ -129,23 +174,52 @@ function VILoginPage() {
           <TextInput
             placeholder={'輸入密碼 Enter your password'}
             style={{flex: 1, paddingVertical: 0, fontSize: 18}}
-            secureTextEntry={true}
-            onChangeText={password => setPassword(password)}
+            // secureTextEntry={true}
+            secureTextEntry={notShownPasswordHolder}
+            onChangeText={password => {
+              setPassword(password);
+              const isEntered = verifyPassword(password);
+              isEntered ? setEnterPassword(true) : setEnterPassword(false);
+            }}
             value={password}
           />
+          <TouchableOpacity
+            onPress={this.clearPassword}
+            accessible={true}
+            accessibilityLabel={'清除密碼 Clear the password'}>
+            <Ionicons name={'close-sharp'} size={25} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={
+              notShownPasswordHolder
+                ? '點選以展示密碼 Tap to show password'
+                : '點選以隱藏密碼 Tap to hide password'
+            }
+            onPress={
+              !notShownPasswordHolder
+                ? this.hidePasswordPress
+                : this.showPasswordPress
+            }>
+            <Ionicons
+              name={notShownPasswordHolder ? 'eye' : 'eye-off-outline'}
+              size={25}
+            />
+          </TouchableOpacity>
         </View>
 
-        <Text style={styles.inputErr}>請輸入密碼 Enter your password</Text>
+        <Text style={styles.inputErr}>
+          {isEnterPassword ? '' : '請輸入密碼 Enter your password'}
+        </Text>
 
         <TouchableOpacity
           style={[
             styles.loginBtn,
             {
-              backgroundColor: loginBtnHolder ? 'grey' : '#97F9F9',
-              opacity: loginBtnHolder ? 0.5 : 1,
+              backgroundColor: '#97F9F9',
+              opacity: 1,
             },
           ]}
-          disabled={loginBtnHolder}
           onPress={this.viLoginPress}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
@@ -162,7 +236,7 @@ function VILoginPage() {
           <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -190,7 +264,7 @@ const styles = StyleSheet.create({
   inputField: {
     border: 1,
     fontSize: 25,
-    marginTop: '20%',
+    marginTop: '10%',
     marginLeft: '5%',
     marginRight: '5%',
   },
@@ -199,7 +273,7 @@ const styles = StyleSheet.create({
     color: 'black',
     width: '75%',
     marginLeft: '11%',
-    padding: '3%',
+    padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
@@ -209,13 +283,13 @@ const styles = StyleSheet.create({
     color: 'black',
     width: '75%',
     marginLeft: '11%',
-    padding: '3%',
+    padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
   },
   inputErr: {
-    fontSize: 13,
+    fontSize: 16,
     color: 'red',
     marginBottom: '5%',
   },
