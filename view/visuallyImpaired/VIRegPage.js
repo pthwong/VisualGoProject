@@ -20,6 +20,8 @@ function VIRegPage() {
   var emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
+  var passwordRegex = /^.{8,32}$/;
+
   const [email, setEmail] = useState('');
   const [isEnterEmail, setEnterEmail] = useState(true);
   const [isValidEmail, setValidEmail] = useState(true);
@@ -37,7 +39,13 @@ function VIRegPage() {
   const [notShownSecondPasswordHolder, setNotShownSecondPasswordHolder] =
     useState(true);
 
+  const [isValidPassword, setValidPassword] = useState(true);
+
+  const [isMatchPassword, setMatchPassword] = useState(true);
+
   const navigation = useNavigation();
+
+  const [regSuccess, setRegSuccess] = useState(false);
 
   const verifyEnterEmail = email => {
     if (true) return true;
@@ -54,12 +62,22 @@ function VIRegPage() {
     return false;
   };
 
-  const verifyPassword = password => {
+  const verifyFirstPassword = firstPassword => {
     if (true) return true;
     return false;
   };
 
-  const showPassword = notShownPasswordHolder => {
+  const verifyValidPassword = firstPassword => {
+    if (true) return true;
+    return false;
+  };
+
+  const verifySecondPassword = secondPassword => {
+    if (true) return true;
+    return false;
+  };
+
+  const verifyMatchPassword = secondPassword => {
     if (true) return true;
     return false;
   };
@@ -70,6 +88,7 @@ function VIRegPage() {
       !email.match(emailRegex) &&
       !name.trim() &&
       !firstPassword.trim() &&
+      !firstPassword.match(passwordRegex) &&
       !secondPassword.trim()
     ) {
       setEnterEmail(false);
@@ -77,6 +96,7 @@ function VIRegPage() {
       setEnterName(false);
       setEnterFirstPassword(false);
       setEnterSecondPassword(false);
+      setMatchPassword(false);
     } else if (!email.trim()) {
       // alert('請輸入電郵地址\nPlease enter your address');
       setEnterEmail(false);
@@ -88,8 +108,17 @@ function VIRegPage() {
       setValidEmail(false);
     } else if (!firstPassword.trim()) {
       setEnterFirstPassword(false);
+      setValidPassword(true);
+      setMatchPassword(false);
+    } else if (!firstPassword.match(passwordRegex)) {
+      setEnterFirstPassword(true);
+      setValidPassword(false);
+      setMatchPassword(false);
     } else if (!secondPassword.trim()) {
+      setMatchPassword(true);
       setEnterSecondPassword(false);
+    } else if (secondPassword != firstPassword) {
+      setMatchPassword(false);
     } else {
       setEmail('');
       setName('');
@@ -98,6 +127,22 @@ function VIRegPage() {
       navigation.navigate('VIPages');
     }
   };
+
+  // viRegPress = () => {
+  //   if(!email.trim()) {
+  //     regSuccess = false;
+
+  //   }
+
+  // }
+
+  if (regSuccess) {
+    setEmail('');
+    setName('');
+    setFirstPassword('');
+    setSecondPassword('');
+    navigation.navigate('VIPages');
+  }
 
   showFirstPasswordPress = () => {
     setNotShownFirstPasswordHolder(false);
@@ -216,8 +261,12 @@ function VIRegPage() {
                 secureTextEntry={notShownFirstPasswordHolder}
                 onChangeText={firstPassword => {
                   setFirstPassword(firstPassword);
-                  const isEntered = verifyPassword(firstPassword);
-                  isEntered ? setFirstPassword(true) : setFirstPassword(false);
+                  const isEntered = verifyFirstPassword(firstPassword);
+                  isEntered
+                    ? setEnterFirstPassword(true)
+                    : setEnterFirstPassword(false);
+                  const isValid = verifyValidPassword(firstPassword);
+                  isValid ? setValidPassword(true) : setValidPassword(false);
                 }}
                 value={firstPassword}
               />
@@ -250,6 +299,9 @@ function VIRegPage() {
 
             <Text style={styles.inputErr}>
               {isEnterFirstPassword ? '' : '請輸入密碼 Enter your password'}
+              {isValidPassword
+                ? ''
+                : '請輸入最少8位密碼 Enter at least eight characters'}
             </Text>
 
             <Text style={styles.textField}>
@@ -272,10 +324,12 @@ function VIRegPage() {
                 secureTextEntry={notShownSecondPasswordHolder}
                 onChangeText={secondPassword => {
                   setSecondPassword(secondPassword);
-                  const isEntered = verifyPassword(secondPassword);
+                  const isEntered = verifySecondPassword(secondPassword);
                   isEntered
-                    ? setSecondPassword(true)
-                    : setSecondPassword(false);
+                    ? setEnterSecondPassword(true)
+                    : setEnterSecondPassword(false);
+                  const isMatched = verifyMatchPassword(secondPassword);
+                  isMatched ? setMatchPassword(true) : setMatchPassword(false);
                 }}
                 value={secondPassword}
               />
@@ -309,7 +363,7 @@ function VIRegPage() {
             </View>
 
             <Text style={styles.inputErr}>
-              {isEnterSecondPassword ? '' : '請輸入密碼 Enter your password'}
+              {isMatchPassword ? '' : '密碼不相符 Password does not match'}
             </Text>
 
             <TouchableOpacity style={styles.regBtn} onPress={this.viRegPress}>
@@ -359,6 +413,7 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
+    marginBottom: '10%',
   },
   inputErr: {
     fontSize: 16,
