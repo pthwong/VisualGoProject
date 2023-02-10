@@ -17,6 +17,7 @@ import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
 import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
+import VICameraPage from './view/visuallyImpaired/VICameraPage';
 
 //Pages for Volunteers
 import VTLoginPage from './view/volunteer/VTRegPage';
@@ -292,14 +293,6 @@ function App() {
           component={VILoginPage}
           options={{
             headerShown: true,
-            // headerLeft: () => (
-            //   <Icon
-            //     name="angle-left"
-            //     size={30}
-            //     color="#1841c7"
-            //     onPress={navigation.goBack(null)}
-            //   />
-            // ),
             headerStyle: {
               backgroundColor: '#97F9F9',
               shadowColor: '#171717',
@@ -333,18 +326,17 @@ function App() {
           }}
         />
         <Stack.Screen
+          name="VICameraPage"
+          component={VICameraPage}
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
           name="VTLoginPage"
           component={VTLoginPage}
           options={{
             headerShown: true,
-            // headerLeft: () => (
-            //   <Icon
-            //     name="angle-left"
-            //     size={30}
-            //     color="#1841c7"
-            //     onPress={navigation.goBack(null)}
-            //   />
-            // ),
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
