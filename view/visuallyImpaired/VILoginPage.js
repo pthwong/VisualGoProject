@@ -87,10 +87,47 @@ function VILoginPage() {
     } else if (!password.trim()) {
       setEnterPassword(false);
     } else {
-      setEmail('');
-      setPassword('');
-      navigation.navigate('VIPages');
+      console.log(email, ' ', password);
+
+      // var APIURL = 'http://localhost:8888/visualgo/viLogin.php';
+      var APIURL = 'https://whomethser.synology.me:64860/visualgo/viLogin.php';
+
+      fetch(APIURL, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      })
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+          if (response.message == 'email not found') {
+            alert('此電郵地址沒有註冊。\nThis email address did not register.');
+          } else if (response.message == 'wrong password') {
+            alert(
+              '密碼錯誤，請重新輸入。\nIncorrect password, please enter again.',
+            );
+          } else if (response.message == 'success') {
+            console.log('Successfully login');
+            setEmail('');
+            setPassword('');
+            navigation.navigate('VIPages');
+          }
+        })
+        .catch(error => {
+          console.error('ERROR FOUND: ' + error);
+          alert('沒有網絡連接。No Internet Connection.');
+        });
     }
+  };
+
+  viLoginPress2 = () => {
+    navigation.navigate('VIPages');
   };
 
   clearEmail = () => {
@@ -104,6 +141,7 @@ function VILoginPage() {
   showPasswordPress = () => {
     setNotShownPasswordHolder(false);
   };
+
   hidePasswordPress = () => {
     setNotShownPasswordHolder(true);
   };
@@ -221,6 +259,18 @@ function VILoginPage() {
             },
           ]}
           onPress={this.viLoginPress}>
+          <Text style={styles.btnTxt}>登入 Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.loginBtn,
+            {
+              backgroundColor: '#97F9F9',
+              opacity: 1,
+            },
+          ]}
+          onPress={this.viLoginPress2}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
 
