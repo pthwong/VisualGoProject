@@ -9,25 +9,36 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {
+  Camera,
+  CameraPermissionStatus,
+  useCameraDevices,
+} from 'react-native-vision-camera';
 
-function VIVisualSuppPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
-  const navigation = useNavigation();
+function VICameraPage() {
+  const [cameraPermission, setCameraPermission] = useState();
 
-  cameraPress = () => {
-    navigation.navigate('VICameraPage');
-  };
+  useEffect(() => {
+    (async () => {
+      const cameraPermissionStatus = await Camera.requestCameraPermission();
+      setCameraPermission(cameraPermissionStatus);
+    })();
+  }, []);
 
-  return (
-    <View>
-      <Text style={styles.titleChi}>視覺支援頁面</Text>
-      <Text style={styles.titleEng}>Visual Support</Text>
-      <TouchableOpacity style={styles.regBtn} onPress={this.cameraPress}>
-        <Text style={styles.btnTxt}>Camera</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  console.log(`Camera permission status: ${cameraPermission}`);
+
+  const devices = useCameraDevices('wide-angle-camera');
+  const cameraDevice = devices.back;
+  if (cameraDevice && cameraPermission === 'authorized') {
+    return (
+      <Camera
+        style={styles.camera}
+        device={cameraDevice}
+        isActive={true}
+        style={StyleSheet.absoluteFill}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -86,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VIVisualSuppPage;
+export default VICameraPage;
