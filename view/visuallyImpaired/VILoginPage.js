@@ -11,6 +11,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VILoginPage() {
   var emailRegex =
@@ -89,10 +90,11 @@ function VILoginPage() {
     } else {
       console.log(email, ' ', password);
 
-      // var APIURL = 'http://localhost:8888/visualgo/viLogin.php';
-      var APIURL = 'https://whomethser.synology.me:64860/visualgo/viLogin.php';
+      // var loginUIUrl = 'http://localhost:8888/visualgo/viLogin.php';
+      var loginUIUrl =
+        'https://whomethser.synology.me:64860/visualgo/viLogin.php';
 
-      fetch(APIURL, {
+      fetch(loginUIUrl, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -114,6 +116,10 @@ function VILoginPage() {
             );
           } else if (response.message == 'success') {
             console.log('Successfully login');
+            console.log(response);
+            // console.log(response.result.viEmail);
+            // console.log('Successfully store email');
+
             setEmail('');
             setPassword('');
             navigation.navigate('VIPages');

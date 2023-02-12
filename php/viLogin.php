@@ -15,11 +15,11 @@ if (mysqli_num_rows($result)> 0) {
         $response = array("message" => $message);
     } else {
         $message = "success";
-        $response = array("message" => $message, "result" => $Row);
+        $response = array("message" => $message);
     }
 } else {
     $message = "email not found";
-    $response = array("message" => $message, "email" => $viEmail, "password" => $viPw, "result" => $result, "sql" => $SQL);
+    $response = array("message" => $message, "sql" => $SQL);
 }
 
 echo json_encode($response);

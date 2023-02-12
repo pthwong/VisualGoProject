@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -8,6 +9,7 @@ import {View, Button} from 'react-native-elements';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AsyncStorage} from 'react-native';
 
 //Pages for Visually Impaired
 import VIHomepage from './view/visuallyImpaired/VIHomepage';
@@ -274,20 +276,34 @@ function VTBottomTabs() {
 }
 
 function App() {
+  const [isLogin, setLogin] = useState(false);
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         options={{
           backgroundColor: '#FFFFFF',
         }}>
-        <Stack.Screen
-          name="Homepage"
-          component={Homepage}
-          options={{
-            headerShown: false,
-            gestureEnabled: false,
-          }}
-        />
+        {
+          <Stack.Screen
+            name="Homepage"
+            component={Homepage}
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+          />
+        }
+        {
+          <Stack.Screen
+            name="VIPages"
+            component={VIBottomTabs}
+            options={{
+              headerShown: false,
+              gestureEnabled: false,
+            }}
+          />
+        }
         <Stack.Screen
           name="VILoginPage"
           component={VILoginPage}
@@ -314,14 +330,6 @@ function App() {
               shadowOffset: {width: -2, height: 4},
               shadowOpacity: 2,
             },
-            gestureEnabled: false,
-          }}
-        />
-        <Stack.Screen
-          name="VIPages"
-          component={VIBottomTabs}
-          options={{
-            headerShown: false,
             gestureEnabled: false,
           }}
         />
