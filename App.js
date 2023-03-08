@@ -34,126 +34,6 @@ import {StyleSheet} from 'react-native';
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
-function VIBottomTabs() {
-  return (
-    <BottomTab.Navigator
-      initialRouteName="VIHomepage"
-      screenOptions={({route}) => ({
-        tabBarActiveTintColor: '#97F9F9',
-        tabBarLabelStyle: {
-          fontSize: 12,
-          height: 20,
-        },
-        tabBarStyle: {
-          height: 85,
-          shadowColor: '#171717',
-          shadowOffset: {width: -2, height: 4},
-          shadowOpacity: 2,
-          shadowRadius: 3,
-        },
-        tabBarIcon: ({focused, color, size}) => {
-          let iconName;
-          let iconOutput;
-          let routeName = route.name;
-
-          switch (routeName) {
-            case 'VIHomepage':
-              iconName = focused ? 'home' : 'home-outline';
-              iconOutput = (
-                <Ionicons name={iconName} size={size} color={color} />
-              );
-              break;
-            case 'VIVisualSuppPage':
-              iconName = focused ? 'eye' : 'eye-outline';
-              iconOutput = (
-                <Ionicons name={iconName} size={size} color={color} />
-              );
-              break;
-            case 'VICommunityPage':
-              iconName = focused ? 'bell' : 'bell-outline';
-              iconOutput = (
-                <MaterialCommunityIcons
-                  name={iconName}
-                  size={size}
-                  color={color}
-                />
-              );
-              break;
-            case 'VIPandemicPage':
-              iconName = focused ? 'face-mask' : 'face-mask-outline';
-              iconOutput = (
-                <MaterialCommunityIcons
-                  name={iconName}
-                  size={size}
-                  color={color}
-                />
-              );
-              break;
-            case 'VISettingsPage':
-              iconName = focused ? 'settings' : 'settings-outline';
-              iconOutput = (
-                <Ionicons name={iconName} size={size} color={color} />
-              );
-              break;
-          }
-
-          return iconOutput;
-        },
-      })}>
-      <BottomTab.Screen
-        name="VIHomepage"
-        component={VIHomepage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#97F9F9',
-          },
-          title: '主頁',
-        }}
-      />
-      <BottomTab.Screen
-        name="VIVisualSuppPage"
-        component={VIVisualSuppPage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#97F9F9',
-          },
-          title: '視覺支援',
-        }}
-      />
-      <BottomTab.Screen
-        name="VICommunityPage"
-        component={VICommunityPage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#97F9F9',
-          },
-          title: '社區資訊',
-        }}
-      />
-      <BottomTab.Screen
-        name="VIPandemicPage"
-        component={VIPandemicPage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#97F9F9',
-          },
-          title: '防疫資訊',
-        }}
-      />
-      <BottomTab.Screen
-        name="VISettingsPage"
-        component={VISettingsPage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#97F9F9',
-          },
-          title: '設定',
-        }}
-      />
-    </BottomTab.Navigator>
-  );
-}
-
 function VTBottomTabs() {
   return (
     <BottomTab.Navigator
@@ -284,26 +164,14 @@ function App() {
         options={{
           backgroundColor: '#FFFFFF',
         }}>
-        {
-          <Stack.Screen
-            name="Homepage"
-            component={Homepage}
-            options={{
-              headerShown: false,
-              gestureEnabled: false,
-            }}
-          />
-        }
-        {
-          <Stack.Screen
-            name="VIPages"
-            component={VIBottomTabs}
-            options={{
-              headerShown: false,
-              gestureEnabled: false,
-            }}
-          />
-        }
+        <Stack.Screen
+          name="Homepage"
+          component={Homepage}
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
         <Stack.Screen
           name="VILoginPage"
           component={VILoginPage}
@@ -334,8 +202,43 @@ function App() {
           }}
         />
         <Stack.Screen
+          name="VIHomepage"
+          component={VIHomepage}
+          options={{
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
           name="VICameraPage"
           component={VICameraPage}
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VIVisualSuppPage"
+          component={VIVisualSuppPage}
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VICommunityPage"
+          component={VICommunityPage}
+          options={{
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VISettingsPage"
+          component={VISettingsPage}
           options={{
             gestureEnabled: false,
           }}

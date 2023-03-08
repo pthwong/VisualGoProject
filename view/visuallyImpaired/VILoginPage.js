@@ -122,7 +122,7 @@ function VILoginPage() {
 
             setEmail('');
             setPassword('');
-            navigation.navigate('VIPages');
+            navigation.navigate('VIHomepage');
           }
         })
         .catch(error => {
@@ -133,7 +133,7 @@ function VILoginPage() {
   };
 
   viLoginPress2 = () => {
-    navigation.navigate('VIPages');
+    navigation.navigate('VIHomepage');
   };
 
   clearEmail = () => {
