@@ -205,6 +205,7 @@ function App() {
           name="VIHomepage"
           component={VIHomepage}
           options={{
+            headerShown: false,
             headerTitle: '',
             headerStyle: {
               backgroundColor: '#97F9F9',
@@ -213,6 +214,7 @@ function App() {
               shadowOpacity: 2,
             },
             gestureEnabled: false,
+            backgroundColor: '#97F9F9',
           }}
         />
         <Stack.Screen

@@ -14,6 +14,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
+import {ScrollView} from 'react-native-gesture-handler';
 // import Location from '../../components/Location';
 
 function VIHomepage() {
@@ -200,7 +201,7 @@ function VIHomepage() {
   };
 
   return (
-    <View>
+    <ScrollView>
       <Text style={styles.titleChi}>你好 Nathan</Text>
       {/* <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
         <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
@@ -260,7 +261,7 @@ function VIHomepage() {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </View>
+    </ScrollView>
   );
 }
 
