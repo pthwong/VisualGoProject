@@ -152,32 +152,36 @@ function VIHomepage() {
 
   async function fetchData() {
     // Get current location using Geolocation API
-    Geolocation.getCurrentPosition(
-      async position => {
-        const {latitude, longitude} = position.coords;
+    try {
+      Geolocation.getCurrentPosition(
+        async position => {
+          const {latitude, longitude} = position.coords;
 
-        // Fetch weather data from OpenWeatherAPI
-        const API_KEY = 'b11ed6c4df4f6643fcc67dc4711e7005';
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=zh_tw`,
-        );
-        const responseData = await response.json();
+          // Fetch weather data from OpenWeatherAPI
+          const API_KEY = 'b11ed6c4df4f6643fcc67dc4711e7005';
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=zh_tw`,
+          );
+          const responseData = await response.json();
 
-        console.log('Getting data OK: \n', responseData);
+          console.log('Getting data OK: \n', responseData);
 
-        // Extract temperature and humidity data from the response
-        const temperature = responseData.main.temp;
-        const humidity = responseData.main.humidity;
-        const weather = responseData.weather[0].description;
-        const location = responseData.name;
-        const icon = responseData.weather[0].icon;
+          // Extract temperature and humidity data from the response
+          const temperature = responseData.main.temp;
+          const humidity = responseData.main.humidity;
+          const weather = responseData.weather[0].description;
+          const location = responseData.name;
+          const icon = responseData.weather[0].icon;
 
-        // Update state with the new weather data
-        setWeatherData({temperature, humidity, weather, location, icon});
-      },
-      error => console.log('Getting data Error: \n', error),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
+          // Update state with the new weather data
+          setWeatherData({temperature, humidity, weather, location, icon});
+        },
+        error => console.log('Getting data Error: \n', error),
+        {enableHighAccuracy: false, timeout: 20000, maximumAge: 30000},
+      );
+    } catch (error) {
+      console.warn('Error:\n', error);
+    }
   }
 
   regPress = () => {
@@ -185,6 +189,10 @@ function VIHomepage() {
   };
 
   visualSuppPress = () => {
+    navigation.navigate('VIVisualSuppPage');
+  };
+
+  visualSuppPress2 = () => {
     navigation.navigate('VIVisualSuppPage');
   };
 
@@ -201,29 +209,36 @@ function VIHomepage() {
   };
 
   return (
-    <ScrollView>
-      <Text style={styles.titleChi}>你好 Nathan</Text>
-      {/* <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
-        <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
-      </TouchableOpacity> */}
-      <Text style={styles.titleDate}>{currentDate}</Text>
-      <Text style={styles.titleTime}>
-        {currentTime.toLocaleTimeString([], {
-          hour12: false,
-          timeStyle: 'short',
-        })}
-      </Text>
-      {/* <TouchableOpacity style={styles.btnVisual} onPress={this.viLoginPress}>
-        <Text style={styles.btnTxt}>視覺支援</Text>
-      </TouchableOpacity> */}
-      <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={styles.infoContainer}>
+        <Text style={styles.titleDate}>{currentDate}</Text>
+        <Text style={styles.titleTime}>
+          {currentTime.toLocaleTimeString([], {
+            hour12: false,
+            timeStyle: 'short',
+          })}
+        </Text>
+      </View>
+      <View style={styles.container}>
         <View style={styles.infoContainer}>
           {weatherData ? (
             <>
-              <Text style={styles.infoText}>
+              <Text
+                style={styles.weatherInfo}
+                accessible={true}
+                accessibilityLabel={`氣溫: ${Math.round(
+                  weatherData.temperature,
+                )}°C`}>
                 {Math.round(weatherData.temperature)}°C
               </Text>
-              <Text style={styles.infoText}>{weatherData.humidity}%</Text>
+              <Text
+                style={styles.weatherInfo}
+                accessible={true}
+                accessibilityLabel={`相對濕度: ${Math.round(
+                  weatherData.humidity,
+                )}%`}>
+                {weatherData.humidity}%
+              </Text>
               <Image
                 // source={{uri: 'https://openweathermap.org/img/wn/02n@2x.png'}}
                 source={{
@@ -231,17 +246,35 @@ function VIHomepage() {
                 }}
                 accessible={true}
                 accessibilityLabel={weatherData.weather}
-                style={{margin: 5, width: 50, height: 50}}
+                style={{width: 40, height: 40}}
               />
             </>
           ) : (
-            <Text>Loading...</Text>
+            <Text style={styles.weatherInfo}>Loading...</Text>
           )}
         </View>
-      </SafeAreaView>
+        <Text style={styles.titleChi}>你好 Nathan Welcome!</Text>
+      </View>
 
-      <SafeAreaView style={styles.container}>
-        <View style={styles.buttonContainer}>
+      <SafeAreaView style={styles.subContainer}>
+        <TouchableOpacity
+          style={[styles.btnVisual2]}
+          onPress={this.visualSuppPress2}>
+          <Text style={styles.btnTxt}>視覺支援</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.btnVisual2,
+            {
+              backgroundColor: '#97F9F9',
+              opacity: 1,
+            },
+          ]}
+          onPress={this.visualSuppPress2}>
+          <Text style={styles.btnTxt}>社區資訊</Text>
+        </TouchableOpacity>
+        {/* <View>
           <TouchableOpacity
             style={styles.btnVisual}
             onPress={this.visualSuppPress}>
@@ -259,19 +292,27 @@ function VIHomepage() {
             onPress={this.settingsPress}>
             <Text style={styles.btnTxt}>設定</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </SafeAreaView>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#97F9F9',
+  },
+  subContainer: {
+    marginTop: -500,
+    flex: 1,
+    backgroundColor: 'white',
+  },
   titleChi: {
     marginTop: '5%',
     marginLeft: '5%',
     marginRight: '5%',
     fontSize: 30,
-    fontWeight: 'bold',
     color: 'black',
   },
   titleEng: {
@@ -282,20 +323,24 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   titleDate: {
-    marginTop: '5%',
+    marginTop: '15%',
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 15,
     color: 'black',
     textAlign: 'center',
   },
   titleTime: {
-    marginTop: '5%',
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 15,
+    color: 'black',
+    textAlign: 'center',
+  },
+  weatherInfo: {
+    marginLeft: '5%',
+    marginRight: '5%',
+    fontSize: 15,
     color: 'black',
     textAlign: 'center',
   },
@@ -313,6 +358,17 @@ const styles = StyleSheet.create({
     paddingTop: '14%',
     borderRadius: 20,
     margin: -10,
+    // shadowOpacity: 0.1,
+  },
+  btnVisual2: {
+    // backgroundColor: btnVisual2Holder ? 'grey' : '#97F9F9',
+    backgroundColor: '#ffd63f',
+    color: 'black',
+    width: '75%',
+    marginLeft: '11%',
+    padding: '4%',
+    marginTop: '10%',
+    borderRadius: 50,
     // shadowOpacity: 0.1,
   },
   btnPandemic: {
@@ -353,11 +409,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     shadowOpacity: 0.3,
   },
+
   infoContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'space-around',
-    marginTop: 10,
     paddingRight: 10,
   },
   buttonContainer: {
@@ -366,7 +421,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'space-around',
     height: 100,
-    marginTop: 180,
+    marginTop: 120,
   },
 });
 
