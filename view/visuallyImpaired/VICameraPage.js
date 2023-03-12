@@ -7,16 +7,30 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
   Camera,
   CameraPermissionStatus,
   useCameraDevices,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
+import {
+  Barcodes,
+  useScanBarcodes,
+  BarcodeFormat,
+  scanBarcodes,
+} from 'vision-camera-code-scanner';
+import {RNHoleView} from 'react-native-hole-view';
+import {runOnJS} from 'react-native-reanimated';
 
 function VICameraPage() {
-  const [cameraPermission, setCameraPermission] = useState();
+  const [cameraPermission, setCameraPermission] = useState(null);
+  const [barcode, setBarcode] = useState(null);
+  const [isScanned, setIsScanned] = useState(false);
+  const devices = useCameraDevices();
+  const cameraDevice = devices.back;
 
   useEffect(() => {
     (async () => {
@@ -27,16 +41,43 @@ function VICameraPage() {
 
   console.log(`Camera permission status: ${cameraPermission}`);
 
-  const devices = useCameraDevices('wide-angle-camera');
-  const cameraDevice = devices.back;
+  const [frameProcessor, barcodes] = useScanBarcodes([
+    BarcodeFormat.ALL_FORMATS, // You can only specify a particular format
+  ]);
+
+  useEffect(() => {
+    toggleActiveState();
+    return () => {
+      barcodes;
+    };
+  }, [barcodes]);
+
+  const toggleActiveState = async () => {
+    if (barcodes && barcodes.length > 0 && isScanned === false) {
+      setIsScanned(true);
+      // setBarcode('');
+      barcodes.forEach(async (scannedBarcode: any) => {
+        if (scannedBarcode.rawValue !== '') {
+          setBarcode(scannedBarcode.rawValue);
+          console.log('Barcode: ', barcode);
+          alert(scannedBarcode.rawValue);
+        }
+      });
+    }
+  };
+
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
-      <Camera
-        style={styles.camera}
-        device={cameraDevice}
-        isActive={true}
-        style={StyleSheet.absoluteFill}
-      />
+      <View style={{flex: 1}}>
+        <Camera
+          style={styles.camera}
+          style={StyleSheet.absoluteFill}
+          device={cameraDevice}
+          isActive={!isScanned}
+          frameProcessor={frameProcessor}
+          frameProcessorFps={5}
+        />
+      </View>
     );
   }
 }
@@ -94,6 +135,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     shadowOpacity: 0.2,
+  },
+  rnholeView: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  barcodeTextURL: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
