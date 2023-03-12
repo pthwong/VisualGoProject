@@ -24,7 +24,7 @@ function VIVisualSuppPage() {
       <Text style={styles.titleChi}>視覺支援頁面</Text>
       <Text style={styles.titleEng}>Visual Support</Text>
       <TouchableOpacity style={styles.regBtn} onPress={this.cameraPress}>
-        <Text style={styles.btnTxt}>Camera</Text>
+        <Text style={styles.btnTxt}>產品條碼掃描</Text>
       </TouchableOpacity>
     </View>
   );

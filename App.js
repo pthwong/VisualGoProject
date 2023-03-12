@@ -214,7 +214,6 @@ function App() {
               shadowOpacity: 2,
             },
             gestureEnabled: false,
-            backgroundColor: '#97F9F9',
           }}
         />
         <Stack.Screen
@@ -222,6 +221,13 @@ function App() {
           component={VICameraPage}
           options={{
             gestureEnabled: false,
+            headerTitle: '產品條碼掃描',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
           }}
         />
         <Stack.Screen
@@ -229,6 +235,14 @@ function App() {
           component={VIVisualSuppPage}
           options={{
             gestureEnabled: false,
+            headerTitle: '視覺支援',
+            backgroundColor: '#97F9F9',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
           }}
         />
         <Stack.Screen
@@ -236,6 +250,13 @@ function App() {
           component={VICommunityPage}
           options={{
             gestureEnabled: false,
+            backgroundColor: '#97F9F9',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
           }}
         />
         <Stack.Screen
@@ -243,6 +264,7 @@ function App() {
           component={VISettingsPage}
           options={{
             gestureEnabled: false,
+            backgroundColor: '#97F9F9',
           }}
         />
         <Stack.Screen

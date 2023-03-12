@@ -164,7 +164,12 @@ function VIHomepage() {
           );
           const responseData = await response.json();
 
-          console.log('Getting data OK: \n', responseData);
+          console.log(
+            'Response url:',
+            response,
+            '\nGetting data OK: \n',
+            responseData,
+          );
 
           // Extract temperature and humidity data from the response
           const temperature = responseData.main.temp;

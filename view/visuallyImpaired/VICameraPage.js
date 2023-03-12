@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -23,14 +24,16 @@ import {
   scanBarcodes,
 } from 'vision-camera-code-scanner';
 import {RNHoleView} from 'react-native-hole-view';
-import {runOnJS} from 'react-native-reanimated';
 
 function VICameraPage() {
+  const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const [barcode, setBarcode] = useState(null);
   const [isScanned, setIsScanned] = useState(false);
   const devices = useCameraDevices();
   const cameraDevice = devices.back;
+
+  const [productInfo, setProductInfo] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -38,6 +41,60 @@ function VICameraPage() {
       setCameraPermission(cameraPermissionStatus);
     })();
   }, []);
+
+  // async function fetchData() {
+  //   // Get current location using Geolocation API
+  //   try {
+  //       async barcode => {
+  //         // Fetch weather data from OpenWeatherAPI
+  //         const response = await fetch(
+  //           `https://www.barcodeplus.com.hk/eid/resource/jsonservice?data={"appCode":"EIDM","method":"getSearchProductInfo","pdname":"${barcode}","isdraft":"N","nonpubind":"1","langid":"zh_TW"}`,
+  //         );
+  //         const responseData = await response.json();
+
+  //         console.log('Getting data OK: \n', responseData);
+
+  //         // Extract data from the response
+  //         const pdid = responseData.result[0].data[0].pdid;
+  //         const pdname = responseData.result[0].data[0].pdname;
+
+  //         // Update state with the new weather data
+  //         setProductInfo({pdid, pdname});
+  //       },
+  //       error => console.log('Getting data Error: \n', error),
+  //   } catch (error) {
+  //     console.warn('Error:\n', error);
+  //   }
+  // }
+
+  async function fetchData(barcode) {
+    // const barcode = await scannedBarcode.rawValue;
+
+    // Fetch product data
+    try {
+      const response = await fetch(
+        `https://www.barcodeplus.com.hk/eid/resource/jsonservice?data={"appCode":"EIDM","method":"getSearchProductInfo","pdname":"${barcode}","isdraft":"N","nonpubind":"1","langid":"zh_TW"}`,
+      );
+      const responseData = await response.json();
+      const responseData2 = responseData.result[0];
+
+      console.log(
+        'Response url:',
+        response,
+        '\nGetting data OK: \n',
+        responseData2.data[0].pdname,
+      );
+
+      // Extract data from the response
+      const pdid = responseData2.data[0]?.pdid;
+      const pdname = responseData2.data[0]?.pdname;
+
+      // Update state with the new product data
+      setProductInfo({pdid, pdname});
+    } catch (error) {
+      console.log('Error: \n', error);
+    }
+  }
 
   console.log(`Camera permission status: ${cameraPermission}`);
 
@@ -53,14 +110,54 @@ function VICameraPage() {
   }, [barcodes]);
 
   const toggleActiveState = async () => {
-    if (barcodes && barcodes.length > 0 && isScanned === false) {
+    if (barcodes && barcodes.length > 0 && isScanned == false) {
       setIsScanned(true);
       // setBarcode('');
       barcodes.forEach(async (scannedBarcode: any) => {
-        if (scannedBarcode.rawValue !== '') {
+        if (scannedBarcode.rawValue != '') {
           setBarcode(scannedBarcode.rawValue);
-          console.log('Barcode: ', barcode);
-          alert(scannedBarcode.rawValue);
+          console.log('Barcode: ', scannedBarcode.rawValue);
+          // alert(scannedBarcode.rawValue);
+          // Popup.show({
+          //   type: 'Success',
+          //   title: '條碼已掃描',
+          //   button: true,
+          //   textBody: scannedBarcode.rawValue,
+          //   buttonText: '關閉',
+          //   buttonText2: 'Details',
+          //   callback: () => {
+          //     setIsScanned(false);
+          //     Popup.hide();
+          //   },
+          // });
+          fetchData(scannedBarcode.rawValue);
+          console.log('Name: ', productInfo.pdname);
+          if (productInfo.pdname === undefined) {
+            console.log(productInfo.pdname);
+            setIsScanned(false);
+          } else {
+            Alert.alert(
+              '條碼已掃描',
+              `商品名稱：${productInfo.pdname}\n需要查看物品詳情嗎？`,
+              [
+                {
+                  text: '是',
+                  onPress: () => {
+                    console.log('Yes Pressed');
+                    setIsScanned(false);
+                  },
+                },
+                {
+                  text: '否',
+                  onPress: () => {
+                    setIsScanned(false);
+                    navigation.goBack();
+                  },
+                  style: 'cancel',
+                },
+              ],
+            );
+          }
         }
       });
     }
@@ -68,16 +165,18 @@ function VICameraPage() {
 
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
-      <View style={{flex: 1}}>
-        <Camera
-          style={styles.camera}
-          style={StyleSheet.absoluteFill}
-          device={cameraDevice}
-          isActive={!isScanned}
-          frameProcessor={frameProcessor}
-          frameProcessorFps={5}
-        />
-      </View>
+      <Root>
+        <View style={{flex: 1}}>
+          <Camera
+            style={styles.camera}
+            style={StyleSheet.absoluteFill}
+            device={cameraDevice}
+            isActive={!isScanned}
+            frameProcessor={frameProcessor}
+            frameProcessorFps={5}
+          />
+        </View>
+      </Root>
     );
   }
 }
