@@ -82,17 +82,30 @@ function VICameraPage() {
         'Response url:',
         response,
         '\nGetting data OK: \n',
+        responseData2.data[0].pdid,
+        '\nGetting data OK: \n',
         responseData2.data[0].pdname,
       );
 
       // Extract data from the response
-      const pdid = responseData2.data[0]?.pdid;
-      const pdname = responseData2.data[0]?.pdname;
+      const pdid = responseData2.data[0].pdid;
+      const pdname = responseData2.data[0].pdname;
 
       // Update state with the new product data
       setProductInfo({pdid, pdname});
     } catch (error) {
       console.log('Error: \n', error);
+      Alert.alert('找不到商品', '', [
+        {
+          text: '返回',
+          onPress: () => {
+            setIsScanned(false);
+            navigation.navigate('VIVisualSuppPage');
+          },
+          style: 'cancel',
+        },
+      ]);
+      return;
     }
   }
 
@@ -132,19 +145,24 @@ function VICameraPage() {
           // });
           fetchData(scannedBarcode.rawValue);
           console.log('Name: ', productInfo.pdname);
-          if (productInfo.pdname === undefined) {
+          if (productInfo.pdname == undefined) {
             console.log(productInfo.pdname);
             setIsScanned(false);
           } else {
             Alert.alert(
               '條碼已掃描',
-              `商品名稱：${productInfo.pdname}\n需要查看物品詳情嗎？`,
+              `商品名稱：${productInfo.pdid}\n${productInfo.pdname}\n需要查看物品詳情嗎？`,
               [
                 {
                   text: '是',
                   onPress: () => {
+                    setIsScanned(true);
                     console.log('Yes Pressed');
+                    navigation.navigate('VIProductInfoBarcode', {
+                      pdid: productInfo.pdid,
+                    });
                     setIsScanned(false);
+                    setProductInfo('');
                   },
                 },
                 {
@@ -165,18 +183,16 @@ function VICameraPage() {
 
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
-      <Root>
-        <View style={{flex: 1}}>
-          <Camera
-            style={styles.camera}
-            style={StyleSheet.absoluteFill}
-            device={cameraDevice}
-            isActive={!isScanned}
-            frameProcessor={frameProcessor}
-            frameProcessorFps={5}
-          />
-        </View>
-      </Root>
+      <View style={{flex: 1}}>
+        <Camera
+          style={styles.camera}
+          style={StyleSheet.absoluteFill}
+          device={cameraDevice}
+          isActive={!isScanned}
+          frameProcessor={frameProcessor}
+          frameProcessorFps={5}
+        />
+      </View>
     );
   }
 }

@@ -20,6 +20,7 @@ import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
 import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
 import VICameraPage from './view/visuallyImpaired/VICameraPage';
+import VIProductInfoBarcode from './view/visuallyImpaired/VIProductInfoBarcode';
 
 //Pages for Volunteers
 import VTLoginPage from './view/volunteer/VTRegPage';
@@ -222,6 +223,20 @@ function App() {
           options={{
             gestureEnabled: false,
             headerTitle: '產品條碼掃描',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="VIProductInfoBarcode"
+          component={VIProductInfoBarcode}
+          options={{
+            gestureEnabled: false,
+            headerTitle: '產品資訊',
             headerStyle: {
               backgroundColor: '#97F9F9',
               shadowColor: '#171717',
