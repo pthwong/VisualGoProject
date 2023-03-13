@@ -16,14 +16,14 @@ function VIVisualSuppPage() {
   const navigation = useNavigation();
 
   cameraPress = () => {
-    navigation.navigate('VICameraPage');
+    navigation.navigate('VIBarcodeScannerPage');
   };
 
   return (
     <View>
       <Text style={styles.titleChi}>視覺支援頁面</Text>
       <Text style={styles.titleEng}>Visual Support</Text>
-      <TouchableOpacity style={styles.regBtn} onPress={this.cameraPress}>
+      <TouchableOpacity style={styles.barcodeBtn} onPress={this.cameraPress}>
         <Text style={styles.btnTxt}>產品條碼掃描</Text>
       </TouchableOpacity>
     </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     // shadowOpacity: 0.1,
   },
-  regBtn: {
+  barcodeBtn: {
     backgroundColor: '#ffd63f',
     color: 'black',
     width: '75%',
