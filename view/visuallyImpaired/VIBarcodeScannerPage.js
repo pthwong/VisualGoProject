@@ -25,7 +25,7 @@ import {
 } from 'vision-camera-code-scanner';
 import {RNHoleView} from 'react-native-hole-view';
 
-function VICameraPage() {
+function VIBarcodeScannerPage() {
   const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const [barcode, setBarcode] = useState(null);
@@ -267,4 +267,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VICameraPage;
+export default VIBarcodeScannerPage;

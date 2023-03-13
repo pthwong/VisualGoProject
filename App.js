@@ -17,9 +17,9 @@ import VILoginPage from './view/visuallyImpaired/VILoginPage';
 import VIRegPage from './view/visuallyImpaired/VIRegPage';
 import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
-import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
+// import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
-import VICameraPage from './view/visuallyImpaired/VICameraPage';
+import VIBarcodeScannerPage from './view/visuallyImpaired/VIBarcodeScannerPage';
 import VIProductInfoBarcode from './view/visuallyImpaired/VIProductInfoBarcode';
 
 //Pages for Volunteers
@@ -218,8 +218,8 @@ function App() {
           }}
         />
         <Stack.Screen
-          name="VICameraPage"
-          component={VICameraPage}
+          name="VIBarcodeScannerPage"
+          component={VIBarcodeScannerPage}
           options={{
             gestureEnabled: false,
             headerTitle: '產品條碼掃描',
