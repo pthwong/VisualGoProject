@@ -276,7 +276,7 @@ function VIHomepage() {
               opacity: 1,
             },
           ]}
-          onPress={this.visualSuppPress2}>
+          onPress={this.communityPress}>
           <Text style={styles.btnTxt}>社區資訊</Text>
         </TouchableOpacity>
         {/* <View>
