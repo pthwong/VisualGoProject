@@ -151,7 +151,7 @@ function VIBarcodeScannerPage() {
           } else {
             Alert.alert(
               '條碼已掃描',
-              `商品名稱：${productInfo.pdname}\n需要查看物品詳情嗎？`,
+              `產品名稱：${productInfo.pdname}\n需要查看更多產品資訊嗎？`,
               [
                 {
                   text: '是',
