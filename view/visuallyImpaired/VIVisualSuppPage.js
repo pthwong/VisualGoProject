@@ -15,16 +15,32 @@ function VIVisualSuppPage() {
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  cameraPress = () => {
+  barcodeScannerPress = () => {
     navigation.navigate('VIBarcodeScannerPage');
+  };
+  priceTagScannerPress = () => {
+    navigation.navigate('VIPriceTagScannerPage');
+  };
+  objDetectPress = () => {
+    navigation.navigate('VIObjectDetectPage');
   };
 
   return (
     <View>
       <Text style={styles.titleChi}>視覺支援頁面</Text>
       <Text style={styles.titleEng}>Visual Support</Text>
-      <TouchableOpacity style={styles.barcodeBtn} onPress={this.cameraPress}>
+      <TouchableOpacity
+        style={styles.barcodeBtn}
+        onPress={this.barcodeScannerPress}>
         <Text style={styles.btnTxt}>產品條碼掃描</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.barcodeBtn}
+        onPress={this.priceTagScannerPress}>
+        <Text style={styles.btnTxt}>價錢牌識別</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.barcodeBtn} onPress={this.objDetectPress}>
+        <Text style={styles.btnTxt}>物件識別</Text>
       </TouchableOpacity>
     </View>
   );
