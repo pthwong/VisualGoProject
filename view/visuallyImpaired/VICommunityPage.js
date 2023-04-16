@@ -9,23 +9,63 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {Calendar} from 'react-native-calendars';
 
 function VICommunityPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
+  const [selected, setSelected] = useState('');
+  const [events, setEvents] = useState({});
 
-  regPress = () => {
-    navigation.navigate('VIRegPage');
-  };
+  useEffect(() => {
+    // Fetch event data from API endpoint
+    fetch('https://api.whomethser.synology.me:3560/visualgo/v1/news/')
+      .then(response => response.json())
+      .then(data => {
+        // Format event data for calendar view
+        console.log(data);
+        const formattedData = {};
+        data.forEach(event => {
+          const date = event.postStartDateTime.split('T')[0];
+          formattedData[date] = formattedData[date] || {marked: true};
+          formattedData[date].dots = formattedData[date].dots || [];
+          formattedData[date].dots.push({
+            key: event.postID,
+            color: 'blue',
+            selectedDotColor: 'blue',
+            marked: true,
+          });
+        });
+        console.log('Data: ', formattedData);
+        setEvents(formattedData);
+      });
+  }, []);
 
   return (
     <View>
-      <Text style={styles.titleChi}>社區資訊頁面</Text>
-      <Text style={styles.titleEng}>Community News</Text>
-      {/* <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
-        <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
-      </TouchableOpacity> */}
+      <Calendar
+        onDayPress={day => {
+          setSelected(day.dateString);
+          console.log('selected day', day.dateString);
+        }}
+        current={Date().dateString}
+        style={{
+          borderWidth: 1,
+          borderColor: 'gray',
+          height: 350,
+        }}
+        theme={{
+          backgroundColor: '#ffffff',
+          calendarBackground: '#ffffff',
+          textSectionTitleColor: '#b6c1cd',
+          selectedDayBackgroundColor: '#00adf5',
+          selectedDayTextColor: '#ffffff',
+          todayTextColor: '#00adf5',
+          dayTextColor: '#2d4150',
+        }}
+        markedDates={events}
+      />
     </View>
   );
 }
