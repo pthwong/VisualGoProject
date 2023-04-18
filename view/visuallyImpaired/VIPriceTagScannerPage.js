@@ -1,32 +1,28 @@
-import React from 'react';
-import {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
+  Button,
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Alert,
+  Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
   Camera,
   CameraPermissionStatus,
   useCameraDevices,
-  useFrameProcessor,
 } from 'react-native-vision-camera';
 
 function VIPriceTagScannerPage() {
   const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const camera = useRef(null);
-  const [photoPath, setPhotoPath] = useState();
   const devices = useCameraDevices();
   const cameraDevice = devices.back;
 
-  const [imageData, setImageData] = useState(null);
+  const [showCamera, setShowCamera] = useState(true);
+  const [imageSource, setImageSource] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -37,74 +33,90 @@ function VIPriceTagScannerPage() {
 
   console.log(`Camera permission status: ${cameraPermission}`);
 
-  const handleTakePhoto = async () => {
-    try {
-      const photo = await camera.current.takePhoto({
-        flash: 'on',
-      });
-      setPhotoPath(photo.path);
-    } catch (e) {
-      console.log(e);
+  async function capturePhoto() {
+    if (camera.current !== null) {
+      const photo = await camera.current.takePhoto({});
+      setImageSource(photo.path);
+      setShowCamera(false);
+      console.log(photo.path);
     }
-  };
+  }
 
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
+      // <View style={{flex: 1}}>
+      //   {photo && <Image source={{uri: photo}} style={{flex: 1}} />}
+      //   <Camera
+      //     ref={camera}
+      //     style={StyleSheet.absoluteFill}
+      //     device={cameraDevice}
+      //     isActive
+      //   />
+      //   <TouchableOpacity style={styles.regBtn} onPress={takePicture}>
+      //     <Text style={styles.btnTxt}>拍照</Text>
+      //   </TouchableOpacity>
+      // </View>
+      <View style={styles.container}>
+        {showCamera ? (
+          <>
+            <Camera
+              ref={camera}
+              style={StyleSheet.absoluteFill}
+              device={cameraDevice}
+              isActive={showCamera}
+              photo={true}
+            />
+
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.camButton}
+                onPress={() => capturePhoto()}>
+                <Text style={styles.btnTxt}>拍照</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <>
+            <Button title="Launch Camera" onPress={() => setShowCamera(true)} />
+            {imageSource !== '' ? (
+              <Image
+                style={styles.image}
+                source={{
+                  uri: `file://'${imageSource}`,
+                }}
+              />
+            ) : null}
+          </>
+        )}
+      </View>
+    );
+  } else {
+    return (
       <View style={{flex: 1}}>
-        <Camera
-          style={styles.camera}
-          style={StyleSheet.absoluteFill}
-          device={cameraDevice}
-          photo
-          isActive
-        />
-        <TouchableOpacity style={styles.regBtn} onPress={handleTakePhoto}>
-          <Text style={styles.btnTxt}>拍照</Text>
-        </TouchableOpacity>
+        <Text>No camera device available</Text>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  titleChi: {
-    marginTop: '10%',
-    marginLeft: '5%',
-    marginRight: '5%',
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: 'black',
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  titleEng: {
-    marginLeft: '5%',
-    marginRight: '5%',
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'black',
+  button: {
+    backgroundColor: 'gray',
   },
-  textField: {
-    fontSize: 18,
-    color: 'black',
-    marginBottom: '5%',
+  buttonContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    bottom: 0,
+    padding: 20,
   },
-  inputField: {
-    border: 1,
-    fontSize: 25,
-    marginTop: '20%',
-    marginLeft: '5%',
-    marginRight: '5%',
-  },
-  loginBtn: {
-    backgroundColor: '#97F9F9',
-    color: 'black',
-    width: '75%',
-    marginLeft: '11%',
-    padding: '3%',
-    marginTop: '10%',
-    borderRadius: 50,
-    // shadowOpacity: 0.1,
-  },
-  regBtn: {
+  camButton: {
     backgroundColor: '#ffd63f',
     color: 'black',
     width: '75%',
@@ -112,7 +124,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',
@@ -120,19 +131,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     shadowOpacity: 0.2,
   },
-  rnholeView: {
-    position: 'absolute',
+  image: {
     width: '100%',
-    height: '100%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  barcodeTextURL: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
+    height: 'auto',
+    aspectRatio: 9 / 16,
   },
 });
 
