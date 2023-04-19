@@ -102,7 +102,8 @@ function VIPriceTagScannerPage() {
           //2. Get Price Tag info by Form recognizer
           await axios
             .post(
-              `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2:analyze?api-version=2022-01-30-preview`,
+              `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2_1:analyze?api-version=2022-08-31`,
+              //https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2:analyze?api-version=2022-01-30-preview
               priceTagFormData,
               {
                 headers: {
@@ -116,7 +117,6 @@ function VIPriceTagScannerPage() {
               alert('Error');
               return err;
             });
-          //got info
         } else if (
           res.data.predictions[0].tagName === 'parknshopoffer' &&
           res.data.predictions[0].probability * 100 >= 80
@@ -130,7 +130,8 @@ function VIPriceTagScannerPage() {
           //2. Get Price Tag info by Form recognizer
           await axios
             .post(
-              `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_2:analyze?api-version=2022-01-30-preview`,
+              `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_1_new:analyze?api-version=2022-08-31`,
+              //https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_2:analyze?api-version=2022-01-30-preview
               priceTagFormData,
               {
                 headers: {
@@ -158,7 +159,8 @@ function VIPriceTagScannerPage() {
           //2. Get Price Tag info by Form recognizer
           await axios
             .post(
-              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodel:analyze?api-version=2022-01-30-preview`,
+              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodelv2_1:analyze?api-version=2022-08-31`,
+              //https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodel:analyze?api-version=2022-01-30-preview
               priceTagFormData,
               {
                 headers: {
@@ -182,7 +184,8 @@ function VIPriceTagScannerPage() {
           //2. Get Price Tag info by Form recognizer
           await axios
             .post(
-              `https://fypwellcomeoffer.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel:analyze?api-version=2022-01-30-preview`,
+              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31`,
+              //https://fypwellcomeoffer.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel:analyze?api-version=2022-01-30-preview
               priceTagFormData,
               {
                 headers: {
