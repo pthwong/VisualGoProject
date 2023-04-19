@@ -32,11 +32,10 @@ function VIPriceTagScannerPage() {
   const [imageSource, setImageSource] = useState('');
   const [prediction, setPrediction] = useState(null);
 
+  const [pricetagInfo, setPricetagInfo] = useState(null);
+
   //MS Azure
-  const projectId = '12b272e7-4cf6-4a62-9279-9308aaca3e46';
-  const iterationName = 'Iteration4';
   const predictionKey = '7308a0fa8d364428af85ad5431749bdb';
-  const endpoint = `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com`;
   const cvEndpoint = `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`;
 
   useEffect(() => {
@@ -57,113 +56,23 @@ function VIPriceTagScannerPage() {
     }
   }
 
-  // async function predictImage(imageUri) {
-  //   const imageUrl = `data:image/jpeg;base64,${imageUri}`;
-  //   const imageBuffer = Buffer.from(imageUrl.split(',')[1], 'base64');
-
-  //   // Create a blob from the image buffer
-  //   const blob = new Blob([imageBuffer], {type: 'image/jpeg'});
-
-  //   // Create a form data object and append the blob to it
-  //   const formData = new FormData();
-  //   formData.append('image', blob, 'image.jpg');
-
-  //   // Set the prediction key and content type headers
-  //   const headers = {
-  //     'Prediction-Key': predictionKey,
-  //     'Content-Type': 'application/octet-stream',
-  //   };
-
-  //   // Make the API request using Axios
-  //   const response = await axios.post(
-  //     `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`,
-  //     //post: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`
-  //     formData,
-  //     {
-  //       headers,
-  //     },
-  //   );
-
-  //   // Return the response data
-  //   return response.data;
-  // }
-
-  // const imageToBase64 = async uri => {
-  //   const response = await fetch(uri);
-  //   const blob = await response.blob();
-
-  //   return new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       resolve(reader.result);
-  //     };
-  //     reader.onerror = reject;
-  //     reader.readAsDataURL(blob);
-  //   });
-  // };
-
-  // async function predictImage(imageUri) {
-  //   try {
-  //     const imageBuffer = await fs.readFile(imageUri, 'base64');
-
-  //     // Convert buffer to base64 string
-  //     const base64Image = Buffer.from(imageBuffer, 'binary').toString('base64');
-
-  //     // const requestBody = {
-  //     //   url: imageUrlBase64,
-  //     // };
-
-  //     // const options = {
-  //     //   method: 'POST',
-  //     //   url: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`,
-  //     //   headers: {
-  //     //     'Prediction-Key': '7308a0fa8d364428af85ad5431749bdb',
-  //     //     'Content-Type': 'application/octet-stream',
-  //     //   },
-  //     //   data: Buffer.from(requestBody.url, 'base64'),
-  //     // };
-  //     // Upload image to Custom Vision API
-  //     const response = await axios.post(cvEndpoint, base64Image, {
-  //       headers: {
-  //         'Content-Type': 'application/octet-stream',
-  //         'Prediction-Key': '7308a0fa8d364428af85ad5431749bdb',
-  //       },
-  //     });
-
-  //     // const options = {
-  //     //   headers: {
-  //     //     'Prediction-Key': predictionKey,
-  //     //     'Content-Type': 'application/octet-stream',
-  //     //   },
-  //     // };
-
-  //     // const response = await axios.post(cvEndpoint, imageBuffer, options);
-  //     return response;
-  //   } catch (error) {
-  //     console.log('upload image error: \n', error);
-  //     alert('error');
-  //     return null;
-  //   }
-  // }
+  function retakePhoto() {
+    setShowCamera(true);
+    setPrediction(null);
+  }
 
   async function predictPriceTag(imageUri) {
     let filename = imageUri.split('/').pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
-    let formData = new FormData();
-    formData.append('photo', {uri: imageUri, name: filename, type});
-
-    // Make the API request using Axios
-    // const headers = {
-    //   'Prediction-Key': predictionKey,
-    //   'Content-Type': 'multipart/form-data',
-    // };
+    let priceTagFormData = new FormData();
+    priceTagFormData.append('photo', {uri: imageUri, name: filename, type});
 
     await axios
       .post(
         `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`,
         //post: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`
-        formData,
+        priceTagFormData,
         {
           headers: {
             'Prediction-Key': predictionKey,
@@ -171,12 +80,130 @@ function VIPriceTagScannerPage() {
           },
         },
       )
-      .then(res => {
-        console.log(res);
-        return res;
+      .then(async res => {
+        console.log(
+          'Result:',
+          res.data.predictions[0].tagName,
+          '\nProbability:',
+          res.data.predictions[0].probability,
+        );
+        if (res.data.predictions[0].tagName === 'other') {
+          alert('Cannot detect price tag.');
+        } else if (
+          res.data.predictions[0].tagName === 'parknshopmarked' &&
+          res.data.predictions[0].probability * 100 >= 60
+        ) {
+          alert(
+            'parknshopmarked\nProbability: ' +
+              res.data.predictions[0].probability * 100,
+          );
+          setPrediction(res.data.predictions[0].tagName);
+
+          //2. Get Price Tag info by Form recognizer
+          await axios
+            .post(
+              `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2:analyze?api-version=2022-01-30-preview`,
+              priceTagFormData,
+              {
+                headers: {
+                  'Ocp-Apim-Subscription-Key': `ffd66fa152074fbebe5673c91d6eddae`,
+                  'Content-Type': 'multipart/form-data',
+                },
+              },
+            )
+            .then(res => console.log('Price tag info: ', res))
+            .catch(err => {
+              alert('Error');
+              return err;
+            });
+          //got info
+        } else if (
+          res.data.predictions[0].tagName === 'parknshopoffer' &&
+          res.data.predictions[0].probability * 100 >= 80
+        ) {
+          alert(
+            'parknshopoffer\nProbability: ' +
+              res.data.predictions[0].probability * 100,
+          );
+          setPrediction(res.data.predictions[0].tagName);
+
+          //2. Get Price Tag info by Form recognizer
+          await axios
+            .post(
+              `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_2:analyze?api-version=2022-01-30-preview`,
+              priceTagFormData,
+              {
+                headers: {
+                  'Ocp-Apim-Subscription-Key': `00d31480815b4113854aeda80222daba`,
+                  'Content-Type': 'multipart/form-data',
+                },
+              },
+            )
+            .then(res => console.log('Price tag info: ', res.data))
+            .catch(err => {
+              alert('Error');
+              return err;
+            });
+          //got info
+        } else if (
+          res.data.predictions[0].tagName === 'wellcomemarked' &&
+          res.data.predictions[0].probability * 100 >= 80
+        ) {
+          alert(
+            'wellcomemarked\nProbability: ' +
+              res.data.predictions[0].probability * 100,
+          );
+          setPrediction(res.data.predictions[0].tagName);
+
+          //2. Get Price Tag info by Form recognizer
+          await axios
+            .post(
+              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodel:analyze?api-version=2022-01-30-preview`,
+              priceTagFormData,
+              {
+                headers: {
+                  'Ocp-Apim-Subscription-Key': `f0ab5363478845fdb8c657dc7b9bef57`,
+                  'Content-Type': 'multipart/form-data',
+                },
+              },
+            )
+            .then(res => console.log('Price tag info: ', res.data))
+            .catch(err => {
+              alert('Error');
+              return err;
+            });
+          //got info
+        } else if (res.data.predictions[0].tagName === 'wellcomeoffer') {
+          alert(
+            'wellcomeoffer\nProbability: ' +
+              res.data.predictions[0].probability * 100,
+          );
+          setPrediction(res.data.predictions[0].tagName);
+          //2. Get Price Tag info by Form recognizer
+          await axios
+            .post(
+              `https://fypwellcomeoffer.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel:analyze?api-version=2022-01-30-preview`,
+              priceTagFormData,
+              {
+                headers: {
+                  'Ocp-Apim-Subscription-Key': `1c6126a584bc4e6393d2c46d350be72b`,
+                  'Content-Type': 'multipart/form-data',
+                },
+              },
+            )
+            .then(res => console.log('Price tag info: ', res.data))
+            .catch(err => {
+              alert('Error');
+              return err;
+            });
+          //got info
+        } else {
+          alert('Cannot detect price tag.');
+        }
       })
       .catch(err => {
         console.log(err);
+        alert('Error');
         return err;
       });
   }
@@ -221,17 +248,37 @@ function VIPriceTagScannerPage() {
           </>
         ) : (
           <>
-            <Text>價錢牌已拍攝</Text>
-            <TouchableOpacity
-              style={styles.camButton}
-              onPress={() => setShowCamera(true)}>
-              <Text style={styles.btnTxt}>重新拍攝</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.camButton}
-              onPress={() => displayPredictResult()}>
-              <Text style={styles.btnTxt}>確認</Text>
-            </TouchableOpacity>
+            {prediction ? (
+              <>
+                <Text>價錢牌已掃描</Text>
+                <Text>結果：{prediction}</Text>
+                <TouchableOpacity
+                  style={styles.camButton}
+                  onPress={() => {
+                    retakePhoto();
+                  }}>
+                  <Text style={styles.btnTxt}>重新拍攝價錢牌</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text>價錢牌已拍攝</Text>
+                <Text>請按以下確認按鈕</Text>
+                <TouchableOpacity
+                  style={styles.camButton}
+                  onPress={() => {
+                    retakePhoto();
+                  }}>
+                  <Text style={styles.btnTxt}>重新拍攝價錢牌</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.camButton}
+                  onPress={() => displayPredictResult()}>
+                  <Text style={styles.btnTxt}>確認</Text>
+                </TouchableOpacity>
+              </>
+            )}
+
             {imageSource !== '' ? (
               <Image
                 style={styles.image}
