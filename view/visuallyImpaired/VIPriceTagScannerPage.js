@@ -38,7 +38,7 @@ function VIPriceTagScannerPage() {
       const photo = await camera.current.takePhoto({});
       setImageSource(photo.path);
       setShowCamera(false);
-      console.log(photo.path);
+      console.log('Photo path: \n', photo.path);
     }
   }
 
@@ -77,7 +77,11 @@ function VIPriceTagScannerPage() {
           </>
         ) : (
           <>
-            <Button title="Launch Camera" onPress={() => setShowCamera(true)} />
+            <TouchableOpacity
+              style={styles.camButton}
+              onPress={() => setShowCamera(true)}>
+              <Text style={styles.btnTxt}>重新拍攝</Text>
+            </TouchableOpacity>
             {imageSource !== '' ? (
               <Image
                 style={styles.image}
