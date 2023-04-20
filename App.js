@@ -294,6 +294,7 @@ function App() {
           name="VICommunityPage"
           component={VICommunityPage}
           options={{
+            headerTitle: '社區資訊',
             gestureEnabled: false,
             backgroundColor: '#97F9F9',
             headerStyle: {
