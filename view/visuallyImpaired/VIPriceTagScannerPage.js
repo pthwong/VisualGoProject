@@ -13,13 +13,8 @@ import {
   CameraPermissionStatus,
   useCameraDevices,
 } from 'react-native-vision-camera';
-import {Buffer} from 'buffer';
-import {AZURE_CV_API_URL, AZURE_CV_API_KEY, AZURE_SUBSCRIPTION_ID} from '@env';
-// import {PredictionAPIClient} from '@azure/cognitiveservices-customvision-prediction';
-// import {AuthenticationCredentials} from '@azure/ms-rest-js/es/lib/msRest';
 
 import axios from 'axios';
-import fs from 'react-native-fs';
 
 function VIPriceTagScannerPage() {
   const navigation = useNavigation();
@@ -32,11 +27,16 @@ function VIPriceTagScannerPage() {
   const [imageSource, setImageSource] = useState('');
   const [prediction, setPrediction] = useState(null);
 
+  const [priceTagRecognEndpt, setpriceTagRecognEndpt] = useState(null);
+  const [ocpApimSubKey, setOcpApimSubKey] = useState(null);
+  const [priceTagInfoURL, setPriceTagInfoURL] = useState(null);
+
   const [pricetagInfo, setPricetagInfo] = useState(null);
 
-  //MS Azure
+  //MS Azure Custom Vision
   const predictionKey = '7308a0fa8d364428af85ad5431749bdb';
   const cvEndpoint = `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`;
+  //post: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`
 
   useEffect(() => {
     (async () => {
@@ -68,18 +68,14 @@ function VIPriceTagScannerPage() {
     let priceTagFormData = new FormData();
     priceTagFormData.append('photo', {uri: imageUri, name: filename, type});
 
+    //1. Image classification with different kinds of price tags with MS Azure Custom Vision and return the kind label.
     await axios
-      .post(
-        `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`,
-        //post: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`
-        priceTagFormData,
-        {
-          headers: {
-            'Prediction-Key': predictionKey,
-            'Content-Type': 'multipart/form-data',
-          },
+      .post(cvEndpoint, priceTagFormData, {
+        headers: {
+          'Prediction-Key': predictionKey,
+          //'Content-Type': 'multipart/form-data',
         },
-      )
+      })
       .then(async res => {
         console.log(
           'Result:',
@@ -88,126 +84,108 @@ function VIPriceTagScannerPage() {
           res.data.predictions[0].probability,
         );
         if (res.data.predictions[0].tagName === 'other') {
-          alert('Cannot detect price tag.');
-        } else if (
-          res.data.predictions[0].tagName === 'parknshopmarked' &&
-          res.data.predictions[0].probability * 100 >= 60
-        ) {
-          alert(
-            'parknshopmarked\nProbability: ' +
-              res.data.predictions[0].probability * 100,
-          );
-          setPrediction(res.data.predictions[0].tagName);
-
-          //2. Get Price Tag info by Form recognizer
-          await axios
-            .post(
-              `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2_1:analyze?api-version=2022-08-31`,
-              //https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2:analyze?api-version=2022-01-30-preview
-              priceTagFormData,
-              {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': `ffd66fa152074fbebe5673c91d6eddae`,
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            )
-            .then(res => console.log('Price tag info: ', res))
-            .catch(err => {
-              alert('Error');
-              return err;
-            });
-        } else if (
-          res.data.predictions[0].tagName === 'parknshopoffer' &&
-          res.data.predictions[0].probability * 100 >= 80
-        ) {
-          alert(
-            'parknshopoffer\nProbability: ' +
-              res.data.predictions[0].probability * 100,
-          );
-          setPrediction(res.data.predictions[0].tagName);
-
-          //2. Get Price Tag info by Form recognizer
-          await axios
-            .post(
-              `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_1_new:analyze?api-version=2022-08-31`,
-              //https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_2:analyze?api-version=2022-01-30-preview
-              priceTagFormData,
-              {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': `00d31480815b4113854aeda80222daba`,
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            )
-            .then(res => console.log('Price tag info: ', res.data))
-            .catch(err => {
-              alert('Error');
-              return err;
-            });
-          //got info
-        } else if (
-          res.data.predictions[0].tagName === 'wellcomemarked' &&
-          res.data.predictions[0].probability * 100 >= 80
-        ) {
-          alert(
-            'wellcomemarked\nProbability: ' +
-              res.data.predictions[0].probability * 100,
-          );
-          setPrediction(res.data.predictions[0].tagName);
-
-          //2. Get Price Tag info by Form recognizer
-          await axios
-            .post(
-              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodelv2_1:analyze?api-version=2022-08-31`,
-              //https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodel:analyze?api-version=2022-01-30-preview
-              priceTagFormData,
-              {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': `f0ab5363478845fdb8c657dc7b9bef57`,
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            )
-            .then(res => console.log('Price tag info: ', res.data))
-            .catch(err => {
-              alert('Error');
-              return err;
-            });
-          //got info
-        } else if (res.data.predictions[0].tagName === 'wellcomeoffer') {
-          alert(
-            'wellcomeoffer\nProbability: ' +
-              res.data.predictions[0].probability * 100,
-          );
-          setPrediction(res.data.predictions[0].tagName);
-          //2. Get Price Tag info by Form recognizer
-          await axios
-            .post(
-              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31`,
-              //https://fypwellcomeoffer.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel:analyze?api-version=2022-01-30-preview
-              priceTagFormData,
-              {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': `1c6126a584bc4e6393d2c46d350be72b`,
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            )
-            .then(res => console.log('Price tag info: ', res.data))
-            .catch(err => {
-              alert('Error');
-              return err;
-            });
-          //got info
+          return;
         } else {
-          alert('Cannot detect price tag.');
+          if (
+            res.data.predictions[0].tagName === 'parknshopmarked' &&
+            res.data.predictions[0].probability * 100 >= 40
+          ) {
+            alert(
+              'parknshopmarked\nProbability: ' +
+                res.data.predictions[0].probability * 100,
+            );
+            setPrediction(res.data.predictions[0].tagName);
+            setpriceTagRecognEndpt(
+              `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2_1:analyze?api-version=2022-08-31`,
+            );
+            setOcpApimSubKey(`ffd66fa152074fbebe5673c91d6eddae`);
+          }
+          if (
+            res.data.predictions[0].tagName === 'parknshopoffer' &&
+            res.data.predictions[0].probability * 100 >= 40
+          ) {
+            alert(
+              'parknshopoffer\nProbability: ' +
+                res.data.predictions[0].probability * 100,
+            );
+            setPrediction(res.data.predictions[0].tagName);
+            setpriceTagRecognEndpt(
+              `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_1_new:analyze?api-version=2022-08-31`,
+            );
+            setOcpApimSubKey(`00d31480815b4113854aeda80222daba`);
+          }
+          if (
+            res.data.predictions[0].tagName === 'wellcomemarked' &&
+            res.data.predictions[0].probability * 100 >= 40
+          ) {
+            alert(
+              'wellcomemarked\nProbability: ' +
+                res.data.predictions[0].probability * 100,
+            );
+            setPrediction(res.data.predictions[0].tagName);
+            setpriceTagRecognEndpt(
+              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodelv2_1:analyze?api-version=2022-08-31`,
+            );
+            setOcpApimSubKey(`f0ab5363478845fdb8c657dc7b9bef57`);
+          }
+          if (
+            res.data.predictions[0].tagName === 'wellcomeoffer' &&
+            res.data.predictions[0].probability * 100 >= 40
+          ) {
+            alert(
+              'wellcomeoffer\nProbability: ' +
+                res.data.predictions[0].probability * 100,
+            );
+            setPrediction(res.data.predictions[0].tagName);
+            setpriceTagRecognEndpt(
+              `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31`,
+            );
+            setOcpApimSubKey(`1c6126a584bc4e6393d2c46d350be72b`);
+          }
         }
       })
       .catch(err => {
         console.log(err);
         alert('Error');
         return err;
+      });
+
+    //2. Get Price Tag Info URL by Form recognizer
+    await axios
+      .post(priceTagRecognEndpt, priceTagFormData, {
+        headers: {
+          'Ocp-Apim-Subscription-Key': ocpApimSubKey,
+          //'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(async res => {
+        console.log(
+          'Price tag recognition URL:\n ',
+          res.headers['operation-location'],
+        );
+        setPriceTagInfoURL(res.headers['operation-location']);
+        console.log('priceTagInfoURL:\n', priceTagInfoURL);
+      })
+      .catch(err => {
+        alert('Error');
+        console.log(`2. error: \n`, err);
+      });
+
+    //3. Get the price tag info by the URL
+    await axios
+      .post(priceTagInfoURL, priceTagFormData, {
+        headers: {
+          'Ocp-Apim-Subscription-Key': ocpApimSubKey,
+          // 'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(async res => {
+        alert('successful');
+        console.log('Result: \n', res.analyzeResult);
+      })
+      .catch(err => {
+        alert('Error');
+        console.log(`3. error: \n`, err);
       });
   }
 
