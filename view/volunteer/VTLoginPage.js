@@ -11,6 +11,8 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
+import {axios} from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VTLoginPage() {
   var emailRegex =
@@ -24,6 +26,9 @@ function VTLoginPage() {
   const [isEnterPassword, setEnterPassword] = useState(true);
 
   const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
+
+  var loginUIUrl =
+    'https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin';
 
   const navigation = useNavigation();
 
@@ -47,28 +52,37 @@ function VTLoginPage() {
     return false;
   };
 
-  // viLoginPress = () => {
-  //   if (!email.trim() && !password.trim()) {
-  //     alert('請輸入電郵地址和密碼\nPlease enter your address and password');
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //   } else if (!email.trim()) {
-  //     alert('請輸入電郵地址\nPlease enter your address');
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //   } else if (!email.match(emailRegex)) {
-  //     alert(
-  //       '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-  //     );
-  //     setValidEmail(false);
-  //   } else if (!password.trim()) {
-  //     alert('請輸入密碼\nPlease enter your password');
-  //   } else {
-  //     setEmail('');
-  //     setPassword('');
-  //     navigation.navigate('VIPages');
-  //   }
-  // };
+  const handleLogin = async () => {
+    const response = await fetch(
+      loginUIUrl,
+      // `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email, password}),
+      },
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log('Data: \n', JSON.stringify(data));
+      await AsyncStorage.setItem('vtEmail', JSON.stringify(data.vtEmail));
+      await AsyncStorage.setItem('vtName', JSON.stringify(data.vtName));
+      await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
+      await AsyncStorage.setItem('vtBuilding', JSON.stringify(data.vtBuilding));
+      await AsyncStorage.setItem('vtToken', data.vtToken);
+      navigation.replace('VTHomepage');
+    } else if (data.message == 'Invalid email or password') {
+      alert('電郵或密碼錯誤，請重新輸入。');
+      console.error('failed:\n', data.message);
+    } else {
+      alert('網絡錯誤');
+      console.error('failed:\n', data.message);
+    }
+  };
 
   viLoginPress = () => {
     if (!email.trim() && !password.trim() && !email.match(emailRegex)) {
@@ -87,9 +101,8 @@ function VTLoginPage() {
     } else if (!password.trim()) {
       setEnterPassword(false);
     } else {
-      setEmail('');
-      setPassword('');
-      navigation.navigate('VTPages');
+      console.log(email, ' ', password);
+      handleLogin();
     }
   };
 
@@ -104,6 +117,7 @@ function VTLoginPage() {
   showPasswordPress = () => {
     setNotShownPasswordHolder(false);
   };
+
   hidePasswordPress = () => {
     setNotShownPasswordHolder(true);
   };
@@ -119,8 +133,8 @@ function VTLoginPage() {
 
   return (
     <ScrollView>
-      <Text style={styles.titleChi}>義工登入</Text>
-      <Text style={styles.titleEng}>Login for Volunteer</Text>
+      <Text style={styles.titleChi}>視障人士登入</Text>
+      <Text style={styles.titleEng}>Login for Visually Impaired</Text>
 
       <View style={styles.inputField}>
         <Text style={styles.textField}>電郵地址 Email Address</Text>
@@ -216,7 +230,7 @@ function VTLoginPage() {
           style={[
             styles.loginBtn,
             {
-              backgroundColor: '#ADECC1',
+              backgroundColor: '#97F9F9',
               opacity: 1,
             },
           ]}

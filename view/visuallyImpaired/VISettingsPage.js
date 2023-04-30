@@ -9,21 +9,27 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VISettingsPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  regPress = () => {
-    navigation.navigate('VILoginPage');
+  logoutPress = async () => {
+    await AsyncStorage.removeItem('viEmail');
+    await AsyncStorage.removeItem('viName');
+    await AsyncStorage.removeItem('districtID');
+    await AsyncStorage.removeItem('viBuilding');
+    await AsyncStorage.removeItem('viToken');
+    navigation.replace('VILoginPage');
   };
 
   return (
     <View>
       <Text style={styles.titleChi}>設定</Text>
       <Text style={styles.titleEng}>Settings</Text>
-      <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
+      <TouchableOpacity style={styles.regBtn} onPress={this.logoutPress}>
         <Text style={styles.btnTxt}>登出</Text>
       </TouchableOpacity>
     </View>

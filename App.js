@@ -11,13 +11,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AsyncStorage} from 'react-native';
 
+import AuthLoad from './view/AuthLoad';
+
 //Pages for Visually Impaired
 import VIHomepage from './view/visuallyImpaired/VIHomepage';
 import VILoginPage from './view/visuallyImpaired/VILoginPage';
 import VIRegPage from './view/visuallyImpaired/VIRegPage';
 import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
-// import VIPandemicPage from './view/visuallyImpaired/VIPandemicPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
 import VIBarcodeScannerPage from './view/visuallyImpaired/VIBarcodeScannerPage';
 import VIPriceTagScannerPage from './view/visuallyImpaired/VIPriceTagScannerPage';
@@ -108,6 +109,7 @@ function VTBottomTabs() {
         name="VTHomepage"
         component={VTHomepage}
         options={{
+          headerShown: false,
           headerStyle: {
             backgroundColor: '#ADECC1',
           },
@@ -135,16 +137,6 @@ function VTBottomTabs() {
         }}
       />
       <BottomTab.Screen
-        name="VTPandemicPage"
-        component={VTPandemicPage}
-        options={{
-          headerStyle: {
-            backgroundColor: '#ADECC1',
-          },
-          title: '防疫資訊',
-        }}
-      />
-      <BottomTab.Screen
         name="VTSettingsPage"
         component={VTSettingsPage}
         options={{
@@ -166,7 +158,13 @@ function App() {
       <Stack.Navigator
         options={{
           backgroundColor: '#FFFFFF',
-        }}>
+        }}
+        initialRouteName="AuthLoad">
+        <Stack.Screen
+          name="AuthLoad"
+          component={AuthLoad}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Homepage"
           component={Homepage}

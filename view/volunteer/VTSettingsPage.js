@@ -9,14 +9,20 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VTSettingsPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  vtLogoutPress = () => {
-    navigation.navigate('VTLoginPage');
+  vtLogoutPress = async () => {
+    await AsyncStorage.removeItem('vtEmail');
+    await AsyncStorage.removeItem('vtName');
+    await AsyncStorage.removeItem('districtID');
+    await AsyncStorage.removeItem('vtBuilding');
+    await AsyncStorage.removeItem('vtToken');
+    navigation.replace('VTLoginPage');
   };
 
   return (

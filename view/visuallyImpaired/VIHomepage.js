@@ -11,6 +11,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
@@ -31,7 +32,14 @@ function VIHomepage() {
 
   const [weatherData, setWeatherData] = useState(null);
 
+  const [name, setName] = useState(null);
+
+  const getName = async () => {
+    setName(await AsyncStorage.getItem('viName'));
+  };
+
   useEffect(() => {
+    getName();
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getOneTimeLocation();
@@ -258,7 +266,7 @@ function VIHomepage() {
             <Text style={styles.weatherInfo}>Loading...</Text>
           )}
         </View>
-        <Text style={styles.titleChi}>你好 Nathan Welcome!</Text>
+        <Text style={styles.titleChi}>你好 {name}</Text>
       </View>
 
       <SafeAreaView style={styles.subContainer}>
@@ -279,25 +287,17 @@ function VIHomepage() {
           onPress={this.communityPress}>
           <Text style={styles.btnTxt}>社區資訊</Text>
         </TouchableOpacity>
-        {/* <View>
-          <TouchableOpacity
-            style={styles.btnVisual}
-            onPress={this.visualSuppPress}>
-            <Text style={styles.btnTxt}>視覺支援</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.btnCommunity}
-            onPress={this.communityPress}>
-            <Text style={styles.btnTxt}>社區資訊</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.btnSetting}
-            onPress={this.settingsPress}>
-            <Text style={styles.btnTxt}>設定</Text>
-          </TouchableOpacity>
-        </View> */}
+        <TouchableOpacity
+          style={[
+            styles.btnVisual2,
+            {
+              backgroundColor: '#97F9F9',
+              opacity: 1,
+            },
+          ]}
+          onPress={this.settingsPress}>
+          <Text style={styles.btnTxt}>設定</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );

@@ -11,7 +11,8 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import {axios} from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VILoginPage() {
   var emailRegex =
@@ -25,6 +26,9 @@ function VILoginPage() {
   const [isEnterPassword, setEnterPassword] = useState(true);
 
   const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
+
+  var loginUIUrl =
+    'https://api.whomethser.synology.me:3560/visualgo/v1/viLogin';
 
   const navigation = useNavigation();
 
@@ -48,28 +52,37 @@ function VILoginPage() {
     return false;
   };
 
-  // viLoginPress = () => {
-  //   if (!email.trim() && !password.trim()) {
-  //     alert('請輸入電郵地址和密碼\nPlease enter your address and password');
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //   } else if (!email.trim()) {
-  //     alert('請輸入電郵地址\nPlease enter your address');
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //   } else if (!email.match(emailRegex)) {
-  //     alert(
-  //       '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-  //     );
-  //     setValidEmail(false);
-  //   } else if (!password.trim()) {
-  //     alert('請輸入密碼\nPlease enter your password');
-  //   } else {
-  //     setEmail('');
-  //     setPassword('');
-  //     navigation.navigate('VIPages');
-  //   }
-  // };
+  const handleLogin = async () => {
+    const response = await fetch(
+      loginUIUrl,
+      // `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email, password}),
+      },
+    );
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log('Data: \n', JSON.stringify(data));
+      await AsyncStorage.setItem('viEmail', JSON.stringify(data.viEmail));
+      await AsyncStorage.setItem('viName', JSON.stringify(data.viName));
+      await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
+      await AsyncStorage.setItem('viBuilding', JSON.stringify(data.viBuilding));
+      await AsyncStorage.setItem('viToken', data.viToken);
+      navigation.replace('VIHomepage');
+    } else if (data.message == 'Invalid email or password') {
+      alert('電郵或密碼錯誤，請重新輸入。');
+      console.error('failed:\n', data.message);
+    } else {
+      alert('網絡錯誤');
+      console.error('failed:\n', data.message);
+    }
+  };
 
   viLoginPress = () => {
     if (!email.trim() && !password.trim() && !email.match(emailRegex)) {
@@ -89,51 +102,8 @@ function VILoginPage() {
       setEnterPassword(false);
     } else {
       console.log(email, ' ', password);
-
-      // var loginUIUrl = 'http://localhost:8888/visualgo/viLogin.php';
-      var loginUIUrl =
-        'https://whomethser.synology.me:64860/visualgo/viLogin.php';
-
-      fetch(loginUIUrl, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      })
-        .then(response => response.json())
-        .then(response => {
-          console.log(response);
-          if (response.message == 'email not found') {
-            alert('此電郵地址沒有註冊。\nThis email address did not register.');
-          } else if (response.message == 'wrong password') {
-            alert(
-              '密碼錯誤，請重新輸入。\nIncorrect password, please enter again.',
-            );
-          } else if (response.message == 'success') {
-            console.log('Successfully login');
-            console.log(response);
-            // console.log(response.result.viEmail);
-            // console.log('Successfully store email');
-
-            setEmail('');
-            setPassword('');
-            navigation.navigate('VIHomepage');
-          }
-        })
-        .catch(error => {
-          console.error('ERROR FOUND: ' + error);
-          alert('沒有網絡連接。No Internet Connection.');
-        });
+      handleLogin();
     }
-  };
-
-  viLoginPress2 = () => {
-    navigation.navigate('VIHomepage');
   };
 
   clearEmail = () => {
@@ -265,18 +235,6 @@ function VILoginPage() {
             },
           ]}
           onPress={this.viLoginPress}>
-          <Text style={styles.btnTxt}>登入 Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.loginBtn,
-            {
-              backgroundColor: '#97F9F9',
-              opacity: 1,
-            },
-          ]}
-          onPress={this.viLoginPress2}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
 
