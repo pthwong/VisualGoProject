@@ -22,7 +22,11 @@ function VTSettingsPage() {
     await AsyncStorage.removeItem('districtID');
     await AsyncStorage.removeItem('vtBuilding');
     await AsyncStorage.removeItem('vtToken');
-    navigation.replace('VTLoginPage');
+    console.log('Storage item removed');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'VTLoginPage'}],
+    });
   };
 
   return (

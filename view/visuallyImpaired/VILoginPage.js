@@ -27,9 +27,6 @@ function VILoginPage() {
 
   const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
 
-  var loginUIUrl =
-    'https://api.whomethser.synology.me:3560/visualgo/v1/viLogin';
-
   const navigation = useNavigation();
 
   const verifyEnterEmail = email => {
@@ -54,8 +51,7 @@ function VILoginPage() {
 
   const handleLogin = async () => {
     const response = await fetch(
-      loginUIUrl,
-      // `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
+      `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
       {
         method: 'POST',
         headers: {
@@ -129,6 +125,10 @@ function VILoginPage() {
     setEnterEmail(true);
     setValidEmail(true);
     navigation.navigate('VIRegPage');
+  };
+
+  homepagePress = () => {
+    navigation.navigate('Homepage');
   };
 
   return (
@@ -248,6 +248,10 @@ function VILoginPage() {
 
         <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
           <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.regBtn} onPress={this.homepagePress}>
+          <Text style={styles.btnTxt}>返回主頁</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

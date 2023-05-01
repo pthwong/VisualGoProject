@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   TouchableOpacityComponent,
 } from 'react-native';
+import {useRoute, CommonActions} from '@react-navigation/native';
+
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -15,6 +17,7 @@ import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VTLoginPage() {
+  const route = useRoute();
   var emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
@@ -26,9 +29,6 @@ function VTLoginPage() {
   const [isEnterPassword, setEnterPassword] = useState(true);
 
   const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
-
-  var loginUIUrl =
-    'https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin';
 
   const navigation = useNavigation();
 
@@ -54,8 +54,7 @@ function VTLoginPage() {
 
   const handleLogin = async () => {
     const response = await fetch(
-      loginUIUrl,
-      // `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
+      `https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin`,
       {
         method: 'POST',
         headers: {
@@ -74,7 +73,12 @@ function VTLoginPage() {
       await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
       await AsyncStorage.setItem('vtBuilding', JSON.stringify(data.vtBuilding));
       await AsyncStorage.setItem('vtToken', data.vtToken);
-      navigation.replace('VTHomepage');
+      // navigation.navigate('VTPages', {screen: 'VTHomepage'});
+      // route.params.navigateToVTHomepage(navigation);
+
+      navigation.navigate('VTPages', {
+        screen: 'VTHomepage',
+      });
     } else if (data.message == 'Invalid email or password') {
       alert('電郵或密碼錯誤，請重新輸入。');
       console.error('failed:\n', data.message);
@@ -84,7 +88,7 @@ function VTLoginPage() {
     }
   };
 
-  viLoginPress = () => {
+  vtLoginPress = () => {
     if (!email.trim() && !password.trim() && !email.match(emailRegex)) {
       setEnterEmail(false);
       setValidEmail(true);
@@ -131,13 +135,16 @@ function VTLoginPage() {
     navigation.navigate('VTRegPage');
   };
 
+  homepagePress = () => {
+    navigation.navigate('Homepage');
+  };
+
   return (
     <ScrollView>
-      <Text style={styles.titleChi}>視障人士登入</Text>
-      <Text style={styles.titleEng}>Login for Visually Impaired</Text>
+      <Text style={styles.titleChi}>義工登入</Text>
 
       <View style={styles.inputField}>
-        <Text style={styles.textField}>電郵地址 Email Address</Text>
+        <Text style={styles.textField}>電郵地址</Text>
 
         <View
           style={{
@@ -230,11 +237,11 @@ function VTLoginPage() {
           style={[
             styles.loginBtn,
             {
-              backgroundColor: '#97F9F9',
+              backgroundColor: '#ADECC1',
               opacity: 1,
             },
           ]}
-          onPress={this.viLoginPress}>
+          onPress={this.vtLoginPress}>
           <Text style={styles.btnTxt}>登入 Login</Text>
         </TouchableOpacity>
 
@@ -248,6 +255,10 @@ function VTLoginPage() {
 
         <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
           <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.regBtn} onPress={this.homepagePress}>
+          <Text style={styles.btnTxt}>返回主頁</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -283,7 +294,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
   },
   loginBtn: {
-    // backgroundColor: loginBtnHolder ? 'grey' : '#97F9F9',
+    backgroundColor: '#ADECC1',
     color: 'black',
     width: '75%',
     marginLeft: '11%',

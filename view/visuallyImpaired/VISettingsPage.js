@@ -22,7 +22,11 @@ function VISettingsPage() {
     await AsyncStorage.removeItem('districtID');
     await AsyncStorage.removeItem('viBuilding');
     await AsyncStorage.removeItem('viToken');
-    navigation.replace('VILoginPage');
+    console.log('Storage item removed');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'VILoginPage'}],
+    });
   };
 
   return (

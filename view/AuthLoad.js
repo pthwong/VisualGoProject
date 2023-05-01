@@ -15,7 +15,9 @@ const AuthLoad = ({navigation}) => {
       // Token found, navigate to VIHomepage
       navigation.replace('VIHomepage');
     } else if (vtToken) {
-      navigation.replace('VTHomepage');
+      navigation.navigate('VTPages', {
+        screen: 'VTHomepage',
+      });
     } else {
       // No token found, navigate to Homepage
       navigation.replace('Homepage');
