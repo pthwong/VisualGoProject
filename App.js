@@ -10,6 +10,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AsyncStorage} from 'react-native';
+import {Text} from 'react-native-elements';
 
 import AuthLoad from './view/AuthLoad';
 
@@ -26,14 +27,17 @@ import VIProductInfoBarcode from './view/visuallyImpaired/VIProductInfoBarcode';
 import VIObjectDetectPage from './view/visuallyImpaired/VIObjectDetectPage';
 
 //Pages for Volunteers
-import VTLoginPage from './view/volunteer/VTRegPage';
+import VTLoginPage from './view/volunteer/VTLoginPage';
 import VTRegPage from './view/volunteer/VTRegPage';
 import VTHomepage from './view/volunteer/VTHomepage';
 import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';
 import VTCommunityPage from './view/volunteer/VTCommunityPage';
 import VTPandemicPage from './view/volunteer/VTPandemicPage';
 import VTSettingsPage from './view/volunteer/VTSettingsPage';
+import VTAddNewsPage from './view/volunteer/VTAddNewsPage';
+
 import {StyleSheet} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -129,12 +133,23 @@ function VTBottomTabs() {
       <BottomTab.Screen
         name="VTCommunityPage"
         component={VTCommunityPage}
-        options={{
+        options={({navigation}) => ({
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('VTAddNewsPage')}
+              style={{marginRight: 10}}>
+              <Ionicons
+                name={'add-outline'}
+                size={30}
+                onPress={() => navigation.navigate('VTAddNewsPage')}
+              />
+            </TouchableOpacity>
+          ),
           headerStyle: {
             backgroundColor: '#ADECC1',
           },
           title: '社區資訊',
-        }}
+        })}
       />
       <BottomTab.Screen
         name="VTSettingsPage"
@@ -151,8 +166,6 @@ function VTBottomTabs() {
 }
 
 function App() {
-  const [isLogin, setLogin] = useState(false);
-
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -184,8 +197,9 @@ function App() {
               shadowOffset: {width: -2, height: 4},
               shadowOpacity: 2,
             },
-            headerTitle: '',
+            headerTitle: '視障人士登入',
             gestureEnabled: false,
+            headerLeft: () => null,
           }}
         />
         <Stack.Screen
@@ -315,14 +329,17 @@ function App() {
           name="VTLoginPage"
           component={VTLoginPage}
           options={{
+            headerLeft: () => null,
             headerShown: true,
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            headerTitle: '',
+            headerTitle: '義工登入',
             gestureEnabled: false,
           }}
+          // initialParams={{navigateToVTHomepage: navigateToVTHomepage}}
         />
+
         <Stack.Screen
           name="VTRegPage"
           component={VTRegPage}
@@ -332,6 +349,17 @@ function App() {
               backgroundColor: '#ADECC1',
             },
             gestureEnabled: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="VTAddNewsPage"
+          component={VTAddNewsPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '加入社區資訊',
           }}
         />
         <Stack.Screen
