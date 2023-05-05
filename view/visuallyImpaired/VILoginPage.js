@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import {React, useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,6 +15,12 @@ import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VILoginPage() {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => <View style={{width: 0, height: 0}} />,
+    });
+  });
+
   var emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
@@ -50,33 +56,44 @@ function VILoginPage() {
   };
 
   const handleLogin = async () => {
-    const response = await fetch(
-      `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const response = await fetch(
+        `https://api.whomethser.synology.me:3560/visualgo/v1/viLogin`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email, password}),
         },
-        body: JSON.stringify({email, password}),
-      },
-    );
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      console.log('Data: \n', JSON.stringify(data));
-      await AsyncStorage.setItem('viEmail', JSON.stringify(data.viEmail));
-      await AsyncStorage.setItem('viName', JSON.stringify(data.viName));
-      await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
-      await AsyncStorage.setItem('viBuilding', JSON.stringify(data.viBuilding));
-      await AsyncStorage.setItem('viToken', data.viToken);
-      navigation.replace('VIHomepage');
-    } else if (data.message == 'Invalid email or password') {
-      alert('電郵或密碼錯誤，請重新輸入。');
-      console.error('failed:\n', data.message);
-    } else {
+      if (data.success) {
+        console.log('Data: \n', JSON.stringify(data));
+        await AsyncStorage.setItem('viEmail', JSON.stringify(data.viEmail));
+        await AsyncStorage.setItem('viName', JSON.stringify(data.viName));
+        await AsyncStorage.setItem(
+          'districtID',
+          JSON.stringify(data.districtID),
+        );
+        await AsyncStorage.setItem(
+          'viBuilding',
+          JSON.stringify(data.viBuilding),
+        );
+        await AsyncStorage.setItem('viToken', data.viToken);
+        navigation.replace('VIHomepage');
+      } else if (data.message == 'Invalid email or password') {
+        alert('電郵或密碼錯誤，請重新輸入。');
+        console.error('failed:\n', data.message);
+      } else {
+        alert('網絡錯誤');
+        console.error('failed:\n', data.message);
+      }
+    } catch (error) {
+      console.log('Network Error: \n', error);
       alert('網絡錯誤');
-      console.error('failed:\n', data.message);
     }
   };
 

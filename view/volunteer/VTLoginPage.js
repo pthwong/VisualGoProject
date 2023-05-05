@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import {React, useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,6 +18,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VTLoginPage() {
   const route = useRoute();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => <View style={{width: 0, height: 0}} />,
+    });
+  });
+
   var emailRegex =
     /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
