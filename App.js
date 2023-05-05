@@ -13,6 +13,7 @@ import {AsyncStorage} from 'react-native';
 import {Text} from 'react-native-elements';
 
 import AuthLoad from './view/AuthLoad';
+import LocationSearch from './view/LocationSearch';
 
 //Pages for Visually Impaired
 import VIHomepage from './view/visuallyImpaired/VIHomepage';
@@ -186,6 +187,19 @@ function App() {
             gestureEnabled: false,
           }}
         />
+
+        <Stack.Screen
+          name="LocationSearch"
+          component={LocationSearch}
+          options={{
+            headerTitle: '地點搜尋',
+            gestureEnabled: false,
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+          }}
+        />
+
         <Stack.Screen
           name="VILoginPage"
           component={VILoginPage}
@@ -198,8 +212,6 @@ function App() {
               shadowOpacity: 2,
             },
             headerTitle: '視障人士登入',
-            gestureEnabled: false,
-            headerLeft: () => null,
           }}
         />
         <Stack.Screen
@@ -323,6 +335,13 @@ function App() {
           options={{
             gestureEnabled: false,
             backgroundColor: '#97F9F9',
+            headerTitle: '設定',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
           }}
         />
         <Stack.Screen
