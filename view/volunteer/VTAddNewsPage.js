@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import {React, useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,7 @@ import {
   TouchableOpacityComponent,
   Platform,
   Switch,
+  Alert,
 } from 'react-native';
 import {useRoute, CommonActions} from '@react-navigation/native';
 
@@ -19,11 +20,49 @@ import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AntDesign} from 'react-native-vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+// import RNPickerSelect from 'react-native-picker-select';
+import {Picker} from '@react-native-picker/picker';
 
-function VTAddNewsPage() {
-  const route = useRoute();
+function VTAddNewsPage({route}) {
+  const locationName = route.params?.locationName;
 
   const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              '確定取消加入社區資訊？',
+              'Are you sure you want to perform this action?',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {
+                  text: 'Confirm',
+                  onPress: () => {
+                    navigation.goBack();
+                  },
+                },
+              ],
+              {cancelable: false},
+            );
+          }}
+          style={{marginLeft: 5}}>
+          <Ionicons name="close-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <TouchableOpacity onPress={() => addEvent()} style={{marginLeft: 5}}>
+          <Text style={{fontSize: 18}}>保存</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const [postTitle, setPostTitle] = useState('');
   const [isEnterPostTitle, setEnterPostTitle] = useState(true);
@@ -31,9 +70,25 @@ function VTAddNewsPage() {
   const [isEnterPostDescribe, setEnterPostDescribe] = useState(true);
   const [postStartDateTime, setPostStartDateTime] = useState('');
   const [postEndDateTime, setPostEndDateTime] = useState('');
-  const [postBuilding, setPostBuilding] = useState('');
+  const [postBuilding, setPostBuilding] = useState(undefined);
   const [district, setDistrict] = useState('');
   const [vtEmail, setVtEmail] = useState('');
+
+  useEffect(() => {
+    if (locationName) {
+      setPostBuilding(locationName);
+    }
+    getEmail();
+  }, [locationName]);
+
+  const getEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem('vtEmail');
+      setVtEmail(email);
+    } catch (error) {
+      console.error('Error getting email:\n', error);
+    }
+  };
 
   clearPostTitle = () => {
     setPostTitle('');
@@ -151,14 +206,26 @@ function VTAddNewsPage() {
     return {formattedDate, formattedTime};
   };
 
-  clearPostDescribe = () => {
-    setPostDescribe('');
-  };
-
-  const enteredPostDescribe = postDescribe => {
-    if (true) return true;
-    return false;
-  };
+  const districtList = [
+    {label: '中西區', value: 'CEW'},
+    {label: '東區', value: 'EAS'},
+    {label: '南區', value: 'SOU'},
+    {label: '灣仔區', value: 'WAC'},
+    {label: '九龍城區', value: 'KOC'},
+    {label: '觀塘區', value: 'KWT'},
+    {label: '深水埗區', value: 'SSP'},
+    {label: '黃大仙區', value: 'WTS'},
+    {label: '油尖旺區', value: 'YTM'},
+    {label: '離島區', value: 'ISL'},
+    {label: '葵青區', value: 'KWA'},
+    {label: '北區', value: 'NOR'},
+    {label: '西貢區', value: 'SAK'},
+    {label: '沙田區', value: 'SHT'},
+    {label: '大埔區', value: 'TAP'},
+    {label: '荃灣區', value: 'TSW'},
+    {label: '屯門區', value: 'TUM'},
+    {label: '元朗區', value: 'YUL'},
+  ];
 
   //   const handleLogin = async () => {
   //     const response = await fetch(
@@ -219,16 +286,35 @@ function VTAddNewsPage() {
   // };
 
   addEvent = () => {
-    if (!postTitle.trim() && !postDescribe.trim()) {
-      setEnterPostTitle(false);
-      setEnterPostDescribe(false);
-    }
-    if (!postTitle.trim()) {
-      setEnterPostTitle(false);
-    } else if (!postDescribe.trim()) {
-      setEnterPostDescribe(false);
-    } else {
-      console.log('fill ok');
+    // if (!postTitle.trim() && !postDescribe.trim()) {
+    //   setEnterPostTitle(false);
+    //   setEnterPostDescribe(false);
+    // }
+    // if (!postTitle.trim()) {
+    //   setEnterPostTitle(false);
+    // } else if (!postDescribe.trim()) {
+    //   setEnterPostDescribe(false);
+    // } else {
+    //   console.log('fill ok');
+    // }
+
+    console.log(
+      'Result: \n',
+      postTitle,
+      postStartDateTime,
+      postEndDateTime,
+      postBuilding,
+      district,
+      postDescribe,
+      vtEmail,
+    );
+
+    if (postTitle == '') {
+      alert('請填妥標題');
+    } else if (postStartDateTime == '' || postEndDateTime == '') {
+      alert('請選取開始及結束日期');
+    } else if (district == undefined) {
+      alert('請選擇地區');
     }
   };
 
@@ -237,7 +323,12 @@ function VTAddNewsPage() {
       <View style={styles.container}>
         <View style={styles.leftContainer}></View>
         <View style={styles.rightContainerTitle}>
-          <TextInput style={styles.inputTitle} placeholder="輸入標題" />
+          <TextInput
+            style={styles.inputTitle}
+            placeholder="輸入標題"
+            value={postTitle}
+            onChangeText={postTitle => setPostTitle(postTitle)}
+          />
         </View>
       </View>
 
@@ -341,7 +432,41 @@ function VTAddNewsPage() {
           <Ionicons name={'map-outline'} size={30} />
         </View>
         <View style={styles.rightContainer}>
-          <TextInput style={styles.input} placeholder="輸入地點" />
+          {postBuilding === undefined ? (
+            <TouchableOpacity
+              style={styles.itemContainer}
+              onPress={() => {
+                navigation.navigate('LocationSearch');
+              }}>
+              <Text>選取地點</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.itemContainer}
+              onPress={() => {
+                navigation.navigate('LocationSearch');
+              }}>
+              <Text>{postBuilding}</Text>
+            </TouchableOpacity>
+          )}
+          <Picker
+            selectedValue={district}
+            onValueChange={value => setDistrict(value)}
+            style={styles.picker}>
+            <Picker.Item label="選取區域..." value={null} />
+            {districtList.map((district, index) => (
+              <Picker.Item
+                key={index}
+                label={district.label}
+                value={district.value}
+              />
+            ))}
+          </Picker>
+          {/* {district && (
+            <Text style={styles.selectedDistrict}>
+              Selected District: {district}
+            </Text>
+          )} */}
         </View>
       </View>
       <View style={styles.container}>
@@ -358,101 +483,10 @@ function VTAddNewsPage() {
         </View>
       </View>
     </ScrollView>
-
-    // <ScrollView>
-    //   <View style={styles.inputField}>
-    //     <View
-    //       style={{
-    //         flexDirection: 'row',
-    //         borderBottomColor: '#ccc',
-    //         borderBottomWidth: 1,
-    //         paddingBottom: 8,
-    //         marginBottom: 10,
-    //       }}>
-    //       <TextInput
-    //         placeholder={'輸入標題'}
-    //         style={{flex: 1, paddingVertical: 0, fontSize: 30}}
-    //         onChangeText={postTitle => {
-    //           setPostTitle(postTitle);
-    //           const isEnteredEvent = enteredPostTitle(postTitle);
-    //           isEnteredEvent
-    //             ? setEnterPostTitle(true)
-    //             : setEnterPostTitle(false);
-    //         }}
-    //         value={postTitle}
-    //       />
-    //       <TouchableOpacity
-    //         onPress={this.clearPostTitle}
-    //         accessible={true}
-    //         accessibilityLabel={'清除'}>
-    //         <Ionicons name={'close-sharp'} size={25} />
-    //       </TouchableOpacity>
-    //     </View>
-
-    //     <Text style={styles.inputErr}>
-    //       {isEnterPostTitle ? '' : '請輸入標題'}
-    //     </Text>
-    //   </View>
-
-    //   <View style={styles.inputDescribeField}>
-    //     <View
-    //       style={{
-    //         flexDirection: 'row',
-    //         borderBottomColor: '#ccc',
-    //         borderBottomWidth: 1,
-    //         paddingBottom: 8,
-    //         marginBottom: 10,
-    //       }}>
-    //       <TextInput
-    //         placeholder={'輸入內容'}
-    //         style={{flex: 1, paddingVertical: 0, fontSize: 18}}
-    //         onChangeText={postDescribe => {
-    //           setPostDescribe(postDescribe);
-    //           const isEnteredEvent = enteredPostTitle(postDescribe);
-    //           isEnteredEvent
-    //             ? setEnterPostDescribe(true)
-    //             : setEnterPostDescribe(false);
-    //         }}
-    //         value={postDescribe}
-    //       />
-    //       <TouchableOpacity
-    //         onPress={this.clearPostDescribe}
-    //         accessible={true}
-    //         accessibilityLabel={'清除'}>
-    //         <Ionicons name={'close-sharp'} size={25} />
-    //       </TouchableOpacity>
-    //     </View>
-
-    //     <Text style={styles.inputErr}>
-    //       {isEnterPostDescribe ? '' : '請輸入內容'}
-    //     </Text>
-    //   </View>
-    //   <View
-    //     style={{
-    //       borderBottomColor: 'grey',
-    //       borderBottomWidth: StyleSheet.hairlineWidth,
-    //       marginTop: '10%',
-    //     }}
-    //   />
-
-    //   <Text>Date</Text>
-    //   <Text>Time</Text>
-    //   <Text>Location</Text>
-
-    //   <TouchableOpacity
-    //     style={[
-    //       styles.loginBtn,
-    //       {
-    //         backgroundColor: '#ADECC1',
-    //         opacity: 1,
-    //       },
-    //     ]}
-    //     onPress={this.addEvent}>
-    //     <Text style={styles.btnTxt}>添加活動</Text>
-    //   </TouchableOpacity>
-    // </ScrollView>
   );
 }
+
+export default VTAddNewsPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -551,6 +585,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     shadowOpacity: 0.2,
   },
+  itemContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: Platform.OS === 'ios' ? 4 : 8,
+  },
+  picker: {
+    height: Platform.OS === 'ios' ? 180 : 50,
+    width: '100%',
+  },
+  selectedDistrict: {
+    marginTop: 20,
+    fontSize: 18,
+  },
 });
-
-export default VTAddNewsPage;
