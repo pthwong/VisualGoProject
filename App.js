@@ -11,6 +11,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AsyncStorage} from 'react-native';
 import {Text} from 'react-native-elements';
+import Toast, {BaseToast} from 'react-native-toast-message-large';
 
 import AuthLoad from './view/AuthLoad';
 import LocationSearch from './view/LocationSearch';
@@ -39,6 +40,28 @@ import VTAddNewsPage from './view/volunteer/VTAddNewsPage';
 
 import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+
+const toastConfig = {
+  success: ({text1, text2, props, ...rest}) => (
+    <BaseToast
+      {...rest}
+      style={{borderLeftColor: 'pink'}}
+      contentContainerStyle={{paddingHorizontal: 15}}
+      text1Style={{
+        fontSize: 50, // Adjust the font size here
+        fontWeight: '400',
+      }}
+      text2Style={{
+        fontSize: 45, // Adjust the font size for text2 here
+        fontWeight: '300',
+      }}
+      text1={text1}
+      text2={text2}
+      {...props}
+    />
+  ),
+  // ... other toast types
+};
 
 const Stack = createNativeStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -390,6 +413,7 @@ function App() {
           }}
         />
       </Stack.Navigator>
+      <Toast config={toastConfig} ref={ref => Toast.setRef(ref)} />
     </NavigationContainer>
   );
 }

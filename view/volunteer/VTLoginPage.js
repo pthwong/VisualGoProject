@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TouchableOpacityComponent,
+  ActivityIndicator,
 } from 'react-native';
 import {useRoute, CommonActions} from '@react-navigation/native';
 
@@ -15,6 +16,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
 import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import Toast from 'react-native-toast-message-large';
 
 function VTLoginPage() {
   const route = useRoute();
@@ -36,6 +39,8 @@ function VTLoginPage() {
   const [isEnterPassword, setEnterPassword] = useState(true);
 
   const [notShownPasswordHolder, setNotShownPasswordHolder] = useState(true);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
 
@@ -60,38 +65,83 @@ function VTLoginPage() {
   };
 
   const handleLogin = async () => {
-    const response = await fetch(
-      `https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({email, password}),
         },
-        body: JSON.stringify({email, password}),
-      },
-    );
+      );
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      console.log('Data: \n', JSON.stringify(data));
-      await AsyncStorage.setItem('vtEmail', JSON.stringify(data.vtEmail));
-      await AsyncStorage.setItem('vtName', JSON.stringify(data.vtName));
-      await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
-      await AsyncStorage.setItem('vtBuilding', JSON.stringify(data.vtBuilding));
-      await AsyncStorage.setItem('vtToken', data.vtToken);
-      // navigation.navigate('VTPages', {screen: 'VTHomepage'});
-      // route.params.navigateToVTHomepage(navigation);
-
-      navigation.navigate('VTPages', {
-        screen: 'VTHomepage',
+      if (data.success) {
+        console.log('Data: \n', JSON.stringify(data));
+        await AsyncStorage.setItem('vtEmail', JSON.stringify(data.vtEmail));
+        await AsyncStorage.setItem('vtName', JSON.stringify(data.vtName));
+        await AsyncStorage.setItem(
+          'districtID',
+          JSON.stringify(data.districtID),
+        );
+        await AsyncStorage.setItem(
+          'vtBuilding',
+          JSON.stringify(data.vtBuilding),
+        );
+        await AsyncStorage.setItem('vtToken', data.vtToken);
+        setIsLoading(false);
+        navigation.navigate('VTPages', {
+          screen: 'VTHomepage',
+        });
+      } else if (data.message == 'Invalid email or password') {
+        setIsLoading(false);
+        // alert('電郵或密碼錯誤，請重新輸入。');
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: '登入失敗',
+          text2: '電郵或密碼錯誤，請重新輸入。',
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 100,
+        });
+        console.error('failed:\n', data.message);
+      } else {
+        setIsLoading(false);
+        // alert('網絡錯誤');
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: '登入失敗',
+          text2: '網絡錯誤',
+          visibilityTime: 3000,
+          autoHide: true,
+          topOffset: 30,
+          bottomOffset: 100,
+        });
+        console.error('failed:\n', data.message);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      // alert('網絡錯誤');
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: '登入失敗',
+        text2: '網絡錯誤',
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 100,
       });
-    } else if (data.message == 'Invalid email or password') {
-      alert('電郵或密碼錯誤，請重新輸入。');
-      console.error('failed:\n', data.message);
-    } else {
-      alert('網絡錯誤');
-      console.error('failed:\n', data.message);
+      console.error('error:\n', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -235,7 +285,20 @@ function VTLoginPage() {
             />
           </TouchableOpacity>
         </View>
-
+        {isLoading && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              padding: 30,
+              borderRadius: 4,
+            }}>
+            <ActivityIndicator size="large" color="#000000" />
+            <Text>登入中...</Text>
+          </View>
+        )}
         <Text style={styles.inputErr}>
           {isEnterPassword ? '' : '請輸入密碼 Enter your password'}
         </Text>
