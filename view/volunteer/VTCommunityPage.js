@@ -1,6 +1,12 @@
 import {addDays, format, differenceInDays} from 'date-fns';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  RefreshControl,
+} from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
 
@@ -49,70 +55,67 @@ LocaleConfig.defaultLocale = 'zh';
 
 function VTCommunityPage() {
   const [items, setItems] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // run once
+  const getData = useCallback(async () => {
+    setLoading(true);
+    const response = await fetch(
+      'https://api.whomethser.synology.me:3560/visualgo/v1/news',
+    );
+    const {response: data} = await response.json();
 
-    const getData = async () => {
-      const response = await fetch(
-        'https://api.whomethser.synology.me:3560/visualgo/v1/news',
+    const mappedData = data.map(post => {
+      const startDate = new Date(post.postStartDateTime);
+      const endDate = new Date(post.postEndDateTime);
+
+      const startDateTime = format(startDate, 'yyyy-MM-dd HH:mm');
+      const endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
+
+      const daysDifference = differenceInDays(endDate, startDate);
+
+      const eventDates = Array.from(
+        {length: daysDifference + 1},
+        (_, index) => {
+          const currentDate = addDays(startDate, index);
+          return format(currentDate, 'yyyy-MM-dd');
+        },
       );
-      const {response: data} = await response.json();
 
-      const mappedData = data.map(post => {
-        // const date = addDays(new Date(), index);
+      return {
+        ...post,
+        startDate: format(startDate, 'yyyy-MM-dd'),
+        endDate: format(endDate, 'yyyy-MM-dd'),
+        startDateTime,
+        endDateTime,
+        title: post.postTitle,
+        description: post.postDescribe,
+        building: post.postBuilding,
+        district: post.districtID,
+        eventDates,
+      };
+    });
 
-        const startDate = new Date(post.postStartDateTime);
-        const endDate = new Date(post.postEndDateTime);
+    const reduced = mappedData.reduce((acc, currentItem) => {
+      const {eventDates} = currentItem;
 
-        const startDateTime = format(startDate, 'yyyy-MM-dd HH:mm');
-        const endDateTime = format(endDate, 'yyyy-MM-dd HH:mm');
+      eventDates.forEach(date => {
+        if (!acc[date]) {
+          acc[date] = [];
+        }
 
-        const daysDifference = differenceInDays(endDate, startDate);
-
-        // Create an array of dates that the event occurs on
-        const eventDates = Array.from(
-          {length: daysDifference + 1},
-          (_, index) => {
-            const currentDate = addDays(startDate, index);
-            return format(currentDate, 'yyyy-MM-dd');
-          },
-        );
-
-        return {
-          ...post,
-          // date: format(date, 'yyyy-MM-dd'),
-          startDate: format(startDate, 'yyyy-MM-dd'),
-          endDate: format(endDate, 'yyyy-MM-dd'),
-          startDateTime,
-          endDateTime,
-          title: post.postTitle,
-          description: post.postDescribe,
-          building: post.postBuilding,
-          district: post.districtID,
-          eventDates,
-        };
+        acc[date].push(currentItem);
       });
 
-      const reduced = mappedData.reduce((acc, currentItem) => {
-        const {eventDates} = currentItem;
+      return acc;
+    }, {});
 
-        eventDates.forEach(date => {
-          if (!acc[date]) {
-            acc[date] = [];
-          }
-
-          acc[date].push(currentItem);
-        });
-
-        return acc;
-      }, {});
-
-      setItems(reduced);
-    };
-
-    getData();
+    setItems(reduced);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    getData();
+  }, [getData]);
 
   const renderItem = item => {
     if (item.title === undefined) {
@@ -137,7 +140,13 @@ function VTCommunityPage() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <Agenda items={items} renderItem={renderItem} />
+      <Agenda
+        items={items}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={getData} />
+        }
+      />
     </SafeAreaView>
   );
 }

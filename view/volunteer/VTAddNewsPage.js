@@ -16,9 +16,8 @@ import {useRoute, CommonActions} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import {axios} from 'axios';
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AntDesign} from 'react-native-vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 // import RNPickerSelect from 'react-native-picker-select';
 import {Picker} from '@react-native-picker/picker';
@@ -57,7 +56,7 @@ function VTAddNewsPage({route}) {
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity onPress={() => addEvent()} style={{marginLeft: 5}}>
+        <TouchableOpacity onPress={() => addNews()} style={{marginLeft: 5}}>
           <Text style={{fontSize: 18}}>保存</Text>
         </TouchableOpacity>
       ),
@@ -227,77 +226,7 @@ function VTAddNewsPage({route}) {
     {label: '元朗區', value: 'YUL'},
   ];
 
-  //   const handleLogin = async () => {
-  //     const response = await fetch(
-  //       `https://api.whomethser.synology.me:3560/visualgo/v1/vtLogin`,
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({email, password}),
-  //       },
-  //     );
-
-  //     const data = await response.json();
-
-  //     if (data.success) {
-  //       console.log('Data: \n', JSON.stringify(data));
-  //       await AsyncStorage.setItem('vtEmail', JSON.stringify(data.vtEmail));
-  //       await AsyncStorage.setItem('vtName', JSON.stringify(data.vtName));
-  //       await AsyncStorage.setItem('districtID', JSON.stringify(data.districtID));
-  //       await AsyncStorage.setItem('vtBuilding', JSON.stringify(data.vtBuilding));
-  //       await AsyncStorage.setItem('vtToken', data.vtToken);
-  //       // navigation.navigate('VTPages', {screen: 'VTHomepage'});
-  //       // route.params.navigateToVTHomepage(navigation);
-
-  //       navigation.navigate('VTPages', {
-  //         screen: 'VTHomepage',
-  //       });
-  //     } else if (data.message == 'Invalid email or password') {
-  //       alert('電郵或密碼錯誤，請重新輸入。');
-  //       console.error('failed:\n', data.message);
-  //     } else {
-  //       alert('網絡錯誤');
-  //       console.error('failed:\n', data.message);
-  //     }
-  //   };
-
-  // addEvent = () => {
-  //   if (!email.trim() && !password.trim() && !email.match(emailRegex)) {
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //     setEnterPassword(false);
-  //   } else if (!email.trim()) {
-  //     // alert('請輸入電郵地址\nPlease enter your address');
-  //     setEnterEmail(false);
-  //     setValidEmail(true);
-  //   } else if (!email.match(emailRegex)) {
-  //     // alert(
-  //     //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-  //     // );
-  //     setValidEmail(false);
-  //   } else if (!password.trim()) {
-  //     setEnterPassword(false);
-  //   } else {
-  //     console.log(email, ' ', password);
-  //     handleLogin();
-  //   }
-  // };
-
-  addEvent = () => {
-    // if (!postTitle.trim() && !postDescribe.trim()) {
-    //   setEnterPostTitle(false);
-    //   setEnterPostDescribe(false);
-    // }
-    // if (!postTitle.trim()) {
-    //   setEnterPostTitle(false);
-    // } else if (!postDescribe.trim()) {
-    //   setEnterPostDescribe(false);
-    // } else {
-    //   console.log('fill ok');
-    // }
-
+  addNews = async () => {
     console.log(
       'Result: \n',
       postTitle,
@@ -315,6 +244,45 @@ function VTAddNewsPage({route}) {
       alert('請選取開始及結束日期');
     } else if (district == undefined) {
       alert('請選擇地區');
+    } else {
+      try {
+        const response = await fetch(
+          'https://api.whomethser.synology.me:3560/visualgo/v1/addCommunityNews',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              postTitle,
+              postDescribe,
+              postStartDateTime,
+              postEndDateTime,
+              postBuilding,
+              district,
+              vtEmail,
+            }),
+          },
+        );
+        if (response.status === 201) {
+          alert('Post created successfully');
+          console.log('Post created successfully:\n', response.data);
+          navigation.goBack();
+        } else {
+          console.error(
+            'Error creating post 1:\n',
+            response.status,
+            '\nResponse:',
+            response,
+          );
+          if (!response.ok) {
+            const errorBody = await response.json();
+            console.log('Error response body:', errorBody);
+          }
+        }
+      } catch (error) {
+        console.error('Error creating post 2:\n', error);
+      }
     }
   };
 
@@ -479,6 +447,10 @@ function VTAddNewsPage({route}) {
             placeholder="輸入內容"
             multiline={true}
             numberOfLines={4}
+            value={postDescribe}
+            onChangeText={postDescribe => {
+              setPostDescribe(postDescribe);
+            }}
           />
         </View>
       </View>
