@@ -37,6 +37,7 @@ import VTCommunityPage from './view/volunteer/VTCommunityPage';
 import VTPandemicPage from './view/volunteer/VTPandemicPage';
 import VTSettingsPage from './view/volunteer/VTSettingsPage';
 import VTAddNewsPage from './view/volunteer/VTAddNewsPage';
+import VTEditNewsPage from './view/volunteer/VTEditNewsPage';
 
 import {StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -45,14 +46,32 @@ const toastConfig = {
   success: ({text1, text2, props, ...rest}) => (
     <BaseToast
       {...rest}
-      style={{borderLeftColor: 'pink'}}
+      style={{borderLeftColor: 'green'}}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
-        fontSize: 50, // Adjust the font size here
+        fontSize: 18, // Adjust the font size here
         fontWeight: '400',
       }}
       text2Style={{
-        fontSize: 45, // Adjust the font size for text2 here
+        fontSize: 13, // Adjust the font size for text2 here
+        fontWeight: '300',
+      }}
+      text1={text1}
+      text2={text2}
+      {...props}
+    />
+  ),
+  error: ({text1, text2, props, ...rest}) => (
+    <BaseToast
+      {...rest}
+      style={{borderLeftColor: 'pink'}}
+      contentContainerStyle={{paddingHorizontal: 15}}
+      text1Style={{
+        fontSize: 18, // Adjust the font size here
+        fontWeight: '400',
+      }}
+      text2Style={{
+        fontSize: 13, // Adjust the font size for text2 here
         fontWeight: '300',
       }}
       text1={text1}
@@ -401,7 +420,17 @@ function App() {
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            title: '加入社區資訊',
+            title: '建立社區資訊',
+          }}
+        />
+        <Stack.Screen
+          name="VTEditNewsPage"
+          component={VTEditNewsPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '修改社區資訊',
           }}
         />
         <Stack.Screen
