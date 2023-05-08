@@ -127,13 +127,22 @@ function VICommunityPage() {
     }
 
     return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemSubTitle}>{item.description}</Text>
-        <Text>{item.building}</Text>
-        <Text>
-          由 {item.startDateTime} 至 {item.endDateTime}
-        </Text>
+      <View>
+        <View style={styles.itemContainer}>
+          <Text style={styles.itemTitle}>{item.postTitle}</Text>
+          <Text style={styles.itemSubTitle}>{item.postDescribe}</Text>
+          <Text>{item.building}</Text>
+          <Text>
+            由 {item.startDateTime} 至 {item.endDateTime}
+          </Text>
+        </View>
+        <View
+          style={{
+            borderBottomColor: 'grey',
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            marginTop: '4%',
+          }}
+        />
       </View>
     );
   };
