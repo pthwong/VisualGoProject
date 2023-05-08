@@ -21,7 +21,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
 import Toast from 'react-native-toast-message-large';
 
-function VTAddNewsPage({route}) {
+function VTEditNewsPage({route}) {
+  const {data: postID} = route.params;
+
   const locationName = route.params?.locationName;
 
   const navigation = useNavigation();
@@ -32,8 +34,8 @@ function VTAddNewsPage({route}) {
         <TouchableOpacity
           onPress={() => {
             Alert.alert(
-              '確定取消建立社區資訊？',
-              '取消後需要重新建立社區資訊',
+              '確定取消更新社區資訊？',
+              '取消後需要更新建立社區資訊',
               [
                 {
                   text: '取消',
@@ -55,12 +57,15 @@ function VTAddNewsPage({route}) {
         </TouchableOpacity>
       ),
       headerRight: () => (
-        <TouchableOpacity onPress={() => addNews()} style={{marginLeft: 5}}>
+        <TouchableOpacity onPress={() => editNews()} style={{marginLeft: 5}}>
           <Text style={{fontSize: 18}}>保存</Text>
         </TouchableOpacity>
       ),
     });
   }, [navigation]);
+
+  // const [postID, setPostID] = useState('');
+  const [postData, setPostData] = useState(null);
 
   const [postTitle, setPostTitle] = useState('');
   const [isEnterPostTitle, setEnterPostTitle] = useState(true);
@@ -72,12 +77,63 @@ function VTAddNewsPage({route}) {
   const [district, setDistrict] = useState('');
   const [vtEmail, setVtEmail] = useState('');
 
+  const fetchPostData = async postID => {
+    try {
+      const response = await fetch(
+        `https://api.whomethser.synology.me:3560/visualgo/v1/news/${postID}`,
+      );
+      const data = await response.json();
+      if (data.error) {
+        console.log('API error: ', data.error);
+        setPostData(null);
+      } else {
+        setPostData(data);
+      }
+    } catch (error) {
+      console.error(error);
+      setPostData(null);
+    }
+  };
+
   useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      if (isMounted) {
+        await fetchPostData(postID);
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [postID]);
+
+  useEffect(() => {
+    if (postData) {
+      console.log('Fetched news data: ', postData);
+      setPostTitle(postData.response.postTitle);
+      setPostDescribe(postData.response.postDescribe);
+      setPostStartDateTime(new Date(postData.response.postStartDateTime));
+      setPostEndDateTime(new Date(postData.response.postEndDateTime));
+      setPostBuilding(postData.response.postBuilding);
+      setDistrict(postData.response.districtID);
+    }
     if (locationName) {
       setPostBuilding(locationName);
     }
     getEmail();
-  }, [locationName]);
+  }, [postID, postData, locationName]);
+
+  // const getEmail = async () => {
+  //   try {
+  //     const email = await AsyncStorage.getItem('vtEmail');
+  //     setVtEmail(email);
+  //   } catch (error) {
+  //     console.error('Error getting email:\n', error);
+  //   }
+  // };
+
+  // console.log(postID, postDescribe);
 
   const getEmail = async () => {
     try {
@@ -86,11 +142,6 @@ function VTAddNewsPage({route}) {
     } catch (error) {
       console.error('Error getting email:\n', error);
     }
-  };
-
-  const enteredPostTitle = postTitle => {
-    if (true) return true;
-    return false;
   };
 
   const [showStartPicker, setShowStartPicker] = useState(false);
@@ -222,7 +273,7 @@ function VTAddNewsPage({route}) {
     {label: '全港', value: 'HOK'},
   ];
 
-  addNews = async () => {
+  editNews = async () => {
     console.log(
       'Result: \n',
       postTitle,
@@ -273,9 +324,9 @@ function VTAddNewsPage({route}) {
     } else {
       try {
         const response = await fetch(
-          'https://api.whomethser.synology.me:3560/visualgo/v1/addCommunityNews',
+          `https://api.whomethser.synology.me:3560/visualgo/v1/updateCommunityNews/${postID}`,
           {
-            method: 'POST',
+            method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
@@ -291,22 +342,21 @@ function VTAddNewsPage({route}) {
           },
         );
         if (response.status === 201) {
-          alert('Post created successfully');
           Toast.show({
             type: 'success',
             position: 'bottom',
-            text1: '社區資訊已建立',
+            text1: '社區資訊已修改',
             text2: '',
             visibilityTime: 3000,
             autoHide: true,
             topOffset: 30,
             bottomOffset: 100,
           });
-          console.log('Post created successfully:\n', response.data);
+          console.log('Post edited successfully:\n', response.data);
           navigation.goBack();
         } else {
           console.error(
-            'Error creating post 1:\n',
+            'Error updating post 1:\n',
             response.status,
             '\nResponse:',
             response,
@@ -317,7 +367,7 @@ function VTAddNewsPage({route}) {
           }
         }
       } catch (error) {
-        console.error('Error creating post 2:\n', error);
+        console.error('Error updating post 2:\n', error);
       }
     }
   };
@@ -331,6 +381,8 @@ function VTAddNewsPage({route}) {
             style={styles.inputTitle}
             placeholder="輸入標題"
             value={postTitle}
+            multiline={false}
+            numberOfLines={2}
             onChangeText={postTitle => setPostTitle(postTitle)}
           />
         </View>
@@ -436,14 +488,14 @@ function VTAddNewsPage({route}) {
           <Ionicons name={'map-outline'} size={30} />
         </View>
         <View style={styles.rightContainer}>
-          {postBuilding === undefined ? (
+          {postBuilding === undefined || postBuilding === '' ? (
             <TouchableOpacity
               style={styles.itemContainer}
               onPress={() => {
                 navigation.navigate('LocationSearch');
               }}>
               <View style={styles.leftArrowContainer}>
-                <Text style={{fontSize: 25}}>選取地點</Text>
+                <Text style={{fontSize: 20}}>選取地點</Text>
               </View>
               <View style={styles.rightArrowContainer}>
                 <Ionicons name={'chevron-forward-outline'} size={30} />
@@ -509,7 +561,7 @@ function VTAddNewsPage({route}) {
   );
 }
 
-export default VTAddNewsPage;
+export default VTEditNewsPage;
 
 const styles = StyleSheet.create({
   container: {

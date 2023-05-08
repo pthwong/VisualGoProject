@@ -6,9 +6,15 @@ import {
   Text,
   View,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import {Swipeable} from 'react-native-gesture-handler';
+import {RectButton} from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message-large';
 
 LocaleConfig.locales['zh'] = {
   monthNames: [
@@ -56,6 +62,9 @@ LocaleConfig.defaultLocale = 'zh';
 function VTCommunityPage() {
   const [items, setItems] = useState({});
   const [loading, setLoading] = useState(false);
+  const [newsData, setNewsData] = useState(null);
+  const [postID, setPostID] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const getData = useCallback(async () => {
     setLoading(true);
@@ -83,14 +92,17 @@ function VTCommunityPage() {
 
       return {
         ...post,
+        postID: post.postID,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
         startDateTime,
         endDateTime,
-        title: post.postTitle,
-        description: post.postDescribe,
-        building: post.postBuilding,
-        district: post.districtID,
+        postStartDateTime: post.postStartDateTime,
+        postEndDateTime: post.postEndDateTime,
+        postTitle: post.postTitle,
+        postDescribe: post.postDescribe,
+        postBuilding: post.postBuilding,
+        districtID: post.districtID,
         eventDates,
       };
     });
@@ -109,16 +121,98 @@ function VTCommunityPage() {
       return acc;
     }, {});
 
+    setPostID(mappedData.postID);
     setItems(reduced);
     setLoading(false);
+    // console.log('News data:\n', newsData);
   }, []);
 
   useEffect(() => {
     getData();
   }, [getData]);
 
+  const navigation = useNavigation();
+
+  editNewsPress = postID => {
+    navigation.navigate('VTEditNewsPage', {data: postID});
+  };
+
+  const deletePost = (progress, dragX, postID) => {
+    const onPress = () => {
+      Alert.alert(
+        '確定刪除此社區資訊？',
+        '取消後需要重新建立社區資訊',
+        [
+          {
+            text: '取消',
+            onPress: () => console.log('Cancel Pressed'),
+          },
+          {
+            text: '確定',
+            onPress: async () => {
+              try {
+                // Call your API to delete the item from the database
+                const response = await fetch(
+                  `https://api.whomethser.synology.me:3560/visualgo/v1/deleteCommunityNews/${postID}`,
+                  {
+                    method: 'DELETE',
+                  },
+                );
+                if (response.status === 201) {
+                  Toast.show({
+                    type: 'success',
+                    position: 'bottom',
+                    text1: '此社區資訊已刪除',
+                    text2: '',
+                    visibilityTime: 3000,
+                    autoHide: true,
+                    topOffset: 30,
+                    bottomOffset: 100,
+                  });
+                  console.log('Post deleted successfully:\n', response.data);
+                } else {
+                  Toast.show({
+                    type: 'error',
+                    position: 'bottom',
+                    text1: '刪除社區資訊時出現錯誤',
+                    text2: '',
+                    visibilityTime: 3000,
+                    autoHide: true,
+                    topOffset: 30,
+                    bottomOffset: 100,
+                  });
+                  console.log('Post deleted error:\n', response.data);
+                }
+              } catch (error) {
+                Toast.show({
+                  type: 'error',
+                  position: 'bottom',
+                  text1: '刪除社區資訊時出現錯誤',
+                  text2: '',
+                  visibilityTime: 3000,
+                  autoHide: true,
+                  topOffset: 30,
+                  bottomOffset: 100,
+                });
+                Alert.alert('Error deleting news', error.message);
+              }
+            },
+            style: 'destructive',
+          },
+        ],
+        {cancelable: false},
+      );
+    };
+
+    return (
+      <RectButton style={styles.deleteButton} onPress={onPress}>
+        <Text style={styles.deleteButtonText}>刪除社區資訊</Text>
+      </RectButton>
+    );
+  };
+
   const renderItem = item => {
-    if (item.title === undefined) {
+    if (item.postTitle === undefined) {
       return (
         <View style={styles.itemContainer}>
           <Text style={styles.noNewsText}>No news for this day</Text>
@@ -127,13 +221,29 @@ function VTCommunityPage() {
     }
 
     return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.itemTitle}>{item.title}</Text>
-        <Text style={styles.itemSubTitle}>{item.description}</Text>
-        <Text>{item.building}</Text>
-        <Text>
-          由 {item.startDateTime} 至 {item.endDateTime}
-        </Text>
+      <View>
+        <Swipeable
+          renderRightActions={(progress, dragX) =>
+            deletePost(progress, dragX, item.postID)
+          }>
+          <TouchableOpacity onPress={() => editNewsPress(item.postID)}>
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>{item.postTitle}</Text>
+              <Text style={styles.itemSubTitle}>{item.postDescribe}</Text>
+              <Text>{item.building}</Text>
+              <Text>
+                由 {item.startDateTime} 至 {item.endDateTime}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '4%',
+            }}
+          />
+        </Swipeable>
       </View>
     );
   };
@@ -146,6 +256,7 @@ function VTCommunityPage() {
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={getData} />
         }
+        onDayPress={day => setSelectedDate(day.dateString)}
       />
     </SafeAreaView>
   );
@@ -163,9 +274,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   itemContainer: {
-    backgroundColor: 'white',
     margin: 5,
-    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
@@ -175,5 +284,17 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  deleteButton: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+    height: '100%',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
