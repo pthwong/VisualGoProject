@@ -36,6 +36,7 @@ import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';
 import VTCommunityPage from './view/volunteer/VTCommunityPage';
 import VTPandemicPage from './view/volunteer/VTPandemicPage';
 import VTSettingsPage from './view/volunteer/VTSettingsPage';
+import VTBarcodeScannerPage from './view/volunteer/VTBarcodeScannerPage';
 import VTAddNewsPage from './view/volunteer/VTAddNewsPage';
 import VTEditNewsPage from './view/volunteer/VTEditNewsPage';
 
@@ -414,6 +415,18 @@ function App() {
         />
 
         <Stack.Screen
+          name="VTBarcodeScannerPage"
+          component={VTBarcodeScannerPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '添加或修改超市商品',
+            gestureEnabled: false,
+          }}
+        />
+
+        <Stack.Screen
           name="VTAddNewsPage"
           component={VTAddNewsPage}
           options={{
@@ -421,6 +434,7 @@ function App() {
               backgroundColor: '#ADECC1',
             },
             title: '建立社區資訊',
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen
@@ -431,6 +445,7 @@ function App() {
               backgroundColor: '#ADECC1',
             },
             title: '修改社區資訊',
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen
