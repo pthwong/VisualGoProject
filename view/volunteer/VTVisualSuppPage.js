@@ -15,17 +15,19 @@ function VTVisualSuppPage() {
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  // regPress = () => {
-  //   navigation.navigate('VIRegPage');
-  // };
+  barcodeScannerPress = () => {
+    navigation.navigate('VTBarcodeScannerPage');
+  };
 
   return (
     <View>
       <Text style={styles.titleChi}>視覺支援頁面</Text>
-      <Text style={styles.titleEng}>Visual Support (Volunteer)</Text>
-      {/* <TouchableOpacity style={styles.regBtn} onPress={this.regPress}>
-        <Text style={styles.btnTxt}>註冊帳戶 Register</Text>
-      </TouchableOpacity> */}
+
+      <TouchableOpacity
+        style={styles.barcodeBtn}
+        onPress={this.barcodeScannerPress}>
+        <Text style={styles.btnTxt}>掃描條碼</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     // shadowOpacity: 0.1,
   },
-  regBtn: {
+  barcodeBtn: {
     backgroundColor: '#ffd63f',
     color: 'black',
     width: '75%',
