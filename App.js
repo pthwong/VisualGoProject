@@ -34,9 +34,13 @@ import VTRegPage from './view/volunteer/VTRegPage';
 import VTHomepage from './view/volunteer/VTHomepage';
 import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';
 import VTCommunityPage from './view/volunteer/VTCommunityPage';
-import VTPandemicPage from './view/volunteer/VTPandemicPage';
 import VTSettingsPage from './view/volunteer/VTSettingsPage';
 import VTBarcodeScannerPage from './view/volunteer/VTBarcodeScannerPage';
+import VTBarcodeScannerNutritionPage from './view/volunteer/VTBarcodeScannerNutritionPage';
+import VTAddProductInfoPage from './view/volunteer/VTAddProductInfoPage';
+import VTAddNutritionInfoPage from './view/volunteer/VTAddNutritionInfoPage';
+import VTEditProductInfoPage from './view/volunteer/VTEditProductInfoPage';
+import VTEditNutritionInfoPage from './view/volunteer/VTEditNutritionInfoPage';
 import VTAddNewsPage from './view/volunteer/VTAddNewsPage';
 import VTEditNewsPage from './view/volunteer/VTEditNewsPage';
 
@@ -421,11 +425,66 @@ function App() {
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            title: '添加或修改超市商品',
+            title: '添加或更新超市產品資訊',
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTBarcodeScannerNutritionPage"
+          component={VTBarcodeScannerNutritionPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '添加或更新超市產品營養資訊',
             gestureEnabled: false,
           }}
         />
 
+        <Stack.Screen
+          name="VTAddProductInfoPage"
+          component={VTAddProductInfoPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '建立超市產品資訊',
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTAddNutritionInfoPage"
+          component={VTAddNutritionInfoPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '建立超市產品的營養資訊',
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTEditProductInfoPage"
+          component={VTEditProductInfoPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '修改超市產品資訊',
+            gestureEnabled: false,
+          }}
+        />
+        <Stack.Screen
+          name="VTEditNutritionInfoPage"
+          component={VTEditNutritionInfoPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#ADECC1',
+            },
+            title: '修改營養資訊',
+            gestureEnabled: false,
+          }}
+        />
         <Stack.Screen
           name="VTAddNewsPage"
           component={VTAddNewsPage}
@@ -444,7 +503,7 @@ function App() {
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            title: '修改社區資訊',
+            title: '更新社區資訊',
             gestureEnabled: false,
           }}
         />
