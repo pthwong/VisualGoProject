@@ -34,12 +34,19 @@ function VIHomepage() {
 
   const [name, setName] = useState(null);
 
-  const getName = async () => {
-    setName(await AsyncStorage.getItem('viName'));
-  };
+  useEffect(() => {
+    const fetchName = async () => {
+      let storedName = await AsyncStorage.getItem('vtName');
+      if (storedName) {
+        storedName = storedName.replace(/['"]+/g, '');
+        setName(storedName);
+      }
+    };
+
+    fetchName();
+  }, []);
 
   useEffect(() => {
-    getName();
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getOneTimeLocation();

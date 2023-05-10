@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
   PermissionsAndroid,
   Platform,
   Image,
+  RefreshControl,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -34,12 +35,19 @@ function VTHomepage() {
 
   const [name, setName] = useState(null);
 
-  const getName = async () => {
-    setName(await AsyncStorage.getItem('vtName'));
-  };
+  useEffect(() => {
+    const fetchName = async () => {
+      let storedName = await AsyncStorage.getItem('vtName');
+      if (storedName) {
+        storedName = storedName.replace(/['"]+/g, '');
+        setName(storedName);
+      }
+    };
+
+    fetchName();
+  }, []);
 
   useEffect(() => {
-    getName();
     const requestLocationPermission = async () => {
       if (Platform.OS === 'ios') {
         getOneTimeLocation();
