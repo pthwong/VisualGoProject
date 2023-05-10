@@ -291,7 +291,6 @@ function VTAddNewsPage({route}) {
           },
         );
         if (response.status === 201) {
-          alert('Post created successfully');
           Toast.show({
             type: 'success',
             position: 'bottom',
