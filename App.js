@@ -35,7 +35,7 @@ import VTHomepage from './view/volunteer/VTHomepage';
 import VTVisualSuppPage from './view/volunteer/VTVisualSuppPage';
 import VTCommunityPage from './view/volunteer/VTCommunityPage';
 import VTSettingsPage from './view/volunteer/VTSettingsPage';
-import VTBarcodeScannerPage from './view/volunteer/VTBarcodeScannerPage';
+import VTBarcodeScannerProductPage from './view/volunteer/VTBarcodeScannerProductPage';
 import VTBarcodeScannerNutritionPage from './view/volunteer/VTBarcodeScannerNutritionPage';
 import VTAddProductInfoPage from './view/volunteer/VTAddProductInfoPage';
 import VTAddNutritionInfoPage from './view/volunteer/VTAddNutritionInfoPage';
@@ -420,7 +420,7 @@ function App() {
 
         <Stack.Screen
           name="VTBarcodeScannerPage"
-          component={VTBarcodeScannerPage}
+          component={VTBarcodeScannerProductPage}
           options={{
             headerStyle: {
               backgroundColor: '#ADECC1',

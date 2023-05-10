@@ -27,7 +27,7 @@ import {
 } from 'vision-camera-code-scanner';
 import {RNHoleView} from 'react-native-hole-view';
 
-function VTBarcodeScannerPage() {
+function VTBarcodeScannerNutritionPage() {
   const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const [barcode, setBarcode] = useState(null);
@@ -51,28 +51,28 @@ function VTBarcodeScannerPage() {
   const fetchDataFromDB = useCallback(async barcode => {
     try {
       const response = await fetch(
-        `https://api.whomethser.synology.me:3560/visualgo/v1/getProductInfoByBarcode/${barcode}`,
+        `https://api.whomethser.synology.me:3560/visualgo/v1/getNutritionInfoByBarcode/${barcode}`,
       );
       const responseData = await response.json();
       console.log('DB data: ', responseData);
-      return responseData;
+      return responseData || {};
     } catch (error) {
       console.log('Error: \n', error);
-      return null;
+      return {};
     }
   }, []);
 
-  const fetchDataFromBarcodePlus = useCallback(async barcode => {
+  const fetchDataFromOpenFoodFacts = useCallback(async barcode => {
     try {
       const response = await fetch(
-        `https://www.barcodeplus.com.hk/eid/resource/jsonservice?data={"appCode":"EIDM","method":"getSearchProductInfo","pdname":"${barcode}","isdraft":"N","nonpubind":"1","langid":"zh_TW"}`,
+        `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`,
+        //https://world.openfoodfacts.org/api/v0/product/4890008100231.json
       );
       const responseData = await response.json();
-      const responseData2 = responseData.result[0];
-      return responseData2.data[0];
+      return responseData || {};
     } catch (error) {
       console.log('Error: \n', error);
-      return null;
+      return {};
     }
   }, []);
 
@@ -87,38 +87,86 @@ function VTBarcodeScannerPage() {
           const dbProduct = await fetchDataFromDB(scannedBarcode.rawValue);
           if (!dbProduct?.response?.productBarcode) {
             console.log(
-              'Product from db has no result here, \n',
+              'Nutrition info from db has no result here, \n',
               dbProduct?.response?.productBarcode,
             );
 
-            const barcodePlusProduct = await fetchDataFromBarcodePlus(
+            const openFoodFactsProduct = await fetchDataFromOpenFoodFacts(
               scannedBarcode.rawValue,
             );
-            if (!barcodePlusProduct?.pdid) {
+            if (openFoodFactsProduct?.status === 0) {
               Alert.alert(
                 '條碼已掃描',
-                `沒有此商品的相關資料，請問可以幫忙加入商品資訊嗎？`,
-                // rest of your code...
+                `沒有此商品的相關營養資訊，請問可以幫忙加入資訊嗎？`,
+                [
+                  {
+                    text: '取消',
+                    onPress: () => navigation.goBack(),
+                    style: 'destructive',
+                  },
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      navigation.navigate('VTAddNutritionInfoPage', {
+                        barcode: scannedBarcode.rawValue,
+                      });
+                    },
+                  },
+                ],
               );
             } else {
               Alert.alert(
-                '條碼已掃描 (Barcode Plus)',
-                `產品名稱：${barcodePlusProduct?.pdname}\n需要加入更多此產品的資訊嗎？`,
-                // rest of your code...
+                '條碼已掃描 (Open Food Facts)',
+                `已有相關營養資料\n需要加入更多資訊至資料庫嗎？`,
+                [
+                  {
+                    text: '取消',
+                    onPress: () => navigation.goBack(),
+                    style: 'destructive',
+                  },
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      navigation.navigate('VTAddNutritionInfoPage', {
+                        barcode: scannedBarcode.rawValue,
+                      });
+                    },
+                  },
+                ],
               );
             }
           } else {
             Alert.alert(
               '條碼已掃描 (Database)',
-              `產品名稱：${dbProduct?.response?.productName}\n需要更新此產品的資訊嗎？`,
-              // rest of your code...
+              `已有相關營養資料\n需要加入更多資訊至資料庫嗎？`,
+              [
+                {
+                  text: '取消',
+                  onPress: () => navigation.goBack(),
+                  style: 'destructive',
+                },
+                {
+                  text: '確定',
+                  onPress: () => {
+                    navigation.navigate('VTEditNutritionInfoPage', {
+                      barcode: scannedBarcode.rawValue,
+                    });
+                  },
+                },
+              ],
             );
           }
           setIsLoading(false);
         }
       }
     }
-  }, [barcodes, isScanned, fetchDataFromDB, fetchDataFromBarcodePlus]);
+  }, [
+    barcodes,
+    isScanned,
+    fetchDataFromDB,
+    fetchDataFromOpenFoodFacts,
+    navigation,
+  ]);
 
   useEffect(() => {
     processBarcode();
@@ -263,4 +311,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VTBarcodeScannerPage;
+export default VTBarcodeScannerNutritionPage;
