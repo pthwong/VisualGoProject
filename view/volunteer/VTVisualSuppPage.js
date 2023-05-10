@@ -15,8 +15,11 @@ function VTVisualSuppPage() {
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
-  barcodeScannerPress = () => {
+  barcodeScannerProductPress = () => {
     navigation.navigate('VTBarcodeScannerPage');
+  };
+  barcodeScannerNutritionPress = () => {
+    navigation.navigate('VTBarcodeScannerNutritionPage');
   };
 
   return (
@@ -25,8 +28,13 @@ function VTVisualSuppPage() {
 
       <TouchableOpacity
         style={styles.barcodeBtn}
-        onPress={this.barcodeScannerPress}>
-        <Text style={styles.btnTxt}>掃描條碼</Text>
+        onPress={this.barcodeScannerProductPress}>
+        <Text style={styles.btnTxt}>加入/修改超市產品資訊</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.barcodeBtn}
+        onPress={this.barcodeScannerNutritionPress}>
+        <Text style={styles.btnTxt}>加入/修改超市產品營養資訊</Text>
       </TouchableOpacity>
     </View>
   );
