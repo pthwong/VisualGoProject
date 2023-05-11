@@ -234,7 +234,7 @@ function VTEditNutritionInfoPage({route}) {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Barcode:</Text>
+          <Text style={{fontSize: 20}}>條碼:</Text>
         </View>
         <View style={styles.rightContainer}>
           <Text style={(styles.input, {color: 'grey', fontSize: 20})}>
@@ -252,12 +252,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>servings:</Text>
+          <Text style={{fontSize: 20}}>份量:</Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入份量"
             value={servings}
             onChangeText={servings => {
               setServings(servings);
@@ -274,12 +274,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Ingredients：</Text>
+          <Text style={{fontSize: 20}}>材料:</Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入材料"
             value={ingredients}
             onChangeText={ingredients => {
               setIngredients(ingredients);
@@ -296,12 +296,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>energy: </Text>
+          <Text style={{fontSize: 20}}>能量: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入能量"
             value={energy}
             onChangeText={energy => {
               setEnergy(energy);
@@ -323,12 +323,12 @@ function VTEditNutritionInfoPage({route}) {
       )}
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>energy_kcal: </Text>
+          <Text style={{fontSize: 20}}>能量(千卡): </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入能量(千卡)"
             value={energy_kcal}
             onChangeText={energy_kcal => {
               setEnergy_kcal(energy_kcal);
@@ -345,12 +345,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入脂肪份量"
             value={fat}
             onChangeText={fat => {
               setFat(fat);
@@ -367,12 +367,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>saturated_fat: </Text>
+          <Text style={{fontSize: 20}}>飽和脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入飽和脂肪份量"
             value={saturated_fat}
             onChangeText={saturated_fat => {
               setSaturated_fat(saturated_fat);
@@ -389,12 +389,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>trans_fat: </Text>
+          <Text style={{fontSize: 20}}>反式脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入反式脂肪份量"
             value={trans_fat}
             onChangeText={trans_fat => {
               setTrans_fat(trans_fat);
@@ -411,12 +411,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>cholesterol: </Text>
+          <Text style={{fontSize: 20}}>膽固醇: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入膽固醇份量"
             value={cholesterol}
             onChangeText={cholesterol => {
               setCholesterol(cholesterol);
@@ -433,12 +433,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>碳水化合物: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入碳水化合物份量"
             value={carbohydrates}
             onChangeText={carbohydrates => {
               setCarbohydrates(carbohydrates);
@@ -455,12 +455,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>sugar: </Text>
+          <Text style={{fontSize: 20}}>糖份: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入糖份份量"
             value={sugars}
             onChangeText={sugars => {
               setSugars(sugars);
@@ -478,12 +478,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fiber: </Text>
+          <Text style={{fontSize: 20}}>纖維: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入纖維"
             value={fiber}
             onChangeText={fiber => {
               setFiber(fiber);
@@ -500,12 +500,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>proteins: </Text>
+          <Text style={{fontSize: 20}}>蛋白質: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="蛋白質"
             value={proteins}
             onChangeText={proteins => {
               setProteins(proteins);
@@ -522,12 +522,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>鈉: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鈉份量"
             value={sodium}
             onChangeText={sodium => {
               setSodium(sodium);
@@ -544,12 +544,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>vitamin_a: </Text>
+          <Text style={{fontSize: 20}}>維他命A: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入維他命A份量"
             value={vitamin_a}
             onChangeText={vitamin_a => {
               setVitamin_a(vitamin_a);
@@ -566,12 +566,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>vitamin_c: </Text>
+          <Text style={{fontSize: 20}}>維他命C: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入維他命C份量"
             value={vitamin_c}
             onChangeText={vitamin_c => {
               setVitamin_c(vitamin_c);
@@ -588,12 +588,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>calcium: </Text>
+          <Text style={{fontSize: 20}}>鈣: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鈣份量"
             value={calcium}
             onChangeText={calcium => {
               setCalcium(calcium);
@@ -610,12 +610,12 @@ function VTEditNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>iron: </Text>
+          <Text style={{fontSize: 20}}>鐵: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鐵份量"
             value={iron}
             onChangeText={iron => {
               setIron(iron);

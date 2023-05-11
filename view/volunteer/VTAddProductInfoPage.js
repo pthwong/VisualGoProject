@@ -81,14 +81,17 @@ function VTAddProductInfoPage({route}) {
 
   const fetchDataFromDB = useCallback(async barcode => {
     try {
+      setLoading(true);
       const response = await fetch(
         `https://api.whomethser.synology.me:3560/visualgo/v1/getProductInfoByBarcode/${barcode}`,
       );
       const responseData = await response.json();
       console.log('DB data: ', responseData);
+      setLoading(false);
       return responseData.response || {};
     } catch (error) {
       console.log('Error: \n', error);
+      setLoading(false);
       return {};
     }
   }, []);
@@ -241,7 +244,7 @@ function VTAddProductInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Barcode:</Text>
+          <Text style={{fontSize: 20}}>條碼:</Text>
         </View>
         <View style={styles.rightContainer}>
           <Text style={(styles.input, {color: 'grey', fontSize: 20})}>
@@ -263,7 +266,7 @@ function VTAddProductInfoPage({route}) {
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入品牌名稱"
             value={productBrand}
             onChangeText={productBrand => {
               setProductBrand(productBrand);
@@ -285,7 +288,7 @@ function VTAddProductInfoPage({route}) {
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入來源地"
             value={productCountry}
             onChangeText={productCountry => {
               setProductCountry(productCountry);
@@ -312,7 +315,7 @@ function VTAddProductInfoPage({route}) {
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入重量"
             value={productDesc}
             onChangeText={productUnit => {
               setProductUnit(productUnit);
@@ -334,7 +337,7 @@ function VTAddProductInfoPage({route}) {
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入標籤"
             value={tagName}
             onChangeText={tagName => {
               setTagName(tagName);

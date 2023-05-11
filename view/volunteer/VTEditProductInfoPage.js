@@ -81,19 +81,20 @@ function VTEditProductInfoPage({route}) {
   const [vtEmail, setVtEmail] = useState('');
 
   const fetchDataFromDB = useCallback(async barcode => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await fetch(
         `https://api.whomethser.synology.me:3560/visualgo/v1/getProductInfoByBarcode/${barcode}`,
       );
       const responseData = await response.json();
       console.log('DB data: ', responseData);
+      setLoading(false);
       return responseData.response || {};
     } catch (error) {
       console.log('Error: \n', error);
+      setLoading(false);
       return {};
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {

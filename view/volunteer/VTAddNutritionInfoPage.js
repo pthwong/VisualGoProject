@@ -70,23 +70,23 @@ function VTAddNutritionInfoPage({route}) {
   }, [navigation]);
 
   //2. Nurition Information
-  const [ingredients, setIngredients] = useState(null);
-  const [servings, setServings] = useState(null);
-  const [energy, setEnergy] = useState(null);
-  const [energy_kcal, setEnergy_kcal] = useState(null);
-  const [fat, setFat] = useState(null);
-  const [saturated_fat, setSaturated_fat] = useState(null);
-  const [trans_fat, setTrans_fat] = useState(null);
-  const [cholesterol, setCholesterol] = useState(null);
-  const [carbohydrates, setCarbohydrates] = useState(null);
-  const [sugars, setSugars] = useState(null);
-  const [fiber, setFiber] = useState(null);
-  const [proteins, setProteins] = useState(null);
-  const [sodium, setSodium] = useState(null);
-  const [vitamin_a, setVitamin_a] = useState(null);
-  const [vitamin_c, setVitamin_c] = useState(null);
-  const [calcium, setCalcium] = useState(null);
-  const [iron, setIron] = useState(null);
+  const [ingredients, setIngredients] = useState('');
+  const [servings, setServings] = useState('');
+  const [energy, setEnergy] = useState('');
+  const [energy_kcal, setEnergy_kcal] = useState('');
+  const [fat, setFat] = useState('');
+  const [saturated_fat, setSaturated_fat] = useState('');
+  const [trans_fat, setTrans_fat] = useState('');
+  const [cholesterol, setCholesterol] = useState('');
+  const [carbohydrates, setCarbohydrates] = useState('');
+  const [sugars, setSugars] = useState('');
+  const [fiber, setFiber] = useState('');
+  const [proteins, setProteins] = useState('');
+  const [sodium, setSodium] = useState('');
+  const [vitamin_a, setVitamin_a] = useState('');
+  const [vitamin_c, setVitamin_c] = useState('');
+  const [calcium, setCalcium] = useState('');
+  const [iron, setIron] = useState('');
 
   // others
   const [vtEmail, setVtEmail] = useState('');
@@ -121,28 +121,52 @@ function VTAddNutritionInfoPage({route}) {
     if (openFoodFactsProduct.status === 0) {
       setLoading(false);
     } else {
-      setEnergy(openFoodFactsProduct.product.nutriments.energy);
-      setEnergy_kcal(openFoodFactsProduct.product.nutriments.energy_kcal);
-      setFat(
-        openFoodFactsProduct.product.nutriments.fat,
-        // openFoodFactsProduct.product.nutriments.fat_unit,
+      setEnergy(openFoodFactsProduct.product.nutriments.energy.toString());
+      setEnergy_kcal(
+        openFoodFactsProduct.product.nutriments['energy-kcal'].toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.energy_unit.toString() || '',
       );
-      setSaturated_fat(openFoodFactsProduct.product.nutriments.saturated_fat);
+      setFat(
+        openFoodFactsProduct.product.nutriments.fat.toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.fat_unit.toString() || '',
+      );
+      setSaturated_fat(
+        openFoodFactsProduct.product.nutriments['saturated-fat'].toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments[
+            'saturated-fat_unit'
+          ].toString() ||
+          '' ||
+          '',
+      );
       // setTrans_fat(openFoodFactsProduct.trans_fat);
       // setCholesterol(openFoodFactsProduct.cholesterol);
-      setCarbohydrates(openFoodFactsProduct.product.nutriments.carbohydrates);
-      setSugars(
-        openFoodFactsProduct.product.nutriments.sugars,
-        // openFoodFactsProduct.product.nutriments.sugars_unit,
+      setCarbohydrates(
+        openFoodFactsProduct.product.nutriments.carbohydrates.toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.carbohydrates_unit.toString() ||
+          '',
       );
-      setFiber(openFoodFactsProduct.product.nutriscore_data.fiber);
+      setSugars(
+        openFoodFactsProduct.product.nutriments.sugars.toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.sugars_unit || '',
+      );
+      setFiber(
+        openFoodFactsProduct.product.nutriscore_data.fiber.toString() || '',
+      );
       setProteins(
-        openFoodFactsProduct.product.nutriments.proteins,
-        // openFoodFactsProduct.product.nutriments.proteins_unit,
+        openFoodFactsProduct.product.nutriments.proteins.toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.proteins_unit.toString() ||
+          '',
       );
       setSodium(
-        openFoodFactsProduct.product.nutriments.sodium,
-        // openFoodFactsProduct.product.nutriments.sodium_unit,
+        openFoodFactsProduct.product.nutriments.sodium.toString() +
+          ' ' +
+          openFoodFactsProduct.product.nutriments.sodium_unit.toString() || '',
       );
       // setVitamin_a(openFoodFactsProduct.vitamin_a);
       // setVitamin_c(openFoodFactsProduct.vitamin_c);
@@ -177,7 +201,7 @@ function VTAddNutritionInfoPage({route}) {
 
     try {
       const response = await fetch(
-        `https://api.whomethser.synology.me:3560/visualgo/v1/addNutritionInfo`,
+        'https://api.whomethser.synology.me:3560/visualgo/v1/addNutritionInfo',
         {
           method: 'POST',
           headers: {
@@ -232,14 +256,9 @@ function VTAddNutritionInfoPage({route}) {
 
   return (
     <ScrollView>
-      {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FFFFFF" />
-        </View>
-      )}
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Barcode:</Text>
+          <Text style={{fontSize: 20}}>條碼:</Text>
         </View>
         <View style={styles.rightContainer}>
           <Text style={(styles.input, {color: 'grey', fontSize: 20})}>
@@ -257,12 +276,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>servings:</Text>
+          <Text style={{fontSize: 20}}>份量:</Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入份量"
             value={servings}
             onChangeText={servings => {
               setServings(servings);
@@ -279,12 +298,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Ingredients:</Text>
+          <Text style={{fontSize: 20}}>材料:</Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入材料"
             value={ingredients}
             onChangeText={ingredients => {
               setIngredients(ingredients);
@@ -301,12 +320,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>energy: </Text>
+          <Text style={{fontSize: 20}}>能量: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入能量"
             value={energy}
             onChangeText={energy => {
               setEnergy(energy);
@@ -321,15 +340,19 @@ function VTAddNutritionInfoPage({route}) {
           marginTop: '10%',
         }}
       />
-
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+        </View>
+      )}
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>energy_kcal: </Text>
+          <Text style={{fontSize: 20}}>能量(千卡): </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入能量(千卡)"
             value={energy_kcal}
             onChangeText={energy_kcal => {
               setEnergy_kcal(energy_kcal);
@@ -346,12 +369,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入脂肪份量"
             value={fat}
             onChangeText={fat => {
               setFat(fat);
@@ -368,12 +391,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>saturated_fat: </Text>
+          <Text style={{fontSize: 20}}>飽和脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入飽和脂肪份量"
             value={saturated_fat}
             onChangeText={saturated_fat => {
               setSaturated_fat(saturated_fat);
@@ -390,12 +413,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>trans_fat: </Text>
+          <Text style={{fontSize: 20}}>反式脂肪: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入反式脂肪份量"
             value={trans_fat}
             onChangeText={trans_fat => {
               setTrans_fat(trans_fat);
@@ -412,12 +435,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>cholesterol: </Text>
+          <Text style={{fontSize: 20}}>膽固醇: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入膽固醇份量"
             value={cholesterol}
             onChangeText={cholesterol => {
               setCholesterol(cholesterol);
@@ -434,12 +457,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>碳水化合物: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入碳水化合物份量"
             value={carbohydrates}
             onChangeText={carbohydrates => {
               setCarbohydrates(carbohydrates);
@@ -456,12 +479,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>sugar: </Text>
+          <Text style={{fontSize: 20}}>糖份: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入糖份份量"
             value={sugars}
             onChangeText={sugars => {
               setSugars(sugars);
@@ -479,12 +502,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fiber: </Text>
+          <Text style={{fontSize: 20}}>纖維: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入纖維"
             value={fiber}
             onChangeText={fiber => {
               setFiber(fiber);
@@ -501,12 +524,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>proteins: </Text>
+          <Text style={{fontSize: 20}}>蛋白質: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="蛋白質"
             value={proteins}
             onChangeText={proteins => {
               setProteins(proteins);
@@ -523,12 +546,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>fat: </Text>
+          <Text style={{fontSize: 20}}>鈉: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鈉份量"
             value={sodium}
             onChangeText={sodium => {
               setSodium(sodium);
@@ -545,12 +568,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>vitamin_a: </Text>
+          <Text style={{fontSize: 20}}>維他命A: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入維他命A份量"
             value={vitamin_a}
             onChangeText={vitamin_a => {
               setVitamin_a(vitamin_a);
@@ -567,12 +590,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>vitamin_c: </Text>
+          <Text style={{fontSize: 20}}>維他命C: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入維他命C份量"
             value={vitamin_c}
             onChangeText={vitamin_c => {
               setVitamin_c(vitamin_c);
@@ -589,12 +612,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>calcium: </Text>
+          <Text style={{fontSize: 20}}>鈣: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鈣份量"
             value={calcium}
             onChangeText={calcium => {
               setCalcium(calcium);
@@ -611,12 +634,12 @@ function VTAddNutritionInfoPage({route}) {
       />
       <View style={styles.container}>
         <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>iron: </Text>
+          <Text style={{fontSize: 20}}>鐵: </Text>
         </View>
         <View style={styles.rightContainer}>
           <TextInput
             style={styles.input}
-            placeholder="輸入名稱"
+            placeholder="輸入鐵份量"
             value={iron}
             onChangeText={iron => {
               setIron(iron);
