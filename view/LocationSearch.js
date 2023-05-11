@@ -58,16 +58,16 @@ function LocationSearch() {
 
   const handleBuildingPress = buildingName => {
     Alert.alert(
-      `You selected: ${buildingName}`,
-      'Are you sure you want to perform this action?',
+      `你已選取：${buildingName}`,
+      '繼續？',
       [
         {
-          text: 'Cancel',
+          text: '取消',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         {
-          text: 'Confirm',
+          text: '確定',
           onPress: () => {
             navigation.navigate('VTAddNewsPage', {locationName: buildingName});
           },
