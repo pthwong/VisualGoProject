@@ -10,6 +10,7 @@ import {
   Platform,
   Switch,
   Alert,
+  BackHandler,
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -33,24 +34,7 @@ function VTEditNewsPage({route}) {
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
-            Alert.alert(
-              '確定取消更新社區資訊？',
-              '取消後需要更新建立社區資訊',
-              [
-                {
-                  text: '取消',
-                  onPress: () => console.log('Cancel Pressed'),
-                },
-                {
-                  text: '確定',
-                  onPress: () => {
-                    navigation.goBack();
-                  },
-                  style: 'destructive',
-                },
-              ],
-              {cancelable: false},
-            );
+            leaveEditPress();
           }}
           style={{marginLeft: 5}}>
           <Ionicons name="close-outline" size={40} color="black" />
@@ -63,6 +47,19 @@ function VTEditNewsPage({route}) {
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    leaveEditPress();
+    return true;
+  };
 
   // const [postID, setPostID] = useState('');
   const [postData, setPostData] = useState(null);
@@ -141,6 +138,29 @@ function VTEditNewsPage({route}) {
       setVtEmail(email);
     } catch (error) {
       console.error('Error getting email:\n', error);
+    }
+  };
+
+  leaveEditPress = () => {
+    {
+      Alert.alert(
+        '確定取消建立社區資訊？',
+        '取消後需要重新建立社區資訊',
+        [
+          {
+            text: '取消',
+            onPress: () => console.log('Cancel Pressed'),
+          },
+          {
+            text: '確定',
+            onPress: () => {
+              navigation.goBack();
+            },
+            style: 'destructive',
+          },
+        ],
+        {cancelable: false},
+      );
     }
   };
 
@@ -492,7 +512,7 @@ function VTEditNewsPage({route}) {
             <TouchableOpacity
               style={styles.itemContainer}
               onPress={() => {
-                navigation.navigate('LocationSearch');
+                navigation.navigate('LocationSearch', {mode: 'edit'});
               }}>
               <View style={styles.leftArrowContainer}>
                 <Text style={{fontSize: 20}}>選取地點</Text>
@@ -505,7 +525,7 @@ function VTEditNewsPage({route}) {
             <TouchableOpacity
               style={styles.itemContainer}
               onPress={() => {
-                navigation.navigate('LocationSearch');
+                navigation.navigate('LocationSearch', {mode: 'edit'});
               }}>
               <Text style={{fontSize: 20}} lineBreakMode="tail">
                 {postBuilding}

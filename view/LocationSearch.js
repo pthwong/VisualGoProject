@@ -14,12 +14,16 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 
-function LocationSearch() {
+function LocationSearch({route}) {
   let [searchText, setSearchText] = useState('');
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+
+  console.log('params:', route.params);
+
+  const mode = route.params?.mode;
 
   useEffect(() => {
     searchBuildings();
@@ -69,7 +73,13 @@ function LocationSearch() {
         {
           text: '確定',
           onPress: () => {
-            navigation.navigate('VTAddNewsPage', {locationName: buildingName});
+            mode === 'edit'
+              ? navigation.navigate('VTEditNewsPage', {
+                  locationName: buildingName,
+                })
+              : navigation.navigate('VTAddNewsPage', {
+                  locationName: buildingName,
+                });
           },
         },
       ],

@@ -10,6 +10,7 @@ import {
   PermissionsAndroid,
   Platform,
   Image,
+  BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -33,6 +34,19 @@ function VIHomepage() {
   const [weatherData, setWeatherData] = useState(null);
 
   const [name, setName] = useState(null);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    BackHandler.exitApp();
+    return true;
+  };
 
   useEffect(() => {
     const fetchName = async () => {
