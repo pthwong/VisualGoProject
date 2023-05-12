@@ -8,6 +8,8 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -42,6 +44,14 @@ public class MainApplication extends Application implements ReactApplication {
         protected Boolean isHermesEnabled() {
           return BuildConfig.IS_HERMES_ENABLED;
         }
+
+          @Override
+          protected JavaScriptExecutorFactory getJavaScriptExecutorFactory() {
+              return new HermesExecutorFactory();
+          }
+
+
+
       };
 
   @Override
