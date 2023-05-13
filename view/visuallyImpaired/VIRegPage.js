@@ -1,4 +1,4 @@
-import {React, useState, useEffect} from 'react';
+import {React, useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -46,6 +48,54 @@ function VIRegPage() {
   const navigation = useNavigation();
 
   const [regSuccess, setRegSuccess] = useState(false);
+
+  leaveEditPress = () => {
+    Alert.alert(
+      '確定離開註冊程序？',
+      '取消後需要重新輸入資料',
+      [
+        {
+          text: '取消',
+          onPress: () => console.log('Cancel Pressed'),
+        },
+        {
+          text: '確定',
+          onPress: () => {
+            navigation.goBack();
+          },
+          style: 'destructive',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            leaveEditPress();
+          }}
+          style={{marginLeft: 4}}>
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    leaveEditPress();
+    return true;
+  };
 
   const verifyEnterEmail = email => {
     if (true) return true;
@@ -128,14 +178,6 @@ function VIRegPage() {
     }
   };
 
-  // viRegPress = () => {
-  //   if(!email.trim()) {
-  //     regSuccess = false;
-
-  //   }
-
-  // }
-
   if (regSuccess) {
     setEmail('');
     setName('');
@@ -164,7 +206,7 @@ function VIRegPage() {
       style={{flex: 1}}>
       <ScrollView>
         <Text style={styles.titleChi}>視障人士註冊</Text>
-        <Text style={styles.titleEng}>Register for Visually Impaired</Text>
+        {/* <Text style={styles.titleEng}>Register for Visually Impaired</Text> */}
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.inputField}>

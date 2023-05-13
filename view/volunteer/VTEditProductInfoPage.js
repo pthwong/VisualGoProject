@@ -11,6 +11,10 @@ import {
   Switch,
   Alert,
   ActivityIndicator,
+  BackHandler,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -29,30 +33,32 @@ function VTEditProductInfoPage({route}) {
   // const {pdid: pdid} = route.params;
   const {barcode: productBarcode} = route.params;
 
+  leaveEditPress = () => {
+    Alert.alert(
+      '確定取消修改產品資訊？',
+      '取消後需要重新修改產品資訊',
+      [
+        {
+          text: '取消',
+          onPress: () => console.log('Cancel Pressed'),
+        },
+        {
+          text: '確定',
+          onPress: () => {
+            navigation.navigate('VTVisualSuppPage');
+          },
+          style: 'destructive',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
         <TouchableOpacity
-          onPress={() => {
-            Alert.alert(
-              '確定取消修改產品資訊？',
-              '取消後需要重新修改產品資訊',
-              [
-                {
-                  text: '取消',
-                  onPress: () => console.log('Cancel Pressed'),
-                },
-                {
-                  text: '確定',
-                  onPress: () => {
-                    navigation.navigate('VTVisualSuppPage');
-                  },
-                  style: 'destructive',
-                },
-              ],
-              {cancelable: false},
-            );
-          }}
+          onPress={() => leaveEditPress()}
           style={{marginLeft: 5}}>
           <Ionicons name="close-outline" size={40} color="black" />
         </TouchableOpacity>
@@ -68,6 +74,19 @@ function VTEditProductInfoPage({route}) {
       ),
     });
   }, [navigation]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    leaveEditPress();
+    return true;
+  };
 
   //1. Basic Product Information
   const [productBrand, setProductBrand] = useState(null);
@@ -209,147 +228,153 @@ function VTEditProductInfoPage({route}) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.leftContainer}></View>
-        <View style={styles.rightContainerTitle}>
-          <TextInput
-            style={styles.inputTitle}
-            placeholder="輸入物品名稱"
-            value={productName}
-            onChangeText={productName => setProductName(productName)}
-            multiline={true}
-            numberOfLines={2}
-          />
-        </View>
-      </View>
+    <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.leftContainer}></View>
+            <View style={styles.rightContainerTitle}>
+              <TextInput
+                style={styles.inputTitle}
+                placeholder="輸入物品名稱"
+                value={productName}
+                onChangeText={productName => setProductName(productName)}
+                multiline={true}
+                numberOfLines={2}
+              />
+            </View>
+          </View>
 
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>Barcode:</Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <Text style={(styles.input, {color: 'grey', fontSize: 20})}>
-            {productBarcode}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>品牌名稱：</Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入名稱"
-            value={productBrand}
-            onChangeText={productBrand => setProductBrand(productBrand)}
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
           />
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#000000" />
-        </View>
-      )}
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>來源地： </Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入名稱"
-            value={productCountry}
-            onChangeText={productCountry => setProductCountry(productCountry)}
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>Barcode:</Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <Text style={(styles.input, {color: 'grey', fontSize: 20})}>
+                {productBarcode}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
           />
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>重量： </Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入名稱"
-            value={productUnit}
-            onChangeText={productUnit => setProductUnit(productUnit)}
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>品牌名稱：</Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入名稱"
+                value={productBrand}
+                onChangeText={productBrand => setProductBrand(productBrand)}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
           />
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Text style={{fontSize: 20}}>標籤： </Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入名稱"
-            value={tagName}
-            onChangeText={tagName => setTagName(tagName)}
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#000000" />
+            </View>
+          )}
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>來源地： </Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入名稱"
+                value={productCountry}
+                onChangeText={productCountry =>
+                  setProductCountry(productCountry)
+                }
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
           />
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>重量： </Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入名稱"
+                value={productUnit}
+                onChangeText={productUnit => setProductUnit(productUnit)}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
+          />
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>標籤： </Text>
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入名稱"
+                value={tagName}
+                onChangeText={tagName => setTagName(tagName)}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
+          />
 
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Ionicons name={'document-text-outline'} size={30} />
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入內容"
-            multiline={true}
-            numberOfLines={4}
-            value={productDesc}
-            onChangeText={productDesc => setProductDesc(productDesc)}
-          />
-        </View>
-      </View>
-    </ScrollView>
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Ionicons name={'document-text-outline'} size={30} />
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入內容"
+                multiline={true}
+                numberOfLines={4}
+                value={productDesc}
+                onChangeText={productDesc => setProductDesc(productDesc)}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 

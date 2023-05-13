@@ -29,12 +29,12 @@ function VTVisualSuppPage() {
       <TouchableOpacity
         style={styles.barcodeBtn}
         onPress={this.barcodeScannerProductPress}>
-        <Text style={styles.btnTxt}>加入/修改超市產品資訊</Text>
+        <Text style={styles.btnTxt}>加入/更新超市產品資訊</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.barcodeBtn}
         onPress={this.barcodeScannerNutritionPress}>
-        <Text style={styles.btnTxt}>加入/修改超市產品營養資訊</Text>
+        <Text style={styles.btnTxt}>加入/更新超市產品營養資訊</Text>
       </TouchableOpacity>
     </View>
   );
