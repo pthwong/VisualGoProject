@@ -470,7 +470,7 @@ function App() {
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            title: '修改超市產品資訊',
+            title: '更新超市產品資訊',
             gestureEnabled: false,
           }}
         />
@@ -481,7 +481,7 @@ function App() {
             headerStyle: {
               backgroundColor: '#ADECC1',
             },
-            title: '修改營養資訊',
+            title: '更新營養資訊',
             gestureEnabled: false,
           }}
         />

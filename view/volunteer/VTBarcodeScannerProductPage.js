@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,8 @@ import {
   Alert,
   Dimensions,
   ActivityIndicator,
+  BackHandler,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -25,7 +27,9 @@ import {
   BarcodeFormat,
   scanBarcodes,
 } from 'vision-camera-code-scanner';
-import {RNHoleView} from 'react-native-hole-view';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import QRCodeMask from 'react-native-qrcode-mask';
+import SoundPlayer from 'react-native-sound-player';
 
 function VTBarcodeScannerProductPage() {
   const navigation = useNavigation();
@@ -33,8 +37,40 @@ function VTBarcodeScannerProductPage() {
   const [barcode, setBarcode] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}>
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const holeWidth = 400;
+  const holeHeight = 200;
+
   const [frameProcessor, barcodes] = useScanBarcodes([
-    BarcodeFormat.ALL_FORMATS, // You can only specify a particular format
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODE_128, // You can only specify a particular format
   ]);
 
   const [isScanned, setIsScanned] = useState(false);
@@ -83,6 +119,13 @@ function VTBarcodeScannerProductPage() {
           setBarcode(scannedBarcode.rawValue);
           console.log('Barcode: ', scannedBarcode.rawValue);
           setIsScanned(true);
+
+          // Play the sound
+          try {
+            SoundPlayer.playSoundFile('scanner', 'mp3');
+          } catch (error) {
+            console.log('Cannot play the sound file', error);
+          }
           setIsLoading(true);
           const dbProduct = await fetchDataFromDB(scannedBarcode.rawValue);
           if (!dbProduct?.response?.productBarcode) {
@@ -186,35 +229,46 @@ function VTBarcodeScannerProductPage() {
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
         />
-        {/* <View
-          style={[styles.overlay, {top: 0, bottom: (height + holeHeight) / 2}]}
-        />
-        <View
-          style={[
-            styles.overlay,
-            {
-              top: (height - holeHeight) / 2,
-              bottom: 0,
-              left: 0,
-              right: (width + holeWidth) / 2,
-            },
-          ]}
-        />
-        <View
-          style={[
-            styles.overlay,
-            {
-              top: (height - holeHeight) / 2,
-              bottom: 0,
-              left: (width + holeWidth) / 2,
-              right: 0,
-            },
-          ]}
-        />
-        <View
-          style={[styles.overlay, {top: (height + holeHeight) / 2, bottom: 0}]}
-        />  */}
+        {/* <View style={StyleSheet.absoluteFill}>
+          <RNHoleView
+            style={StyleSheet.absoluteFill}
+            hole={[
+              {
+                x: (holeWidth - 200) / 2,
+                y: (holeHeight - 200) / 2,
+                width: 200,
+                height: 200,
+                borderRadius: 10,
+              },
+            ]}
+            color={'rgba(0, 0, 0, 0.6)'}
+          />
+        </View> */}
 
+        {/* <RNHoleView
+          style={StyleSheet.absoluteFill}
+          holes={[
+            {
+              x: (width - holeWidth) / 2,
+              y: (height - holeHeight) / 2,
+              width: holeWidth,
+              height: holeHeight,
+            },
+          ]}
+          backgroundColor={'rgba(0,0,0,0.6)'}
+        /> */}
+        <QRCodeMask
+          style={StyleSheet.absoluteFill}
+          lineDirection="vertical"
+          edgeColor="#00ce93"
+          bottomTitle="掃描條碼"
+          edgeBorderWidth={10}
+          edgeWidth={50}
+          edgeHeight={50}
+          width={Dimensions.get('window').width}
+          height={Dimensions.get('window').height - 200}
+          showLineAnimated="false"
+        />
         {isLoading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#FFFFFF" />

@@ -243,7 +243,7 @@ function VTAddProductInfoPage({route}) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
           <View style={styles.container}>
             <View style={styles.leftContainer}></View>
             <View style={styles.rightContainerTitle}>

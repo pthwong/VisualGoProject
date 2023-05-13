@@ -35,8 +35,8 @@ function VTEditProductInfoPage({route}) {
 
   leaveEditPress = () => {
     Alert.alert(
-      '確定取消修改產品資訊？',
-      '取消後需要重新修改產品資訊',
+      '確定取消更新產品資訊？',
+      '取消後需要重新更新產品資訊',
       [
         {
           text: '取消',
@@ -228,9 +228,11 @@ function VTEditProductInfoPage({route}) {
   };
 
   return (
-    <KeyboardAvoidingView behavior={'padding'} style={{flex: 1}}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
           <View style={styles.container}>
             <View style={styles.leftContainer}></View>
             <View style={styles.rightContainerTitle}>

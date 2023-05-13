@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import {
   Alert,
   Dimensions,
   ActivityIndicator,
+  BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -25,13 +26,42 @@ import {
   BarcodeFormat,
   scanBarcodes,
 } from 'vision-camera-code-scanner';
-import {RNHoleView} from 'react-native-hole-view';
+import QRCodeMask from 'react-native-qrcode-mask';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import SoundPlayer from 'react-native-sound-player';
 
 function VTBarcodeScannerNutritionPage() {
   const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const [barcode, setBarcode] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}>
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const [frameProcessor, barcodes] = useScanBarcodes([
     BarcodeFormat.ALL_FORMATS, // You can only specify a particular format
@@ -83,6 +113,12 @@ function VTBarcodeScannerNutritionPage() {
           setBarcode(scannedBarcode.rawValue);
           console.log('Barcode: ', scannedBarcode.rawValue);
           setIsScanned(true);
+          // Play the sound
+          try {
+            SoundPlayer.playSoundFile('scanner', 'mp3');
+          } catch (error) {
+            console.log('Cannot play the sound file', error);
+          }
           setIsLoading(true);
           const dbProduct = await fetchDataFromDB(scannedBarcode.rawValue);
           if (!dbProduct?.response?.productBarcode) {
@@ -216,7 +252,18 @@ function VTBarcodeScannerNutritionPage() {
         <View
           style={[styles.overlay, {top: (height + holeHeight) / 2, bottom: 0}]}
         />  */}
-
+        <QRCodeMask
+          style={StyleSheet.absoluteFill}
+          lineDirection="vertical"
+          edgeColor="#00ce93"
+          bottomTitle="掃描條碼"
+          edgeBorderWidth={10}
+          edgeWidth={50}
+          edgeHeight={50}
+          width={Dimensions.get('window').width}
+          height={Dimensions.get('window').height - 200}
+          showLineAnimated="false"
+        />
         {isLoading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#FFFFFF" />
