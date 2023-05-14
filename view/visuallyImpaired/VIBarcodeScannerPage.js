@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,10 @@ import {
   SafeAreaView,
   StatusBar,
   Alert,
+  Dimensions,
+  ActivityIndicator,
+  BackHandler,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -23,17 +27,59 @@ import {
   BarcodeFormat,
   scanBarcodes,
 } from 'vision-camera-code-scanner';
-import {RNHoleView} from 'react-native-hole-view';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import QRCodeMask from 'react-native-qrcode-mask';
+import SoundPlayer from 'react-native-sound-player';
 
 function VIBarcodeScannerPage() {
   const navigation = useNavigation();
   const [cameraPermission, setCameraPermission] = useState(null);
   const [barcode, setBarcode] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {width, height} = Dimensions.get('window');
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}
+          accessible={true}
+          accessibilityLabel="返回視覺支援頁面">
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  const holeWidth = 400;
+  const holeHeight = 200;
+
+  const [frameProcessor, barcodes] = useScanBarcodes([
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODE_128, // You can only specify a particular format
+  ]);
+
   const [isScanned, setIsScanned] = useState(false);
   const devices = useCameraDevices();
   const cameraDevice = devices.back;
-
-  const [productInfo, setProductInfo] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -42,156 +88,200 @@ function VIBarcodeScannerPage() {
     })();
   }, []);
 
-  // async function fetchData() {
-  //   // Get current location using Geolocation API
-  //   try {
-  //       async barcode => {
-  //         // Fetch weather data from OpenWeatherAPI
-  //         const response = await fetch(
-  //           `https://www.barcodeplus.com.hk/eid/resource/jsonservice?data={"appCode":"EIDM","method":"getSearchProductInfo","pdname":"${barcode}","isdraft":"N","nonpubind":"1","langid":"zh_TW"}`,
-  //         );
-  //         const responseData = await response.json();
+  const fetchDataFromDB = useCallback(async barcode => {
+    try {
+      const response = await fetch(
+        `https://api.whomethser.synology.me:3560/visualgo/v1/getProductInfoByBarcode/${barcode}`,
+      );
+      const responseData = await response.json();
+      console.log('DB data: ', responseData);
+      return responseData;
+    } catch (error) {
+      console.log('Error: \n', error);
+      return null;
+    }
+  }, []);
 
-  //         console.log('Getting data OK: \n', responseData);
-
-  //         // Extract data from the response
-  //         const pdid = responseData.result[0].data[0].pdid;
-  //         const pdname = responseData.result[0].data[0].pdname;
-
-  //         // Update state with the new weather data
-  //         setProductInfo({pdid, pdname});
-  //       },
-  //       error => console.log('Getting data Error: \n', error),
-  //   } catch (error) {
-  //     console.warn('Error:\n', error);
-  //   }
-  // }
-
-  async function fetchData(barcode) {
-    // const barcode = await scannedBarcode.rawValue;
-
-    // Fetch product data
+  const fetchDataFromBarcodePlus = useCallback(async barcode => {
     try {
       const response = await fetch(
         `https://www.barcodeplus.com.hk/eid/resource/jsonservice?data={"appCode":"EIDM","method":"getSearchProductInfo","pdname":"${barcode}","isdraft":"N","nonpubind":"1","langid":"zh_TW"}`,
       );
       const responseData = await response.json();
       const responseData2 = responseData.result[0];
-
-      console.log(
-        'Response url:',
-        response,
-        '\nGetting data OK: \n',
-        responseData2.data[0].pdid,
-        '\nGetting data OK: \n',
-        responseData2.data[0].pdname,
-      );
-
-      // Extract data from the response
-      const pdid = responseData2.data[0].pdid;
-      const pdname = responseData2.data[0].pdname;
-
-      // Update state with the new product data
-      setProductInfo({pdid, pdname});
+      return responseData2.data[0];
     } catch (error) {
       console.log('Error: \n', error);
-      Alert.alert('找不到商品', '', [
-        {
-          text: '返回',
-          onPress: () => {
-            setIsScanned(false);
-            navigation.navigate('VIVisualSuppPage');
-          },
-          style: 'cancel',
-        },
-      ]);
-      return;
+      return null;
     }
-  }
+  }, []);
 
-  console.log(`Camera permission status: ${cameraPermission}`);
-
-  const [frameProcessor, barcodes] = useScanBarcodes([
-    BarcodeFormat.ALL_FORMATS, // You can only specify a particular format
-  ]);
-
-  useEffect(() => {
-    toggleActiveState();
-    return () => {
-      barcodes;
-    };
-  }, [barcodes]);
-
-  const toggleActiveState = async () => {
-    if (barcodes && barcodes.length > 0 && isScanned == false) {
-      setIsScanned(true);
-      // setBarcode('');
-      barcodes.forEach(async (scannedBarcode: any) => {
-        if (scannedBarcode.rawValue != '') {
+  const processBarcode = useCallback(async () => {
+    if (barcodes && barcodes.length > 0 && isScanned === false) {
+      for (const scannedBarcode of barcodes) {
+        if (scannedBarcode.rawValue !== '') {
           setBarcode(scannedBarcode.rawValue);
           console.log('Barcode: ', scannedBarcode.rawValue);
-          // alert(scannedBarcode.rawValue);
-          // Popup.show({
-          //   type: 'Success',
-          //   title: '條碼已掃描',
-          //   button: true,
-          //   textBody: scannedBarcode.rawValue,
-          //   buttonText: '關閉',
-          //   buttonText2: 'Details',
-          //   callback: () => {
-          //     setIsScanned(false);
-          //     Popup.hide();
-          //   },
-          // });
-          fetchData(scannedBarcode.rawValue);
-          console.log('Name: ', productInfo.pdname);
-          if (productInfo.pdname == undefined) {
-            console.log(productInfo.pdname);
-            setIsScanned(false);
-          } else {
+          setIsScanned(true);
+          setIsLoading(true);
+          const dbProduct = await fetchDataFromDB(scannedBarcode.rawValue);
+
+          // if (
+          //   !dbProduct?.response?.productBarcode ||
+          //   !barcodePlusProduct?.pdid
+          // ) {
+          //   Alert.alert(
+          //     '條碼已掃描',
+          //     `沒有此產品的相關資料，請查詢其他產品。(NOT FOUND)`,
+          //     [
+          //       {
+          //         text: '確定',
+          //         onPress: () => {
+          //           navigation.goBack();
+          //         },
+          //       },
+          //     ],
+          //   );
+          // }
+          if (!dbProduct?.response?.productBarcode) {
+            console.log(
+              'Product from db has no result here, \n',
+              dbProduct?.response?.productBarcode,
+            );
+
+            const barcodePlusProduct = await fetchDataFromBarcodePlus(
+              scannedBarcode.rawValue,
+            );
+            if (!barcodePlusProduct?.pdid) {
+              Alert.alert(
+                '條碼已掃描',
+                `沒有此產品的相關資料，請查詢其他產品。`,
+                [
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      navigation.goBack();
+                    },
+                  },
+                ],
+              );
+            } else {
+              Alert.alert(
+                '條碼已掃描 (Barcode Plus)',
+                `產品名稱：${barcodePlusProduct?.pdname}\n需要查看更多此產品的資訊嗎？`,
+                [
+                  {
+                    text: '取消',
+                    onPress: () => navigation.goBack(),
+                    style: 'destructive',
+                  },
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      navigation.navigate('VIProductInfoBarcode', {
+                        pdid: barcodePlusProduct?.pdid,
+                        barcode: scannedBarcode.rawValue,
+                      });
+                    },
+                  },
+                ],
+              );
+            }
+          } else if (dbProduct?.response?.productBarcode) {
             Alert.alert(
-              '條碼已掃描',
-              `產品名稱：${productInfo.pdname}\n需要查看更多產品資訊嗎？`,
+              '條碼已掃描 (Database)',
+              `產品名稱：${dbProduct?.response?.productName}\n需要查看更多此產品的資訊嗎？`,
               [
                 {
-                  text: '是',
-                  onPress: () => {
-                    setIsScanned(true);
-                    console.log('Yes Pressed');
-                    navigation.navigate('VIProductInfoBarcode', {
-                      pdid: productInfo.pdid,
-                    });
-                    setIsScanned(false);
-                    setProductInfo('');
-                  },
+                  text: '取消',
+                  onPress: () => navigation.goBack(),
+                  style: 'destructive',
                 },
                 {
-                  text: '否',
+                  text: '確定',
                   onPress: () => {
-                    setIsScanned(false);
-                    navigation.goBack();
+                    navigation.navigate('VIProductInfoBarcode', {
+                      barcode: scannedBarcode.rawValue,
+                    });
                   },
-                  style: 'cancel',
                 },
               ],
             );
           }
+          setIsLoading(false);
         }
-      });
+      }
     }
-  };
+  }, [
+    barcodes,
+    isScanned,
+    fetchDataFromDB,
+    fetchDataFromBarcodePlus,
+    navigation,
+  ]);
+
+  useEffect(() => {
+    processBarcode();
+  }, [processBarcode]);
+
+  console.log(`Camera permission status: ${cameraPermission}`);
 
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
       <View style={{flex: 1}}>
         <Camera
-          style={styles.camera}
           style={StyleSheet.absoluteFill}
           device={cameraDevice}
           isActive={!isScanned}
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
         />
+        {/* <View style={StyleSheet.absoluteFill}>
+          <RNHoleView
+            style={StyleSheet.absoluteFill}
+            hole={[
+              {
+                x: (holeWidth - 200) / 2,
+                y: (holeHeight - 200) / 2,
+                width: 200,
+                height: 200,
+                borderRadius: 10,
+              },
+            ]}
+            color={'rgba(0, 0, 0, 0.6)'}
+          />
+        </View> */}
+
+        {/* <RNHoleView
+          style={StyleSheet.absoluteFill}
+          holes={[
+            {
+              x: (width - holeWidth) / 2,
+              y: (height - holeHeight) / 2,
+              width: holeWidth,
+              height: holeHeight,
+            },
+          ]}
+          backgroundColor={'rgba(0,0,0,0.6)'}
+        /> */}
+        <QRCodeMask
+          style={StyleSheet.absoluteFill}
+          lineDirection="vertical"
+          edgeColor="#00ce93"
+          bottomTitle="掃描條碼"
+          edgeBorderWidth={10}
+          edgeWidth={50}
+          edgeHeight={50}
+          width={Dimensions.get('window').width}
+          height={Dimensions.get('window').height - 200}
+          showLineAnimated="false"
+        />
+        {isLoading && (
+          <View style={[styles.loadingContainer, {width, height}]}>
+            <ActivityIndicator size="large" color="#000000" />
+            <Text style={styles.loadingText}>載入中...</Text>
+          </View>
+        )}
       </View>
     );
   }
@@ -264,6 +354,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    position: 'absolute',
+  },
+  loadingContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+  loadingText: {
+    marginTop: 10,
   },
 });
 
