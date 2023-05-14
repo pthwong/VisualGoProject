@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
   SafeAreaView,
   TouchableOpacityComponent,
 } from 'react-native';
@@ -74,23 +75,21 @@ function VILoginPage() {
 
       if (data.success) {
         console.log('Data: \n', JSON.stringify(data));
-        await AsyncStorage.setItem('vtEmail', JSON.stringify(data.vtEmail));
-        await AsyncStorage.setItem('vtName', JSON.stringify(data.vtName));
+        await AsyncStorage.setItem('viEmail', JSON.stringify(data.viEmail));
+        await AsyncStorage.setItem('viName', JSON.stringify(data.viName));
         await AsyncStorage.setItem(
           'districtID',
           JSON.stringify(data.districtID),
         );
         await AsyncStorage.setItem(
-          'vtBuilding',
-          JSON.stringify(data.vtBuilding),
+          'viBuilding',
+          JSON.stringify(data.viBuilding),
         );
-        await AsyncStorage.setItem('vtToken', data.vtToken);
+        await AsyncStorage.setItem('viToken', data.viToken);
         // navigation.navigate('VTPages', {screen: 'VTHomepage'});
         // route.params.navigateToVTHomepage(navigation);
         setIsLoading(false);
-        navigation.navigate('VTPages', {
-          screen: 'VTHomepage',
-        });
+        navigation.navigate('VIHomepage');
       } else if (data.message == 'Invalid email or password') {
         setIsLoading(false);
         alert('電郵或密碼錯誤，請重新輸入。');
