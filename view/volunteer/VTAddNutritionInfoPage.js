@@ -183,7 +183,7 @@ function VTAddNutritionInfoPage({route}) {
           '',
       );
       setSodium(
-        openFoodFactsProduct.product.nutriments.sodium.toString() +
+        openFoodFactsProduct.product.nutriments.sodium_value.toString() +
           ' ' +
           openFoodFactsProduct.product.nutriments.sodium_unit.toString() || '',
       );

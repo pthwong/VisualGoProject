@@ -157,7 +157,25 @@ function VTAddProductInfoPage({route}) {
       setProductName(barcodePlusProduct.pdname);
       setProductDesc(barcodePlusProduct.pddesc);
       setProductCountry(barcodePlusProduct.pdcntyoforgn);
-      setProductUnit(barcodePlusProduct.pdgroswgt, barcodePlusProduct.pdwgtuom);
+
+      let productUnit = '';
+
+      if (barcodePlusProduct.pdgroswgt && barcodePlusProduct.pdwgtuom) {
+        productUnit =
+          barcodePlusProduct.pdgroswgt.toString() +
+          ' ' +
+          barcodePlusProduct.pdwgtuom.toString();
+      } else if (
+        barcodePlusProduct.pdnetcont &&
+        barcodePlusProduct.pdnetcontuom
+      ) {
+        productUnit =
+          barcodePlusProduct.pdnetcont.toString() +
+          ' ' +
+          barcodePlusProduct.pdnetcontuom.toString();
+      }
+
+      setProductUnit(productUnit);
       setTagName('');
     } else {
       //2. Otherwise, fetch data from Database
@@ -333,13 +351,13 @@ function VTAddProductInfoPage({route}) {
           />
           <View style={styles.container}>
             <View style={styles.leftContainer}>
-              <Text style={{fontSize: 20}}>重量： </Text>
+              <Text style={{fontSize: 20}}>重量/容量： </Text>
             </View>
             <View style={styles.rightContainer}>
               <TextInput
                 style={styles.input}
                 placeholder="輸入重量"
-                value={productDesc}
+                value={productUnit}
                 onChangeText={productUnit => {
                   setProductUnit(productUnit);
                 }}
@@ -519,5 +537,15 @@ const styles = StyleSheet.create({
   selectedDistrict: {
     marginTop: 20,
     fontSize: 18,
+  },
+  loadingContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
+    alignItems: 'center', // horizontal center
+    justifyContent: 'center', // vertical center
   },
 });

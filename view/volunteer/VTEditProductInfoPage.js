@@ -320,7 +320,7 @@ function VTEditProductInfoPage({route}) {
           />
           <View style={styles.container}>
             <View style={styles.leftContainer}>
-              <Text style={{fontSize: 20}}>重量： </Text>
+              <Text style={{fontSize: 20}}>重量/容量： </Text>
             </View>
             <View style={styles.rightContainer}>
               <TextInput
