@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
       res.json({
         success: true,
         viEmail: user.viEmail,
+        //  vtEmail = vtEmail.replace(/^"|"$/g, "");
         viName: user.viName,
         districtID: user.districtID,
         viBuilding: user.viBuilding,

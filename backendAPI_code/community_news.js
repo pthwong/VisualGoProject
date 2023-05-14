@@ -13,7 +13,6 @@ router.get("/", function (req, res, next) {
         startDateTime.setHours(startDateTime.getHours());
         endDateTime.setHours(endDateTime.getHours());
         result.postStartDateTime = startDateTime.toISOString();
-        result.postEndDateTime = endDateTime.toISOString();
       });
 
       res.send({
