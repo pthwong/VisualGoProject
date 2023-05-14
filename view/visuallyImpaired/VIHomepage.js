@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 // import Location from '../../components/Location';
 
 function VIHomepage() {
@@ -32,6 +33,7 @@ function VIHomepage() {
   const [currentDate, setCurrentDate] = useState(null);
 
   const [weatherData, setWeatherData] = useState(null);
+  const [pandemicNoCases, setPandemicNoCases] = useState(null);
 
   const [name, setName] = useState(null);
 
@@ -50,7 +52,7 @@ function VIHomepage() {
 
   useEffect(() => {
     const fetchName = async () => {
-      let storedName = await AsyncStorage.getItem('vtName');
+      let storedName = await AsyncStorage.getItem('viName');
       if (storedName) {
         storedName = storedName.replace(/['"]+/g, '');
         setName(storedName);
@@ -156,7 +158,7 @@ function VIHomepage() {
     const intervalId = setInterval(() => {
       setCurrentTime(new Date());
       setCurrentDate(
-        new Intl.DateTimeFormat('en-US', {
+        new Intl.DateTimeFormat('zh-HK', {
           day: 'numeric',
           month: 'long',
           year: 'numeric',
@@ -168,18 +170,19 @@ function VIHomepage() {
 
   useEffect(() => {
     // Fetch initial data
-    fetchData();
+    fetchWeatherData();
+    fetchPandemicData();
 
     // Set up interval to fetch new data every hour
     const interval = setInterval(() => {
-      fetchData();
+      fetchWeatherData();
     }, 60 * 60 * 1000);
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(interval);
   }, []);
 
-  async function fetchData() {
+  async function fetchWeatherData() {
     // Get current location using Geolocation API
     try {
       Geolocation.getCurrentPosition(
@@ -215,6 +218,19 @@ function VIHomepage() {
       );
     } catch (error) {
       console.warn('Error:\n', error);
+    }
+  }
+
+  async function fetchPandemicData() {
+    try {
+      const response = await fetch(
+        `https://chp-dashboard.geodata.gov.hk/covid-19/data/keynum.json`,
+      );
+      const responseData = await response.json();
+      const noOfCases = responseData.Confirmed_Delta;
+      setPandemicNoCases(noOfCases);
+    } catch (error) {
+      console.warn('Pandemic data fetched error: \n', error);
     }
   }
 
@@ -258,7 +274,7 @@ function VIHomepage() {
           {weatherData ? (
             <>
               <Text
-                style={styles.weatherInfo}
+                style={styles.info}
                 accessible={true}
                 accessibilityLabel={`氣溫: ${Math.round(
                   weatherData.temperature,
@@ -266,7 +282,7 @@ function VIHomepage() {
                 {Math.round(weatherData.temperature)}°C
               </Text>
               <Text
-                style={styles.weatherInfo}
+                style={styles.info}
                 accessible={true}
                 accessibilityLabel={`相對濕度: ${Math.round(
                   weatherData.humidity,
@@ -284,13 +300,40 @@ function VIHomepage() {
               />
             </>
           ) : (
-            <Text style={styles.weatherInfo}>Loading...</Text>
+            <Text style={styles.info}>Loading...</Text>
           )}
         </View>
-        <Text style={styles.titleChi}>你好 {name}</Text>
+        <View style={{padding: 10}}></View>
+        <View style={styles.infoContainer}>
+          <Image
+            source={require('./../../assets/pandemic.png')}
+            style={{width: 30, height: 30, marginLeft: '5%', marginRight: '5%'}}
+            accessible={true}
+            accessibilityLabel="每日新冠病毒疫情數字"
+          />
+          <Ionicons
+            name="triangle"
+            size={30}
+            color="red"
+            accessible={true}
+            accessibilityLabel={`昨天疫情數字:多${pandemicNoCases}宗新冠病毒個案`}
+          />
+          <Text
+            style={styles.info}
+            accessible={true}
+            accessibilityLabel={`昨天疫情數字:多${pandemicNoCases}宗新冠病毒個案`}>
+            {pandemicNoCases}
+          </Text>
+        </View>
+        <Text
+          style={styles.titleChi}
+          accessibile={true}
+          accessibilityLabel={`你好，${name}，歡迎使用，請選取下列功能`}>
+          你好 {name}
+        </Text>
       </View>
 
-      <SafeAreaView style={styles.subContainer}>
+      <ScrollView style={styles.subContainer}>
         <TouchableOpacity
           style={[styles.btnVisual2]}
           onPress={this.visualSuppPress2}>
@@ -319,7 +362,30 @@ function VIHomepage() {
           onPress={this.settingsPress}>
           <Text style={styles.btnTxt}>設定</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+        {/* <Card
+          title="視覺支援"
+          description="Some description here..."
+          onPress={this.visualSuppPress2}
+        />
+        <Card
+          title="社區資訊"
+          description="Some description here..."
+          onPress={this.communityPress}
+          style={{
+            backgroundColor: '#97F9F9',
+            opacity: 1,
+          }}
+        />
+        <Card
+          title="設定"
+          description="Some description here..."
+          onPress={this.settingsPress}
+          style={{
+            backgroundColor: '#97F9F9',
+            opacity: 1,
+          }}
+        /> */}
+      </ScrollView>
     </View>
   );
 }
@@ -330,15 +396,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#97F9F9',
   },
   subContainer: {
-    marginTop: -500,
+    marginTop: -280,
     flex: 1,
     backgroundColor: 'white',
+    borderTopLeftRadius: 70,
   },
   titleChi: {
     marginTop: '5%',
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 30,
+    fontSize: 40,
     color: 'black',
   },
   titleEng: {
@@ -352,30 +419,30 @@ const styles = StyleSheet.create({
     marginTop: '15%',
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 15,
+    fontSize: 25,
     color: 'black',
     textAlign: 'center',
   },
   titleTime: {
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 15,
+    fontSize: 25,
     color: 'black',
     textAlign: 'center',
   },
-  weatherInfo: {
+  info: {
     marginLeft: '5%',
     marginRight: '5%',
-    fontSize: 15,
+    fontSize: 25,
     color: 'black',
     textAlign: 'center',
   },
   infoText: {
     margin: 5,
-    fontSize: 20,
+    fontSize: 25,
   },
   btnVisual: {
-    backgroundColor: '#ffd63f',
+    backgroundColor: '#97F9F9',
     color: 'black',
     width: '50%',
     height: 150,
@@ -388,25 +455,13 @@ const styles = StyleSheet.create({
   },
   btnVisual2: {
     // backgroundColor: btnVisual2Holder ? 'grey' : '#97F9F9',
-    backgroundColor: '#ffd63f',
+    backgroundColor: '#97F9F9',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
-  },
-  btnPandemic: {
-    backgroundColor: '#ADECC1',
-    color: 'black',
-    width: '50%',
-    height: 150,
-    marginLeft: '5%',
-    marginRight: '5%',
-    paddingTop: '14%',
-    borderRadius: 20,
-    margin: -10,
     // shadowOpacity: 0.1,
   },
   btnCommunity: {
@@ -449,6 +504,24 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 120,
   },
+  // card: {
+  //   backgroundColor: '#fff',
+  //   borderRadius: 5,
+  //   padding: 30,
+  //   margin: 10,
+  //   shadowColor: '#000',
+  //   shadowOffset: {width: 0, height: 2},
+  //   shadowOpacity: 0.8,
+  //   shadowRadius: 2,
+  //   elevation: 5,
+  // },
+  // cardTitle: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  // },
+  // cardDescription: {
+  //   fontSize: 14,
+  // },
 });
 
 export default VIHomepage;
