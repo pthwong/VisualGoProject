@@ -1,14 +1,18 @@
+import {useNavigation} from '@react-navigation/native';
 import {addDays, format, differenceInDays} from 'date-fns';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useLayoutEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   Text,
   View,
   RefreshControl,
+  BackHandler,
+  TouchableOpacity,
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 LocaleConfig.locales['zh'] = {
   monthNames: [
@@ -56,6 +60,37 @@ LocaleConfig.defaultLocale = 'zh';
 function VICommunityPage() {
   const [items, setItems] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}
+          accessible={true}
+          accessibilityLabel="返回視障人士主頁">
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const getData = useCallback(async () => {
     setLoading(true);

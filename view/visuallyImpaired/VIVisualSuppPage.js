@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,13 +7,44 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function VIVisualSuppPage() {
   //   const [email, onChangeText] = useState('');
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}
+          accessible={true}
+          accessibilityLabel="返回視障人士主頁">
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   barcodeScannerPress = () => {
     navigation.navigate('VIBarcodeScannerPage');

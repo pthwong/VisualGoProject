@@ -1,5 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import React, {useState, useEffect, useRef, useLayoutEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  BackHandler,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
   Camera,
@@ -8,6 +15,7 @@ import {
 } from 'react-native-vision-camera';
 
 import axios from 'axios';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function VIPriceTagScannerPage() {
   const navigation = useNavigation();
@@ -25,6 +33,35 @@ function VIPriceTagScannerPage() {
   const [priceTagInfoURL, setPriceTagInfoURL] = useState(null);
 
   const [pricetagInfo, setPricetagInfo] = useState(null);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 4}}
+          accessible={true}
+          accessibilityLabel="返回視覺支援頁面">
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   //MS Azure Custom Vision
   const predictionKey = '7308a0fa8d364428af85ad5431749bdb';
