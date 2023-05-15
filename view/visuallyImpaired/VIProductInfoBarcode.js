@@ -32,6 +32,9 @@ function VIProductInfoBarcode() {
   const [productCountry, setProductCountry] = useState(null);
   const [productUnit, setProductUnit] = useState(null);
   const [tagName, setTagName] = useState(null);
+  const [bestBefore, setBestBefore] = useState(null);
+  const [eatBefore, setEatBefore] = useState(null);
+  const [useBefore, setUseBefore] = useState(null);
 
   const [ingredients, setIngredients] = useState('');
   const [servings, setServings] = useState('');
@@ -192,6 +195,9 @@ function VIProductInfoBarcode() {
       setProductCountry(dbProduct.productCountry);
       setProductUnit(dbProduct.productUnit);
       setTagName(dbProduct.tagName);
+      setBestBefore(dbProduct.bestBefore);
+      setEatBefore(dbProduct.eatBefore);
+      setUseBefore(dbProduct.useBefore);
     }
     setLoading(false);
   }, [fetchProductDataFromDB, fetchDataFromBarcodePlus, pdid, productBarcode]);
@@ -360,6 +366,27 @@ function VIProductInfoBarcode() {
                     品牌名稱
                   </Text>
                   <Text style={styles.infoRightContainer}>{productBrand}</Text>
+                </View>
+              </TouchableOpacity>
+              <View style={styles.hLine} />
+            </>
+          ) : null}
+        </>
+        <>
+          {bestBefore ? (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('pressed');
+                }}>
+                <View style={styles.infoContainer}>
+                  <Text
+                    style={styles.infoLeftContainer}
+                    accessible={true}
+                    accessibilityLabel="此日期前最佳：">
+                    此日期前最佳
+                  </Text>
+                  <Text style={styles.infoRightContainer}>{bestBefore}</Text>
                 </View>
               </TouchableOpacity>
               <View style={styles.hLine} />

@@ -94,6 +94,12 @@ function VTAddProductInfoPage({route}) {
   const [productCountry, setProductCountry] = useState(null);
   const [productUnit, setProductUnit] = useState(null);
   const [tagName, setTagName] = useState(null);
+  const [bestBefore, setBestBefore] = useState(null);
+  const [showBestBefore, setShowBestBefore] = useState(false);
+  const [eatBefore, setEatBefore] = useState(null);
+  const [showEatBefore, setShowEatBefore] = useState(false);
+  const [useBefore, setUseBefore] = useState(null);
+  const [showUseBefore, setShowUseBefore] = useState(false);
 
   // others
   const [vtEmail, setVtEmail] = useState('');
@@ -195,7 +201,42 @@ function VTAddProductInfoPage({route}) {
     productBarcode,
   ]);
 
+  const onChangeBestBefore = (event, selectedDate) => {
+    const currentDate = selectedDate || bestBefore;
+    setShowBestBefore(Platform.OS === 'ios');
+    setBestBefore(currentDate);
+  };
+
+  const onChangeEatBefore = (event, selectedDate) => {
+    const currentDate = selectedDate || eatBefore;
+    setShowEatBefore(Platform.OS === 'ios');
+    setEatBefore(currentDate);
+  };
+
+  const onChangeUseBefore = (event, selectedDate) => {
+    const currentDate = selectedDate || useBefore;
+    setShowUseBefore(Platform.OS === 'ios');
+    setUseBefore(currentDate);
+  };
+
+  function formatDateToISOWithoutTimezone(date) {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() is zero-indexed, so we must increment by 1
+    const day = ('0' + date.getDate()).slice(-2);
+
+    return `${year}-${month}-${day}`;
+  }
+
   addProductInfo = async () => {
+    let formattedBestBefore = bestBefore
+      ? formatDateToISOWithoutTimezone(bestBefore)
+      : null;
+    let formattedEatBefore = eatBefore
+      ? formatDateToISOWithoutTimezone(eatBefore)
+      : null;
+    let formattedUseBefore = useBefore
+      ? formatDateToISOWithoutTimezone(useBefore)
+      : null;
     console.log('Result: \n');
     if (!productName) {
       Toast.show({
@@ -225,6 +266,9 @@ function VTAddProductInfoPage({route}) {
               productCountry,
               productUnit,
               tagName,
+              bestBefore: formattedBestBefore,
+              eatBefore: formattedEatBefore,
+              useBefore: formattedUseBefore,
               productDesc,
             }),
           },
@@ -315,6 +359,125 @@ function VTAddProductInfoPage({route}) {
               />
             </View>
           </View>
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>此日期前最佳：</Text>
+            </View>
+            <View
+              style={[
+                styles.rightContainer,
+                {flexDirection: 'row', alignItems: 'center'},
+              ]}>
+              <TouchableOpacity onPress={() => setShowBestBefore(true)}>
+                <Text style={styles.input}>
+                  {bestBefore
+                    ? bestBefore.toLocaleDateString('zh-HK', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : '選取日期'}
+                </Text>
+              </TouchableOpacity>
+              {bestBefore && (
+                <View style={styles.rightClearContainer}>
+                  <TouchableOpacity onPress={() => setBestBefore(null)}>
+                    <Ionicons name={'close-sharp'} size={30} />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {showBestBefore && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={bestBefore || new Date()}
+                  mode="date"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChangeBestBefore}
+                />
+              )}
+            </View>
+          </View>
+
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>此日期前食用：</Text>
+            </View>
+            <View
+              style={[
+                styles.rightContainer,
+                {flexDirection: 'row', alignItems: 'center'},
+              ]}>
+              <TouchableOpacity onPress={() => setShowEatBefore(true)}>
+                <Text style={styles.input}>
+                  {eatBefore
+                    ? eatBefore.toLocaleDateString('zh-HK', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : '選取日期'}
+                </Text>
+              </TouchableOpacity>
+              {eatBefore && (
+                <View style={styles.rightClearContainer}>
+                  <TouchableOpacity onPress={() => setEatBefore(null)}>
+                    <Ionicons name={'close-sharp'} size={30} />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {showEatBefore && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={eatBefore || new Date()}
+                  mode="date"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChangeEatBefore}
+                />
+              )}
+            </View>
+          </View>
+
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Text style={{fontSize: 20}}>此日期前使用：</Text>
+            </View>
+            <View
+              style={[
+                styles.rightContainer,
+                {flexDirection: 'row', alignItems: 'center'},
+              ]}>
+              <TouchableOpacity onPress={() => setShowUseBefore(true)}>
+                <Text style={styles.input}>
+                  {useBefore
+                    ? useBefore.toLocaleDateString('zh-HK', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : '選取日期'}
+                </Text>
+              </TouchableOpacity>
+              {useBefore && (
+                <View style={styles.rightClearContainer}>
+                  <TouchableOpacity onPress={() => setUseBefore(null)}>
+                    <Ionicons name={'close-sharp'} size={30} />
+                  </TouchableOpacity>
+                </View>
+              )}
+              {showUseBefore && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={useBefore || new Date()}
+                  mode="date"
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChangeUseBefore}
+                />
+              )}
+            </View>
+          </View>
           <View
             style={{
               borderBottomColor: 'grey',
@@ -351,12 +514,12 @@ function VTAddProductInfoPage({route}) {
           />
           <View style={styles.container}>
             <View style={styles.leftContainer}>
-              <Text style={{fontSize: 20}}>重量/容量： </Text>
+              <Text style={{fontSize: 20}}>重量/容量/數量： </Text>
             </View>
             <View style={styles.rightContainer}>
               <TextInput
                 style={styles.input}
-                placeholder="輸入重量"
+                placeholder="輸入重量/容量/數量"
                 value={productUnit}
                 onChangeText={productUnit => {
                   setProductUnit(productUnit);
