@@ -130,7 +130,10 @@ function VTBarcodeScannerNutritionPage() {
             const openFoodFactsProduct = await fetchDataFromOpenFoodFacts(
               scannedBarcode.rawValue,
             );
-            if (openFoodFactsProduct.status === 0) {
+            if (
+              openFoodFactsProduct.status === 0 ||
+              openFoodFactsProduct.product.nutriments === {}
+            ) {
               Alert.alert(
                 '條碼已掃描',
                 `沒有此商品的相關營養資訊，請問可以幫忙加入資訊嗎？`,
