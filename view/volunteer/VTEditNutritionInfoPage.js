@@ -126,6 +126,7 @@ function VTEditNutritionInfoPage({route}) {
 
   useEffect(() => {
     getProductInfo();
+    getEmail();
   }, [getProductInfo]);
 
   const getProductInfo = useCallback(async () => {
@@ -159,6 +160,15 @@ function VTEditNutritionInfoPage({route}) {
     setLoading(false);
   }, [fetchDataFromDB, navigation, productBarcode]);
 
+  const getEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem('vtEmail');
+      setVtEmail(email);
+    } catch (error) {
+      console.error('Error getting email:\n', error);
+    }
+  };
+
   editNutritionInfo = async () => {
     console.log(
       'Result: \n',
@@ -179,6 +189,7 @@ function VTEditNutritionInfoPage({route}) {
       vitamin_c,
       calcium,
       iron,
+      vtEmail,
     );
 
     try {
@@ -207,6 +218,7 @@ function VTEditNutritionInfoPage({route}) {
             vitamin_c,
             calcium,
             iron,
+            vtEmail,
           }),
         },
       );

@@ -122,6 +122,36 @@ function VTEditProductInfoPage({route}) {
     }
   }, []);
 
+  useEffect(() => {
+    getProductInfo();
+  }, [getProductInfo]);
+
+  const getProductInfo = useCallback(async () => {
+    setLoading(true);
+    const dbProduct = await fetchDataFromDB(productBarcode);
+
+    if (!dbProduct.productBarcode || !productBarcode) {
+      //1. fetch data from Barcode Plus
+      alert('錯誤: no data fetched');
+      navigation.navigate('VTVisualSuppPage');
+    } else {
+      //2. Otherwise, fetch data from Database
+      setProductBrand(dbProduct.productBrand);
+      setProductName(dbProduct.productName);
+      setProductDesc(dbProduct.productDesc);
+      setProductCountry(dbProduct.productCountry);
+      setProductUnit(dbProduct.productUnit);
+      setTagName(dbProduct.tagName);
+      setBestBefore(
+        dbProduct.bestBefore ? new Date(dbProduct.bestBefore) : null,
+      );
+      setEatBefore(dbProduct.eatBefore ? new Date(dbProduct.eatBefore) : null);
+      setUseBefore(dbProduct.useBefore ? new Date(dbProduct.useBefore) : null);
+    }
+    // console.log('best before\n', dbProduct.bestBefore);
+    setLoading(false);
+  }, [fetchDataFromDB, navigation, productBarcode]);
+
   //Dates
 
   const onChangeBestBefore = (event, selectedDate) => {
@@ -162,36 +192,6 @@ function VTEditProductInfoPage({route}) {
       console.error('Error getting email:\n', error);
     }
   };
-
-  useEffect(() => {
-    getProductInfo();
-  }, [getProductInfo]);
-
-  const getProductInfo = useCallback(async () => {
-    setLoading(true);
-    const dbProduct = await fetchDataFromDB(productBarcode);
-
-    if (!dbProduct.productBarcode || !productBarcode) {
-      //1. fetch data from Barcode Plus
-      alert('錯誤: no data fetched');
-      navigation.navigate('VTVisualSuppPage');
-    } else {
-      //2. Otherwise, fetch data from Database
-      setProductBrand(dbProduct.productBrand);
-      setProductName(dbProduct.productName);
-      setProductDesc(dbProduct.productDesc);
-      setProductCountry(dbProduct.productCountry);
-      setProductUnit(dbProduct.productUnit);
-      setTagName(dbProduct.tagName);
-      setBestBefore(
-        dbProduct.bestBefore ? new Date(dbProduct.bestBefore) : null,
-      );
-      setEatBefore(dbProduct.eatBefore ? new Date(dbProduct.eatBefore) : null);
-      setUseBefore(dbProduct.useBefore ? new Date(dbProduct.useBefore) : null);
-    }
-    // console.log('best before\n', dbProduct.bestBefore);
-    setLoading(false);
-  }, [fetchDataFromDB, navigation, productBarcode]);
 
   editProductInfo = async () => {
     let formattedBestBefore = bestBefore
@@ -248,6 +248,7 @@ function VTEditProductInfoPage({route}) {
               eatBefore: formattedEatBefore,
               useBefore: formattedUseBefore,
               productDesc,
+              vtEmail,
             }),
           },
         );

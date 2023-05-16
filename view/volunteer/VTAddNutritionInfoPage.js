@@ -127,6 +127,7 @@ function VTAddNutritionInfoPage({route}) {
 
   useEffect(() => {
     getProductInfo();
+    getEmail();
   }, [getProductInfo]);
 
   const getProductInfo = useCallback(async () => {
@@ -137,7 +138,10 @@ function VTAddNutritionInfoPage({route}) {
     // setIngredients(openFoodFactsProduct.ingredients);
     // setServings(openFoodFactsProduct.servings);
     // console.log('nutrition 2: ', openFoodFactsProduct);
-    if (openFoodFactsProduct.status === 0) {
+    if (
+      openFoodFactsProduct.status === 0 ||
+      openFoodFactsProduct.product.nutriments === {}
+    ) {
       setLoading(false);
     } else {
       setEnergy(openFoodFactsProduct.product.nutriments.energy.toString());
@@ -195,6 +199,15 @@ function VTAddNutritionInfoPage({route}) {
     }
   }, [fetchDataFromFacts, productBarcode]);
 
+  const getEmail = async () => {
+    try {
+      const email = await AsyncStorage.getItem('vtEmail');
+      setVtEmail(email);
+    } catch (error) {
+      console.error('Error getting email:\n', error);
+    }
+  };
+
   editNutritionInfo = async () => {
     console.log(
       'Result: \n',
@@ -216,6 +229,7 @@ function VTAddNutritionInfoPage({route}) {
       vitamin_c,
       calcium,
       iron,
+      vtEmail,
     );
 
     try {
@@ -245,6 +259,7 @@ function VTAddNutritionInfoPage({route}) {
             vitamin_c,
             calcium,
             iron,
+            vtEmail,
           }),
         },
       );

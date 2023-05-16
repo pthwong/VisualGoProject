@@ -193,13 +193,9 @@ function VTAddProductInfoPage({route}) {
       setTagName(dbProduct.tagName);
     }
     setLoading(false);
-  }, [
-    fetchDataFromDB,
-    fetchDataFromBarcodePlus,
-    navigation,
-    pdid,
-    productBarcode,
-  ]);
+  }, [fetchDataFromDB, fetchDataFromBarcodePlus, pdid, productBarcode]);
+
+  //Dates
 
   const onChangeBestBefore = (event, selectedDate) => {
     const currentDate = selectedDate || bestBefore;
@@ -237,7 +233,19 @@ function VTAddProductInfoPage({route}) {
     let formattedUseBefore = useBefore
       ? formatDateToISOWithoutTimezone(useBefore)
       : null;
-    console.log('Result: \n');
+    console.log(
+      'Result: \n',
+      productBarcode,
+      productName,
+      productBrand,
+      productCountry,
+      productUnit,
+      tagName,
+      formattedBestBefore,
+      formattedEatBefore,
+      formattedUseBefore,
+      productDesc,
+    );
     if (!productName) {
       Toast.show({
         type: 'error',
@@ -270,6 +278,7 @@ function VTAddProductInfoPage({route}) {
               eatBefore: formattedEatBefore,
               useBefore: formattedUseBefore,
               productDesc,
+              vtEmail,
             }),
           },
         );
