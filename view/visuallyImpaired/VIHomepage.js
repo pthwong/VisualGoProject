@@ -176,6 +176,7 @@ function VIHomepage() {
     // Set up interval to fetch new data every hour
     const interval = setInterval(() => {
       fetchWeatherData();
+      fetchPandemicData();
     }, 60 * 60 * 1000);
 
     // Clean up the interval when the component unmounts
