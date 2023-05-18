@@ -16,6 +16,20 @@ function VTSettingsPage() {
   //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
+  const [name, setName] = useState(null);
+
+  useEffect(() => {
+    const fetchName = async () => {
+      let storedName = await AsyncStorage.getItem('vtName');
+      if (storedName) {
+        storedName = storedName.replace(/['"]+/g, '');
+        setName(storedName);
+      }
+    };
+
+    fetchName();
+  }, []);
+
   vtLogoutPress = async () => {
     await AsyncStorage.removeItem('vtEmail');
     await AsyncStorage.removeItem('vtName');
@@ -31,7 +45,7 @@ function VTSettingsPage() {
 
   return (
     <View>
-      <Text style={styles.titleChi}>設定</Text>
+      <Text style={styles.titleChi}>{name}</Text>
       <Text style={styles.titleEng}>Settings</Text>
       <TouchableOpacity style={styles.regBtn} onPress={this.vtLogoutPress}>
         <Text style={styles.btnTxt}>登出</Text>
