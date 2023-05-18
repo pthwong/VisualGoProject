@@ -117,7 +117,7 @@ function VTAddNutritionInfoPage({route}) {
         //https://world.openfoodfacts.org/api/v0/product/4890008100231.json
       );
       const responseData = await response.json();
-      // console.log('nutrition: ', responseData.product.product.nutriments);
+      // console.log('nutrition: ', responseData.product.product?.nutriments?);
       return responseData || {};
     } catch (error) {
       console.log('Error: \n', error);
@@ -140,56 +140,67 @@ function VTAddNutritionInfoPage({route}) {
     // console.log('nutrition 2: ', openFoodFactsProduct);
     if (
       openFoodFactsProduct.status === 0 ||
-      openFoodFactsProduct.product.nutriments === {}
+      openFoodFactsProduct.product.nutriments === {} ||
+      openFoodFactsProduct.product.nutriscore_data === {}
     ) {
       setLoading(false);
     } else {
-      setEnergy(openFoodFactsProduct.product.nutriments.energy.toString());
+      setEnergy(
+        openFoodFactsProduct.product?.nutriments?.energy?.toString() ?? '',
+      );
       setEnergy_kcal(
-        openFoodFactsProduct.product.nutriments['energy-kcal'].toString() +
+        (openFoodFactsProduct.product?.nutriments?.[
+          'energy-kcal'
+        ]?.toString() ?? '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.energy_unit.toString() || '',
+          (openFoodFactsProduct.product?.nutriments?.energy_unit?.toString() ??
+            ''),
       );
       setFat(
-        openFoodFactsProduct.product.nutriments.fat.toString() +
+        (openFoodFactsProduct.product?.nutriments?.fat?.toString() ?? '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.fat_unit.toString() || '',
+          (openFoodFactsProduct.product?.nutriments?.fat_unit?.toString() ??
+            ''),
       );
       setSaturated_fat(
-        openFoodFactsProduct.product.nutriments['saturated-fat'].toString() +
+        (openFoodFactsProduct.product?.nutriments?.[
+          'saturated-fat'
+        ]?.toString() ?? '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments[
+          (openFoodFactsProduct.product?.nutriments?.[
             'saturated-fat_unit'
-          ].toString() ||
-          '' ||
-          '',
+          ]?.toString() ?? ''),
       );
       // setTrans_fat(openFoodFactsProduct.trans_fat);
       // setCholesterol(openFoodFactsProduct.cholesterol);
       setCarbohydrates(
-        openFoodFactsProduct.product.nutriments.carbohydrates.toString() +
+        (openFoodFactsProduct.product?.nutriments?.carbohydrates?.toString() ??
+          '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.carbohydrates_unit.toString() ||
-          '',
+          (openFoodFactsProduct.product?.nutriments?.carbohydrates_unit?.toString() ??
+            ''),
       );
       setSugars(
-        openFoodFactsProduct.product.nutriments.sugars.toString() +
+        (openFoodFactsProduct.product?.nutriments?.sugars?.toString() ?? '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.sugars_unit || '',
+          (openFoodFactsProduct.product?.nutriments?.sugars_unit?.toString() ??
+            ''),
       );
       setFiber(
-        openFoodFactsProduct.product.nutriscore_data.fiber.toString() || '',
+        openFoodFactsProduct.product?.nutriscore_data?.fiber?.toString() ?? '',
       );
       setProteins(
-        openFoodFactsProduct.product.nutriments.proteins.toString() +
+        (openFoodFactsProduct.product?.nutriments?.proteins?.toString() ?? '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.proteins_unit.toString() ||
-          '',
+          (openFoodFactsProduct.product?.nutriments?.proteins_unit?.toString() ??
+            ''),
       );
       setSodium(
-        openFoodFactsProduct.product.nutriments.sodium_value.toString() +
+        (openFoodFactsProduct.product?.nutriments?.sodium_value?.toString() ??
+          '') +
           ' ' +
-          openFoodFactsProduct.product.nutriments.sodium_unit.toString() || '',
+          (openFoodFactsProduct.product?.nutriments?.sodium_unit?.toString() ??
+            ''),
       );
       // setVitamin_a(openFoodFactsProduct.vitamin_a);
       // setVitamin_c(openFoodFactsProduct.vitamin_c);

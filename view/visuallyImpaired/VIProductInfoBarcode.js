@@ -85,17 +85,14 @@ function VIProductInfoBarcode() {
 
   const fetchProductDataFromDB = useCallback(async barcode => {
     try {
-      setLoading(true);
       const response = await fetch(
         `https://api.whomethser.synology.me:3560/visualgo/v1/getProductInfoByBarcode/${barcode}`,
       );
       const responseData = await response.json();
       console.log('DB product data: ', responseData);
-      setLoading(false);
       return responseData.response || {};
     } catch (error) {
       console.log('DB product data Error: \n', error);
-      setLoading(false);
       return {};
     }
   }, []);
@@ -116,17 +113,16 @@ function VIProductInfoBarcode() {
 
   const fetchNutritionDataFromDB = useCallback(async barcode => {
     try {
-      setLoading(true);
       const response = await fetch(
         `https://api.whomethser.synology.me:3560/visualgo/v1/getNutritionInfoByBarcode/${barcode}`,
       );
       const responseData = await response.json();
       console.log('DB nutrition data: ', responseData);
-      setLoading(false);
+
       return responseData.response || {};
     } catch (error) {
       console.log('DB nutrition data Error: \n', error);
-      setLoading(false);
+
       return {};
     }
   }, []);
@@ -154,7 +150,6 @@ function VIProductInfoBarcode() {
   }, [getProductInfo, getNutritionInfo]);
 
   const getProductInfo = useCallback(async () => {
-    setLoading(true);
     const dbProduct = await fetchProductDataFromDB(productBarcode);
     const barcodePlusProduct = await fetchDataFromBarcodePlus(pdid);
 
@@ -199,11 +194,9 @@ function VIProductInfoBarcode() {
       setEatBefore(dbProduct.eatBefore);
       setUseBefore(dbProduct.useBefore);
     }
-    setLoading(false);
   }, [fetchProductDataFromDB, fetchDataFromBarcodePlus, pdid, productBarcode]);
 
   const getNutritionInfo = useCallback(async () => {
-    setLoading(true);
     const dbProduct = await fetchNutritionDataFromDB(productBarcode);
     const openFoodFactsProduct = await fetchDataFromFacts(productBarcode);
 
@@ -212,63 +205,76 @@ function VIProductInfoBarcode() {
 
     if (!dbProduct.productBarcode || !productBarcode) {
       //1. If data not found from database, fetch data from Open Food Facts
-      if (openFoodFactsProduct.status === 0) {
+      if (
+        openFoodFactsProduct.status === 0 ||
+        openFoodFactsProduct.product.nutriments === {} ||
+        openFoodFactsProduct.product.nutriscore_data === {}
+      ) {
         setLoading(false);
       } else {
-        setEnergy(openFoodFactsProduct.product.nutriments.energy.toString());
+        setEnergy(
+          openFoodFactsProduct.product?.nutriments?.energy?.toString() ?? '',
+        );
         setEnergy_kcal(
-          openFoodFactsProduct.product.nutriments['energy-kcal'].toString() +
+          (openFoodFactsProduct.product?.nutriments?.[
+            'energy-kcal'
+          ]?.toString() ?? '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.energy_unit.toString() ||
-            '',
+            (openFoodFactsProduct.product?.nutriments?.energy_unit?.toString() ??
+              ''),
         );
         setFat(
-          openFoodFactsProduct.product.nutriments.fat.toString() +
+          (openFoodFactsProduct.product?.nutriments?.fat?.toString() ?? '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.fat_unit.toString() || '',
+            (openFoodFactsProduct.product?.nutriments?.fat_unit?.toString() ??
+              ''),
         );
         setSaturated_fat(
-          openFoodFactsProduct.product.nutriments['saturated-fat'].toString() +
+          (openFoodFactsProduct.product?.nutriments?.[
+            'saturated-fat'
+          ]?.toString() ?? '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments[
+            (openFoodFactsProduct.product?.nutriments?.[
               'saturated-fat_unit'
-            ].toString() ||
-            '' ||
-            '',
+            ]?.toString() ?? ''),
         );
         // setTrans_fat(openFoodFactsProduct.trans_fat);
         // setCholesterol(openFoodFactsProduct.cholesterol);
         setCarbohydrates(
-          openFoodFactsProduct.product.nutriments.carbohydrates.toString() +
+          (openFoodFactsProduct.product?.nutriments?.carbohydrates?.toString() ??
+            '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.carbohydrates_unit.toString() ||
-            '',
+            (openFoodFactsProduct.product?.nutriments?.carbohydrates_unit?.toString() ??
+              ''),
         );
         setSugars(
-          openFoodFactsProduct.product.nutriments.sugars.toString() +
+          (openFoodFactsProduct.product?.nutriments?.sugars?.toString() ?? '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.sugars_unit || '',
+            (openFoodFactsProduct.product?.nutriments?.sugars_unit?.toString() ??
+              ''),
         );
         setFiber(
-          openFoodFactsProduct.product.nutriscore_data.fiber.toString() || '',
+          openFoodFactsProduct.product?.nutriscore_data?.fiber?.toString() ??
+            '',
         );
         setProteins(
-          openFoodFactsProduct.product.nutriments.proteins.toString() +
+          (openFoodFactsProduct.product?.nutriments?.proteins?.toString() ??
+            '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.proteins_unit.toString() ||
-            '',
+            (openFoodFactsProduct.product?.nutriments?.proteins_unit?.toString() ??
+              ''),
         );
         setSodium(
-          openFoodFactsProduct.product.nutriments.sodium_value.toString() +
+          (openFoodFactsProduct.product?.nutriments?.sodium_value?.toString() ??
+            '') +
             ' ' +
-            openFoodFactsProduct.product.nutriments.sodium_unit.toString() ||
-            '',
+            (openFoodFactsProduct.product?.nutriments?.sodium_unit?.toString() ??
+              ''),
         );
         // setVitamin_a(openFoodFactsProduct.vitamin_a);
         // setVitamin_c(openFoodFactsProduct.vitamin_c);
         // setCalcium(openFoodFactsProduct.calcium);
         // setIron(openFoodFactsProduct.iron);
-        setLoading(false);
       }
     } else {
       //2. Otherwise, fetch data from Database
@@ -290,7 +296,6 @@ function VIProductInfoBarcode() {
       setCalcium(dbProduct.calcium);
       setIron(dbProduct.iron);
     }
-    setLoading(false);
   }, [fetchNutritionDataFromDB, fetchDataFromFacts, productBarcode]);
 
   const emptyListView = () => {
