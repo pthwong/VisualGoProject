@@ -249,7 +249,21 @@ function VISettingsPage() {
           </>
         ) : null}
       </>
-
+      <TouchableOpacity
+        onPress={() => {
+          console.log('pressed');
+        }}>
+        <View style={styles.infoContainer}>
+          <Text
+            style={styles.infoLeftContainer}
+            accessible={true}
+            accessibilityLabel="更改密碼">
+            更改密碼
+          </Text>
+          <Ionicons name={'chevron-forward-outline'} size={30} />
+        </View>
+      </TouchableOpacity>
+      <View style={styles.hLine} />
       <TouchableOpacity
         onPress={() => {
           console.log('pressed');
