@@ -26,7 +26,6 @@ import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
 import VIBarcodeScannerPage from './view/visuallyImpaired/VIBarcodeScannerPage';
 import VIPriceTagScannerPage from './view/visuallyImpaired/VIPriceTagScannerPage';
 import VIProductInfoBarcode from './view/visuallyImpaired/VIProductInfoBarcode';
-import VIObjectDetectPage from './view/visuallyImpaired/VIObjectDetectPage';
 
 //Pages for Volunteers
 import VTLoginPage from './view/volunteer/VTLoginPage';
@@ -339,20 +338,6 @@ function App() {
           options={{
             gestureEnabled: false,
             headerTitle: '價錢牌識別',
-            headerStyle: {
-              backgroundColor: '#97F9F9',
-              shadowColor: '#171717',
-              shadowOffset: {width: -2, height: 4},
-              shadowOpacity: 2,
-            },
-          }}
-        />
-        <Stack.Screen
-          name="VIObjectDetectPage"
-          component={VIObjectDetectPage}
-          options={{
-            gestureEnabled: false,
-            headerTitle: '物件識別',
             headerStyle: {
               backgroundColor: '#97F9F9',
               shadowColor: '#171717',

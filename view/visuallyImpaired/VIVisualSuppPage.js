@@ -52,9 +52,9 @@ function VIVisualSuppPage() {
   priceTagScannerPress = () => {
     navigation.navigate('VIPriceTagScannerPage');
   };
-  objDetectPress = () => {
-    navigation.navigate('VIObjectDetectPage');
-  };
+  // objDetectPress = () => {
+  //   navigation.navigate('VIObjectDetectPage');
+  // };
 
   return (
     <View>
@@ -70,9 +70,9 @@ function VIVisualSuppPage() {
         onPress={this.priceTagScannerPress}>
         <Text style={styles.btnTxt}>價錢牌識別</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.barcodeBtn} onPress={this.objDetectPress}>
+      {/* <TouchableOpacity style={styles.barcodeBtn} onPress={this.objDetectPress}>
         <Text style={styles.btnTxt}>物件識別</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
