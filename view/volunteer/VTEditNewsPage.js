@@ -1,4 +1,4 @@
-import {React, useState, useEffect, useLayoutEffect} from 'react';
+import {React, useState, useEffect, useLayoutEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -62,7 +62,7 @@ function VTEditNewsPage({route}) {
   };
 
   // const [postID, setPostID] = useState('');
-  const [postData, setPostData] = useState(null);
+  // const [postData, setPostData] = useState(null);
 
   const [postTitle, setPostTitle] = useState('');
   const [isEnterPostTitle, setEnterPostTitle] = useState(true);
@@ -74,6 +74,8 @@ function VTEditNewsPage({route}) {
   const [district, setDistrict] = useState('');
   const [vtEmail, setVtEmail] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   const fetchPostData = async postID => {
     try {
       const response = await fetch(
@@ -82,55 +84,52 @@ function VTEditNewsPage({route}) {
       const data = await response.json();
       if (data.error) {
         console.log('API error: ', data.error);
-        setPostData(null);
+        return null;
       } else {
-        setPostData(data);
+        return data;
       }
     } catch (error) {
       console.error(error);
-      setPostData(null);
+      return null;
     }
   };
 
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const fetchData = async () => {
+  //     if (isMounted) {
+  //       await fetchPostData(postID);
+  //     }
+  //   };
+  //   fetchData();
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [postID]);
+
   useEffect(() => {
-    let isMounted = true;
-    const fetchData = async () => {
-      if (isMounted) {
-        await fetchPostData(postID);
-      }
-    };
-    fetchData();
-    return () => {
-      isMounted = false;
-    };
+    getPostData();
+    getEmail();
+  }, [getPostData]);
+
+  const getPostData = useCallback(async () => {
+    setLoading(true);
+    const postData = await fetchPostData(postID);
+    console.log('postData: ', postData);
+    setPostTitle(postData.response.postTitle);
+    setPostDescribe(postData.response.postDescribe);
+    setPostStartDateTime(new Date(postData.response.postStartDateTime));
+    setPostEndDateTime(new Date(postData.response.postEndDateTime));
+    setPostBuilding(postData.response.postBuilding);
+    setDistrict(postData.response.districtID);
+    setLoading(false);
   }, [postID]);
 
   useEffect(() => {
-    if (postData) {
-      console.log('Fetched news data: ', postData);
-      setPostTitle(postData.response.postTitle);
-      setPostDescribe(postData.response.postDescribe);
-      setPostStartDateTime(new Date(postData.response.postStartDateTime));
-      setPostEndDateTime(new Date(postData.response.postEndDateTime));
-      setPostBuilding(postData.response.postBuilding);
-      setDistrict(postData.response.districtID);
-    }
     if (locationName) {
       setPostBuilding(locationName);
     }
-    getEmail();
-  }, [postID, postData, locationName]);
-
-  // const getEmail = async () => {
-  //   try {
-  //     const email = await AsyncStorage.getItem('vtEmail');
-  //     setVtEmail(email);
-  //   } catch (error) {
-  //     console.error('Error getting email:\n', error);
-  //   }
-  // };
-
-  // console.log(postID, postDescribe);
+  }, [locationName]);
 
   const getEmail = async () => {
     try {
@@ -144,8 +143,8 @@ function VTEditNewsPage({route}) {
   leaveEditPress = () => {
     {
       Alert.alert(
-        '確定取消建立社區資訊？',
-        '取消後需要重新建立社區資訊',
+        '確定取消更新社區資訊？',
+        '取消後需要重新更新社區資訊',
         [
           {
             text: '取消',

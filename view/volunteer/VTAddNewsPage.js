@@ -69,13 +69,6 @@ function VTAddNewsPage({route}) {
   const [district, setDistrict] = useState('');
   const [vtEmail, setVtEmail] = useState('');
 
-  useEffect(() => {
-    if (locationName) {
-      setPostBuilding(locationName);
-    }
-    getEmail();
-  }, [locationName]);
-
   leaveEditPress = () => {
     {
       Alert.alert(
@@ -98,6 +91,13 @@ function VTAddNewsPage({route}) {
       );
     }
   };
+
+  useEffect(() => {
+    if (locationName) {
+      setPostBuilding(locationName);
+    }
+    getEmail();
+  }, [locationName]);
 
   const getEmail = async () => {
     try {
