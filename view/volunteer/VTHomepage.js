@@ -343,7 +343,13 @@ function VTHomepage() {
 
       <ScrollView style={styles.subContainer}>
         <TouchableOpacity
-          style={[styles.btnVisual2]}
+          style={[
+            styles.btnVisual2,
+            {
+              backgroundColor: '#ADECC1',
+              opacity: 1,
+            },
+          ]}
           onPress={this.visualSuppPress2}>
           <Text style={styles.btnTxt}>視覺支援</Text>
         </TouchableOpacity>
