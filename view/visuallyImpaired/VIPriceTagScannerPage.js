@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   Image,
   BackHandler,
+  ActivityIndicator,
+  Dimensions,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -33,6 +36,19 @@ function VIPriceTagScannerPage() {
   const [priceTagInfoURL, setPriceTagInfoURL] = useState(null);
 
   const [pricetagInfo, setPricetagInfo] = useState(null);
+
+  const [productNameCN, setProductNameCN] = useState(null);
+  const [productNameEN, setProductNameEN] = useState(null);
+  const [price1, setPrice1] = useState(null);
+  const [price2, setPrice2] = useState(null);
+  const [brandCN, setBrandCN] = useState(null);
+  const [brandEN, setBrandEN] = useState(null);
+  const [productUnit, setProductUnit] = useState(null);
+  const [priceType1, setPriceType1] = useState(null);
+  const [priceType2, setPriceType2] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+  const {width, height} = Dimensions.get('window');
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);
@@ -91,140 +107,17 @@ function VIPriceTagScannerPage() {
     setPrediction(null);
   }
 
-  // async function predictPriceTag(imageUri) {
-  //   let filename = imageUri.split('/').pop();
-  //   let match = /\.(\w+)$/.exec(filename);
-  //   let type = match ? `image/${match[1]}` : `image`;
-  //   let priceTagFormData = new FormData();
-  //   priceTagFormData.append('photo', {uri: imageUri, name: filename, type});
-
-  //   //1. Image classification with different kinds of price tags with MS Azure Custom Vision and return the kind label.
-  //   await axios
-  //     .post(cvEndpoint, priceTagFormData, {
-  //       headers: {
-  //         'Prediction-Key': predictionKey,
-  //         //'Content-Type': 'multipart/form-data',
-  //       },
-  //     })
-  //     .then(async res => {
-  //       console.log(
-  //         'Result:',
-  //         res.data.predictions[0].tagName,
-  //         '\nProbability:',
-  //         res.data.predictions[0].probability,
-  //       );
-  //       if (res.data.predictions[0].tagName === 'other') {
-  //         return;
-  //       } else {
-  //         if (
-  //           res.data.predictions[0].tagName === 'parknshopmarked' &&
-  //           res.data.predictions[0].probability * 100 >= 40
-  //         ) {
-  //           alert(
-  //             'parknshopmarked\nProbability: ' +
-  //               res.data.predictions[0].probability * 100,
-  //           );
-  //           setPrediction(res.data.predictions[0].tagName);
-  //           setpriceTagRecognEndpt(
-  //             `https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2_1:analyze?api-version=2022-08-31`,
-  //           );
-  //           setOcpApimSubKey(`ffd66fa152074fbebe5673c91d6eddae`);
-  //         }
-  //         if (
-  //           res.data.predictions[0].tagName === 'parknshopoffer' &&
-  //           res.data.predictions[0].probability * 100 >= 40
-  //         ) {
-  //           alert(
-  //             'parknshopoffer\nProbability: ' +
-  //               res.data.predictions[0].probability * 100,
-  //           );
-  //           setPrediction(res.data.predictions[0].tagName);
-  //           setpriceTagRecognEndpt(
-  //             `https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_1_new:analyze?api-version=2022-08-31`,
-  //           );
-  //           setOcpApimSubKey(`00d31480815b4113854aeda80222daba`);
-  //         }
-  //         if (
-  //           res.data.predictions[0].tagName === 'wellcomemarked' &&
-  //           res.data.predictions[0].probability * 100 >= 40
-  //         ) {
-  //           alert(
-  //             'wellcomemarked\nProbability: ' +
-  //               res.data.predictions[0].probability * 100,
-  //           );
-  //           setPrediction(res.data.predictions[0].tagName);
-  //           setpriceTagRecognEndpt(
-  //             `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodelv2_1:analyze?api-version=2022-08-31`,
-  //           );
-  //           setOcpApimSubKey(`f0ab5363478845fdb8c657dc7b9bef57`);
-  //         }
-  //         if (
-  //           res.data.predictions[0].tagName === 'wellcomeoffer' &&
-  //           res.data.predictions[0].probability * 100 >= 40
-  //         ) {
-  //           alert(
-  //             'wellcomeoffer\nProbability: ' +
-  //               res.data.predictions[0].probability * 100,
-  //           );
-  //           setPrediction(res.data.predictions[0].tagName);
-  //           setpriceTagRecognEndpt(
-  //             `https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31`,
-  //           );
-  //           setOcpApimSubKey(`1c6126a584bc4e6393d2c46d350be72b`);
-  //         }
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //       alert('Error');
-  //       return err;
-  //     });
-
-  //   //2. Get Price Tag Info URL by Form recognizer
-  //   await axios
-  //     .post(priceTagRecognEndpt, priceTagFormData, {
-  //       headers: {
-  //         'Ocp-Apim-Subscription-Key': ocpApimSubKey,
-  //         //'Content-Type': 'multipart/form-data',
-  //       },
-  //     })
-  //     .then(async res => {
-  //       console.log(
-  //         'Price tag recognition URL:\n ',
-  //         res.headers['operation-location'],
-  //       );
-  //       setPriceTagInfoURL(res.headers['operation-location']);
-  //       console.log('priceTagInfoURL:\n', priceTagInfoURL);
-  //     })
-  //     .catch(err => {
-  //       alert('Error');
-  //       console.log(`2. error: \n`, err);
-  //     });
-
-  //   //3. Get the price tag info by the URL
-  //   await axios
-  //     .post(priceTagInfoURL, priceTagFormData, {
-  //       headers: {
-  //         'Ocp-Apim-Subscription-Key': ocpApimSubKey,
-  //         // 'Content-Type': 'multipart/form-data',
-  //       },
-  //     })
-  //     .then(async res => {
-  //       alert('successful');
-  //       console.log('Result: \n', res.analyzeResult);
-  //     })
-  //     .catch(err => {
-  //       alert('Error');
-  //       console.log(`3. error: \n`, err);
-  //     });
-  // }
-
   async function predictPriceTag(imageUri) {
+    setLoading(true);
     let filename = imageUri.split('/').pop();
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
     let priceTagFormData = new FormData();
-    priceTagFormData.append('photo', {uri: imageUri, name: filename, type});
+    priceTagFormData.append('photo', {
+      uri: imageUri,
+      type,
+      name: filename,
+    });
 
     let formRecogEndpt = '';
     let formRecogKey = '';
@@ -234,8 +127,8 @@ function VIPriceTagScannerPage() {
     await axios
       .post(cvEndpoint, priceTagFormData, {
         headers: {
+          'content-type': 'multipart/form-data',
           'Prediction-Key': predictionKey,
-          //'Content-Type': 'multipart/form-data',
         },
       })
       .then(async res => {
@@ -246,6 +139,14 @@ function VIPriceTagScannerPage() {
           res.data.predictions[0].probability,
         );
         if (res.data.predictions[0].tagName === 'other') {
+          Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+            {
+              text: '確定',
+              onPress: () => {
+                retakePhoto();
+              },
+            },
+          ]);
           return;
         } else {
           //1.1 parknshopmarked
@@ -256,17 +157,12 @@ function VIPriceTagScannerPage() {
             formRecogEndpt =
               'https://fypparknshopmarkedv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopmarkedformmodelv2_1:analyze?api-version=2022-08-31';
             formRecogKey = 'ffd66fa152074fbebe5673c91d6eddae';
-            alert(
-              'parknshopmarked\nProbability: ' +
-                res.data.predictions[0].probability * 100,
-            );
             setPrediction(res.data.predictions[0].tagName);
             //1.1.1 Get Price Tag Info URL by Form recognizer
             await axios
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
                   'Ocp-Apim-Subscription-Key': formRecogKey,
-                  //'Content-Type': 'multipart/form-data',
                 },
               })
               .then(async res => {
@@ -276,26 +172,143 @@ function VIPriceTagScannerPage() {
                 );
                 formRegResEndpt = res.headers['operation-location'];
                 console.log('priceTagInfoURL:\n', formRegResEndpt);
+
+                //1.1.2 Get the price tag info by the URL
+                let result;
+                do {
+                  // delay 2 seconds between requests
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  result = await axios
+                    .get(formRegResEndpt, {
+                      headers: {
+                        'Ocp-Apim-Subscription-Key': formRecogKey,
+                      },
+                    })
+                    .catch(err => {
+                      alert('Error');
+                      console.log(`3. error: \n`, err);
+                    });
+                } while (result.data.status !== 'succeeded');
+
+                console.log('3. Result: \n', result.data.status);
+                console.log(
+                  '3.1 ProductNameCN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameCN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                );
+                console.log(
+                  '3.2 ProductNameEN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameEN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                );
+                console.log(
+                  '3.3 Price1:',
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                setPrice1(
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.4 Price2:',
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                setPrice2(
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.5 BrandCN:',
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                  '\n',
+                );
+                setBrandCN(
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                );
+                console.log(
+                  '3.6 BrandEN:',
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                  '\n',
+                );
+                setBrandEN(
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                );
+                console.log(
+                  '3.7 ProductUnit:',
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                  '\n',
+                );
+                setProductUnit(
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                );
+                console.log(
+                  '3.8 PriceType1:',
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                  '\n',
+                );
+                setPriceType1(
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                );
+                console.log(
+                  '3.9 PriceType2:',
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                  '\n',
+                );
+                setPriceType2(
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                );
+                console.log(productNameCN);
+                Alert.alert(
+                  '價錢牌已掃描',
+                  `產品名稱：${
+                    result.data.analyzeResult.documents[0].fields.ProductNameCN
+                      .content || ''
+                  }\n價格：$${
+                    result.data.analyzeResult.documents[0].fields.Price1
+                      .content || ''
+                  }\n需要查看更多價錢牌資訊嗎？`,
+                  [
+                    {
+                      text: '取消',
+                      onPress: () => navigation.goBack(),
+                      style: 'destructive',
+                    },
+                    {
+                      text: '確定',
+                      onPress: () => {},
+                    },
+                  ],
+                );
               })
               .catch(err => {
                 alert('Error');
                 console.log(`2. error: \n`, err);
-              });
-
-            //1.1.2 Get the price tag info by the URL
-            await axios
-              .get(formRegResEndpt, {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': formRecogKey,
-                },
-              })
-              .then(result => {
-                alert('successful');
-                console.log('3. Result: \n', result);
-              })
-              .catch(err => {
-                alert('Error');
-                console.log(`3. error: \n`, err);
               });
             //1.1.3 got info completed if no error
           }
@@ -307,17 +320,12 @@ function VIPriceTagScannerPage() {
             formRecogEndpt =
               'https://fypparknshopofferv2.cognitiveservices.azure.com/formrecognizer/documentModels/parknshopofferformmodelv2_1_new:analyze?api-version=2022-08-31';
             formRecogKey = '00d31480815b4113854aeda80222daba';
-            alert(
-              'parknshopoffer\nProbability: ' +
-                res.data.predictions[0].probability * 100,
-            );
             setPrediction(res.data.predictions[0].tagName);
             //1.2.1 Get Price Tag Info URL by Form recognizer
             await axios
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
                   'Ocp-Apim-Subscription-Key': formRecogKey,
-                  //'Content-Type': 'multipart/form-data',
                 },
               })
               .then(async res => {
@@ -327,26 +335,143 @@ function VIPriceTagScannerPage() {
                 );
                 formRegResEndpt = res.headers['operation-location'];
                 console.log('priceTagInfoURL:\n', formRegResEndpt);
+
+                //1.2.2 Get the price tag info by the URL
+                let result;
+                do {
+                  //loop until the result is displayed
+                  // delay 2 seconds between requests
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  result = await axios
+                    .get(formRegResEndpt, {
+                      headers: {
+                        'Ocp-Apim-Subscription-Key': formRecogKey,
+                      },
+                    })
+                    .catch(err => {
+                      alert('Error');
+                      console.log(`3. error: \n`, err);
+                    });
+                } while (result.data.status !== 'succeeded');
+                console.log('3. Result: \n', result.data.status);
+                console.log(
+                  '3.1 ProductNameCN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameCN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                );
+                console.log(
+                  '3.2 ProductNameEN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameEN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                );
+                console.log(
+                  '3.3 Price1:',
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                setPrice1(
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.4 Price2:',
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                setPrice2(
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.5 BrandCN:',
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                  '\n',
+                );
+                setBrandCN(
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                );
+                console.log(
+                  '3.6 BrandEN:',
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                  '\n',
+                );
+                setBrandEN(
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                );
+                console.log(
+                  '3.7 ProductUnit:',
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                  '\n',
+                );
+                setProductUnit(
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                );
+                console.log(
+                  '3.8 PriceType1:',
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                  '\n',
+                );
+                setPriceType1(
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                );
+                console.log(
+                  '3.9 PriceType2:',
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                  '\n',
+                );
+                setPriceType2(
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                );
+                console.log(productNameCN);
+                Alert.alert(
+                  '價錢牌已掃描',
+                  `產品名稱：${
+                    result.data.analyzeResult.documents[0].fields.ProductNameCN
+                      .content || ''
+                  }\n價格：$${
+                    result.data.analyzeResult.documents[0].fields.Price1
+                      .content || ''
+                  }\n需要查看更多價錢牌資訊嗎？`,
+                  [
+                    {
+                      text: '取消',
+                      onPress: () => navigation.goBack(),
+                      style: 'destructive',
+                    },
+                    {
+                      text: '確定',
+                      onPress: () => {},
+                    },
+                  ],
+                );
               })
               .catch(err => {
                 alert('Error');
                 console.log(`2. error: \n`, err);
-              });
-
-            //1.2.2 Get the price tag info by the URL
-            await axios
-              .get(formRegResEndpt, {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': formRecogKey,
-                },
-              })
-              .then(result => {
-                alert('successful');
-                console.log('3. Result: \n', result);
-              })
-              .catch(err => {
-                alert('Error');
-                console.log(`3. error: \n`, err);
               });
             //1.2.3 got info completed if no error
           }
@@ -358,17 +483,12 @@ function VIPriceTagScannerPage() {
             formRecogEndpt =
               'https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomemarkedformmodelv2_1:analyze?api-version=2022-08-31';
             formRecogKey = 'f0ab5363478845fdb8c657dc7b9bef57';
-            alert(
-              'wellcomemarked\nProbability: ' +
-                res.data.predictions[0].probability * 100,
-            );
             setPrediction(res.data.predictions[0].tagName);
             //1.3.1 Get Price Tag Info URL by Form recognizer
             await axios
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
                   'Ocp-Apim-Subscription-Key': formRecogKey,
-                  //'Content-Type': 'multipart/form-data',
                 },
               })
               .then(async res => {
@@ -378,26 +498,143 @@ function VIPriceTagScannerPage() {
                 );
                 formRegResEndpt = res.headers['operation-location'];
                 console.log('priceTagInfoURL:\n', formRegResEndpt);
+
+                //1.3.2 Get the price tag info by the URL
+                let result;
+                do {
+                  //loop until the result is displayed
+                  // delay 2 seconds between requests
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  result = await axios
+                    .get(formRegResEndpt, {
+                      headers: {
+                        'Ocp-Apim-Subscription-Key': formRecogKey,
+                      },
+                    })
+                    .catch(err => {
+                      alert('Error');
+                      console.log(`3. error: \n`, err);
+                    });
+                } while (result.data.status !== 'succeeded');
+                console.log('3. Result: \n', result.data.status);
+                console.log(
+                  '3.1 ProductNameCN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameCN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                );
+                console.log(
+                  '3.2 ProductNameEN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameEN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                );
+                console.log(
+                  '3.3 Price1:',
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                setPrice1(
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.4 Price2:',
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                setPrice2(
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.5 BrandCN:',
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                  '\n',
+                );
+                setBrandCN(
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                );
+                console.log(
+                  '3.6 BrandEN:',
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                  '\n',
+                );
+                setBrandEN(
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                );
+                console.log(
+                  '3.7 ProductUnit:',
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                  '\n',
+                );
+                setProductUnit(
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                );
+                console.log(
+                  '3.8 PriceType1:',
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                  '\n',
+                );
+                setPriceType1(
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                );
+                console.log(
+                  '3.9 PriceType2:',
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                  '\n',
+                );
+                setPriceType2(
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                );
+                console.log(productNameCN);
+                Alert.alert(
+                  '價錢牌已掃描',
+                  `產品名稱：${
+                    result.data.analyzeResult.documents[0].fields.ProductNameCN
+                      .content || ''
+                  }\n價格：$${
+                    result.data.analyzeResult.documents[0].fields.Price1
+                      .content || ''
+                  }\n需要查看更多價錢牌資訊嗎？`,
+                  [
+                    {
+                      text: '取消',
+                      onPress: () => navigation.goBack(),
+                      style: 'destructive',
+                    },
+                    {
+                      text: '確定',
+                      onPress: () => {},
+                    },
+                  ],
+                );
               })
               .catch(err => {
                 alert('Error');
                 console.log(`2. error: \n`, err);
-              });
-
-            //1.3.2 Get the price tag info by the URL
-            await axios
-              .get(formRegResEndpt, {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': formRecogKey,
-                },
-              })
-              .then(result => {
-                alert('successful');
-                console.log('3. Result: \n', result);
-              })
-              .catch(err => {
-                alert('Error');
-                console.log(`3. error: \n`, err);
               });
             //1.3.3 got info completed if no error
           }
@@ -409,17 +646,12 @@ function VIPriceTagScannerPage() {
             formRecogEndpt =
               'https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31';
             formRecogKey = '1c6126a584bc4e6393d2c46d350be72b';
-            alert(
-              'wellcomeoffer\nProbability: ' +
-                res.data.predictions[0].probability * 100,
-            );
             setPrediction(res.data.predictions[0].tagName);
             //1.4.1 Get Price Tag Info URL by Form recognizer
             await axios
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
                   'Ocp-Apim-Subscription-Key': formRecogKey,
-                  //'Content-Type': 'multipart/form-data',
                 },
               })
               .then(async res => {
@@ -429,33 +661,153 @@ function VIPriceTagScannerPage() {
                 );
                 formRegResEndpt = res.headers['operation-location'];
                 console.log('priceTagInfoURL:\n', formRegResEndpt);
+
+                //1.4.2 Get the price tag info by the URL
+                let result;
+                do {
+                  //loop until the result is displayed
+                  // delay 2 seconds between requests
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  result = await axios
+                    .get(formRegResEndpt, {
+                      headers: {
+                        'Ocp-Apim-Subscription-Key': formRecogKey,
+                      },
+                    })
+                    .catch(err => {
+                      alert('Error');
+                      console.log(`3. error: \n`, err);
+                    });
+                } while (result.data.status !== 'succeeded');
+                console.log('3. Result: \n', result.data.status);
+                console.log(
+                  '3.1 ProductNameCN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameCN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameCN
+                    .content || '',
+                );
+                console.log(
+                  '3.2 ProductNameEN:',
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                  '\n',
+                );
+                setProductNameEN(
+                  result.data.analyzeResult.documents[0].fields.ProductNameEN
+                    .content || '',
+                );
+                console.log(
+                  '3.3 Price1:',
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                setPrice1(
+                  result.data.analyzeResult.documents[0].fields.Price1
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.4 Price2:',
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                setPrice2(
+                  result.data.analyzeResult.documents[0].fields.Price2
+                    .content || '',
+                  '\n',
+                );
+                console.log(
+                  '3.5 BrandCN:',
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                  '\n',
+                );
+                setBrandCN(
+                  result.data.analyzeResult.documents[0].fields.BrandCN
+                    .content || '',
+                );
+                console.log(
+                  '3.6 BrandEN:',
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                  '\n',
+                );
+                setBrandEN(
+                  result.data.analyzeResult.documents[0].fields.BrandEN
+                    .content || '',
+                );
+                console.log(
+                  '3.7 ProductUnit:',
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                  '\n',
+                );
+                setProductUnit(
+                  result.data.analyzeResult.documents[0].fields.ProductUnit
+                    .content || '',
+                );
+                console.log(
+                  '3.8 PriceType1:',
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                  '\n',
+                );
+                setPriceType1(
+                  result.data.analyzeResult.documents[0].fields.PriceType1
+                    .content || '',
+                );
+                console.log(
+                  '3.9 PriceType2:',
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                  '\n',
+                );
+                setPriceType2(
+                  result.data.analyzeResult.documents[0].fields.PriceType2
+                    .content || '',
+                );
+                console.log(productNameCN);
+
+                Alert.alert(
+                  '價錢牌已掃描',
+                  `產品名稱：${
+                    result.data.analyzeResult.documents[0].fields.ProductNameCN
+                      .content || ''
+                  }\n價格：$${
+                    result.data.analyzeResult.documents[0].fields.Price1
+                      .content || ''
+                  }\n需要查看更多價錢牌資訊嗎？`,
+                  [
+                    {
+                      text: '取消',
+                      onPress: () => navigation.goBack(),
+                      style: 'destructive',
+                    },
+                    {
+                      text: '確定',
+                      onPress: () => {},
+                    },
+                  ],
+                );
               })
               .catch(err => {
                 alert('Error');
                 console.log(`2. error: \n`, err);
               });
-
-            //1.4.2 Get the price tag info by the URL
-            await axios
-              .get(formRegResEndpt, {
-                headers: {
-                  'Ocp-Apim-Subscription-Key': formRecogKey,
-                },
-              })
-              .then(result => {
-                alert('successful');
-                console.log('3. Result: \n', result);
-              })
-              .catch(err => {
-                alert('Error');
-                console.log(`3. error: \n`, err);
-              });
             //1.4.3 got info completed if no error
           }
         }
+        setLoading(false);
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
         alert('Error');
         return err;
       });
@@ -481,6 +833,12 @@ function VIPriceTagScannerPage() {
       //   </TouchableOpacity>
       // </View>
       <View style={styles.container}>
+        {loading && (
+          <View style={[styles.loadingContainer, {width, height}]}>
+            <ActivityIndicator size="large" color="#000000" />
+            <Text style={styles.loadingText}>載入中...</Text>
+          </View>
+        )}
         {showCamera ? (
           <>
             <Camera
@@ -589,6 +947,15 @@ const styles = StyleSheet.create({
     width: '80%',
     height: 'auto',
     aspectRatio: 9 / 16,
+  },
+  loadingContainer: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+  loadingText: {
+    marginTop: 10,
   },
 });
 
