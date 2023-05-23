@@ -23,33 +23,6 @@ function VTSettingsPage() {
   const [building, setBuilding] = useState(null);
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
-
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-    };
-  }, []);
-
-  const handleBackButton = () => {
-    navigation.goBack();
-    return true;
-  };
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => {
-            navigation.goBack();
-          }}
-          style={{marginLeft: 4}}>
-          <Ionicons name="chevron-back-outline" size={40} color="black" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
-  useEffect(() => {
     const districtList = [
       {label: '中西區', value: 'CEW'},
       {label: '東區', value: 'EAS'},

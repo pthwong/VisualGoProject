@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     paddingLeft: '5%',
   },
   infoRightContainer: {
-    flex: 1,
+    flex: 1.5,
     alignItems: 'flex-end',
     fontSize: 25,
     color: 'black',
