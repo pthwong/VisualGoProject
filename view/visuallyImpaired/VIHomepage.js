@@ -317,12 +317,12 @@ function VIHomepage() {
             size={30}
             color="red"
             accessible={true}
-            accessibilityLabel={`昨天疫情數字:多${pandemicNoCases}宗新冠病毒個案`}
+            accessibilityLabel={`疫情數字:多${pandemicNoCases}宗新冠病毒個案`}
           />
           <Text
             style={styles.info}
             accessible={true}
-            accessibilityLabel={`昨天疫情數字:多${pandemicNoCases}宗新冠病毒個案`}>
+            accessibilityLabel={`疫情數字:多${pandemicNoCases}宗新冠病毒個案`}>
             {pandemicNoCases}
           </Text>
         </View>
