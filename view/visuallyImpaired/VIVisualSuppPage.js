@@ -58,8 +58,7 @@ function VIVisualSuppPage() {
 
   return (
     <View>
-      <Text style={styles.titleChi}>視覺支援頁面</Text>
-      <Text style={styles.titleEng}>Visual Support</Text>
+      <Text style={styles.titleChi}>請選取下列視覺支援功能</Text>
       <TouchableOpacity
         style={styles.barcodeBtn}
         onPress={this.barcodeScannerPress}>
@@ -116,11 +115,11 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.1,
   },
   barcodeBtn: {
-    backgroundColor: '#ffd63f',
+    backgroundColor: '#97F9F9',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
-    padding: '3%',
+    padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
     // shadowOpacity: 0.1,
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
   btnTxt: {
     color: 'black',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 30,
     shadowOpacity: 0.2,
   },
 });
