@@ -391,7 +391,67 @@ function VIProductInfoBarcode() {
                     accessibilityLabel="此日期前最佳：">
                     此日期前最佳
                   </Text>
-                  <Text style={styles.infoRightContainer}>{bestBefore}</Text>
+                  <Text style={styles.infoRightContainer}>
+                    {new Date(bestBefore).toLocaleDateString('zh-HK', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View style={styles.hLine} />
+            </>
+          ) : null}
+        </>
+        <>
+          {eatBefore ? (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('pressed');
+                }}>
+                <View style={styles.infoContainer}>
+                  <Text
+                    style={styles.infoLeftContainer}
+                    accessible={true}
+                    accessibilityLabel="此日期前食用：">
+                    此日期前食用
+                  </Text>
+                  <Text style={styles.infoRightContainer}>
+                    {new Date(eatBefore).toLocaleDateString('zh-HK', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View style={styles.hLine} />
+            </>
+          ) : null}
+        </>
+        <>
+          {useBefore ? (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('pressed');
+                }}>
+                <View style={styles.infoContainer}>
+                  <Text
+                    style={styles.infoLeftContainer}
+                    accessible={true}
+                    accessibilityLabel="此日期前使用：">
+                    此日期前使用
+                  </Text>
+                  <Text style={styles.infoRightContainer}>
+                    {new Date(useBefore).toLocaleDateString('zh-HK', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </Text>
                 </View>
               </TouchableOpacity>
               <View style={styles.hLine} />
