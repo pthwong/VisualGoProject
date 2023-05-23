@@ -11,6 +11,9 @@ import {
   Switch,
   Alert,
   BackHandler,
+  Keyboard,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
@@ -342,189 +345,210 @@ function VTAddNewsPage({route}) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.leftContainer}></View>
-        <View style={styles.rightContainerTitle}>
-          <TextInput
-            style={styles.inputTitle}
-            placeholder="輸入標題"
-            value={postTitle}
-            onChangeText={postTitle => setPostTitle(postTitle)}
-          />
-        </View>
-      </View>
-
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Ionicons name={'time-outline'} size={30} />
-        </View>
-        <View style={styles.rightContainer}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{flex: 1}}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={{flexGrow: 1, paddingBottom: 200}}>
           <View style={styles.container}>
-            <Text style={{fontSize: 20}}>全日</Text>
-            <Switch value={isWholeDay} onValueChange={toggleWholeDay} />
+            <View style={styles.leftContainer}></View>
+            <View style={styles.rightContainerTitle}>
+              <TextInput
+                style={styles.inputTitle}
+                placeholder="輸入標題"
+                value={postTitle}
+                multiline={true}
+                numberOfLines={2}
+                onChangeText={postTitle => setPostTitle(postTitle)}
+              />
+            </View>
           </View>
 
-          {/* StartDateTime */}
-          <TouchableOpacity onPress={showStartDateTimePicker}>
-            <Text style={styles.input}>
-              {postStartDateTime ? (
-                <>
-                  <View style={styles.container}>
-                    <View>
-                      <Text style={{fontSize: 20}}>
-                        {formatDate(postStartDateTime).formattedDate}
-                      </Text>
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20}}>
-                        {formatDate(postStartDateTime).formattedTime}
-                      </Text>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                '選取開始日期'
-              )}
-            </Text>
-          </TouchableOpacity>
-          {showStartPicker && (
-            <View style={{paddingRight: 50}}>
-              <DateTimePicker
-                testID="startDateTimePicker"
-                value={postStartDateTime || new Date()}
-                mode={Platform.OS === 'ios' ? 'datetime' : pickerMode}
-                display="default"
-                onChange={onStartDateTimeChange}
-              />
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
+          />
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Ionicons name={'time-outline'} size={30} />
             </View>
-          )}
+            <View style={styles.rightContainer}>
+              <View style={styles.container}>
+                <Text style={{fontSize: 20}}>全日</Text>
+                <Switch value={isWholeDay} onValueChange={toggleWholeDay} />
+              </View>
 
-          {/* EndDateTime */}
-          <TouchableOpacity onPress={showEndDateTimePicker}>
-            <Text style={styles.input}>
-              {postEndDateTime ? (
-                <>
-                  <View style={styles.container}>
-                    <View>
-                      <Text style={{fontSize: 20}}>
-                        {formatDate(postEndDateTime).formattedDate}
-                      </Text>
-                    </View>
-                    <View>
-                      <Text style={{fontSize: 20}}>
-                        {formatDate(postEndDateTime).formattedTime}
-                      </Text>
-                    </View>
-                  </View>
-                </>
-              ) : (
-                '選取結束日期'
+              {/* StartDateTime */}
+              <TouchableOpacity onPress={showStartDateTimePicker}>
+                <Text style={styles.input}>
+                  {postStartDateTime ? (
+                    <>
+                      <View style={styles.container}>
+                        <View>
+                          <Text style={{fontSize: 20}}>
+                            {formatDate(postStartDateTime).formattedDate}
+                          </Text>
+                        </View>
+                        <View>
+                          <Text style={{fontSize: 20}}>
+                            {formatDate(postStartDateTime).formattedTime}
+                          </Text>
+                        </View>
+                      </View>
+                    </>
+                  ) : (
+                    '選取開始日期'
+                  )}
+                </Text>
+              </TouchableOpacity>
+              {showStartPicker && (
+                <View style={{paddingRight: 50}}>
+                  <DateTimePicker
+                    testID="startDateTimePicker"
+                    value={postStartDateTime || new Date()}
+                    mode={Platform.OS === 'ios' ? 'datetime' : pickerMode}
+                    display="default"
+                    onChange={onStartDateTimeChange}
+                  />
+                </View>
               )}
-            </Text>
-          </TouchableOpacity>
-          {showEndPicker && (
-            <View style={{paddingRight: 50}}>
-              <DateTimePicker
-                testID="endDateTimePicker"
-                value={postEndDateTime || new Date()}
-                mode={Platform.OS === 'ios' ? 'datetime' : pickerMode}
-                display="default"
-                onChange={onEndDateTimeChange}
-              />
-            </View>
-          )}
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Ionicons name={'map-outline'} size={30} />
-        </View>
-        <View style={styles.rightContainer}>
-          {postBuilding === undefined ? (
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() => {
-                navigation.navigate('LocationSearch', {mode: 'add'});
-              }}>
-              <View style={styles.leftArrowContainer}>
-                <Text style={{fontSize: 25}}>選取地點</Text>
-              </View>
-              <View style={styles.rightArrowContainer}>
-                <Ionicons name={'chevron-forward-outline'} size={30} />
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.itemContainer}
-              onPress={() => {
-                navigation.navigate('LocationSearch', {mode: 'add'});
-              }}>
-              <Text style={{fontSize: 20}} lineBreakMode="tail">
-                {postBuilding}
-              </Text>
-            </TouchableOpacity>
-          )}
 
-          <Picker
-            selectedValue={district}
-            onValueChange={value => setDistrict(value)}
-            style={styles.picker}>
-            <Picker.Item label="選取區域..." value={null} />
-            {districtList.map((district, index) => (
-              <Picker.Item
-                key={index}
-                label={district.label}
-                value={district.value}
-              />
-            ))}
-          </Picker>
-          {/* {district && (
+              {/* EndDateTime */}
+              <TouchableOpacity onPress={showEndDateTimePicker}>
+                <Text style={styles.input}>
+                  {postEndDateTime ? (
+                    <>
+                      <View style={styles.container}>
+                        <View>
+                          <Text style={{fontSize: 20}}>
+                            {formatDate(postEndDateTime).formattedDate}
+                          </Text>
+                        </View>
+                        <View>
+                          <Text style={{fontSize: 20}}>
+                            {formatDate(postEndDateTime).formattedTime}
+                          </Text>
+                        </View>
+                      </View>
+                    </>
+                  ) : (
+                    '選取結束日期'
+                  )}
+                </Text>
+              </TouchableOpacity>
+              {showEndPicker && (
+                <View style={{paddingRight: 50}}>
+                  <DateTimePicker
+                    testID="endDateTimePicker"
+                    value={postEndDateTime || new Date()}
+                    mode={Platform.OS === 'ios' ? 'datetime' : pickerMode}
+                    display="default"
+                    onChange={onEndDateTimeChange}
+                  />
+                </View>
+              )}
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
+            }}
+          />
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Ionicons name={'map-outline'} size={30} />
+            </View>
+            <View style={styles.rightContainer}>
+              {postBuilding === undefined ? (
+                <TouchableOpacity
+                  style={styles.itemContainer}
+                  onPress={() => {
+                    navigation.navigate('LocationSearch', {mode: 'add'});
+                  }}>
+                  <View style={styles.childContainer}>
+                    <Text style={({fontSize: 20}, styles.leftArrowContainer)}>
+                      選取地點
+                    </Text>
+                    <Ionicons
+                      style={styles.rightArrowContainer}
+                      name={'chevron-forward-outline'}
+                      size={30}
+                    />
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.itemContainer}
+                  onPress={() => {
+                    navigation.navigate('LocationSearch', {mode: 'add'});
+                  }}>
+                  <View style={styles.childContainer}>
+                    <Text
+                      style={({fontSize: 20}, styles.leftArrowContainer)}
+                      lineBreakMode="tail">
+                      {postBuilding}
+                    </Text>
+                    <Ionicons
+                      style={styles.rightArrowContainer}
+                      name={'chevron-forward-outline'}
+                      size={30}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
+
+              <Picker
+                selectedValue={district}
+                onValueChange={value => setDistrict(value)}
+                style={styles.picker}>
+                <Picker.Item label="選取區域..." value={null} />
+                {districtList.map((district, index) => (
+                  <Picker.Item
+                    key={index}
+                    label={district.label}
+                    value={district.value}
+                  />
+                ))}
+              </Picker>
+              {/* {district && (
             <Text style={styles.selectedDistrict}>
               Selected District: {district}
             </Text>
           )} */}
-        </View>
-      </View>
-      <View
-        style={{
-          borderBottomColor: 'grey',
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          marginTop: '10%',
-        }}
-      />
-      <View style={styles.container}>
-        <View style={styles.leftContainer}>
-          <Ionicons name={'document-text-outline'} size={30} />
-        </View>
-        <View style={styles.rightContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="輸入內容"
-            multiline={true}
-            numberOfLines={4}
-            value={postDescribe}
-            onChangeText={postDescribe => {
-              setPostDescribe(postDescribe);
+            </View>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '10%',
             }}
           />
-        </View>
-      </View>
-    </ScrollView>
+          <View style={styles.container}>
+            <View style={styles.leftContainer}>
+              <Ionicons name={'document-text-outline'} size={30} />
+            </View>
+            <View style={styles.rightContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="輸入內容"
+                multiline={true}
+                numberOfLines={4}
+                value={postDescribe}
+                onChangeText={postDescribe => {
+                  setPostDescribe(postDescribe);
+                }}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -541,7 +565,16 @@ const styles = StyleSheet.create({
   leftContainer: {
     marginLeft: 5,
   },
-  leftArrowContainer: {flexGrow: 1},
+  childContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  leftArrowContainer: {
+    alignItems: 'flex-start',
+    fontSize: 25,
+    color: '#000000',
+    marginRight: 8,
+  },
   rightContainerTitle: {
     flexGrow: 1,
     marginLeft: 8,
@@ -552,11 +585,11 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   rightArrowContainer: {
-    flexGrow: 1,
-  },
-  rightTimeContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    color: 'black',
     textAlign: 'right',
-    paddingRight: 30,
+    paddingVertical: 10,
   },
   input: {
     borderColor: 'gray',
