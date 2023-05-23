@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,11 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function LocationSearch({route}) {
   let [searchText, setSearchText] = useState('');
@@ -24,6 +26,33 @@ function LocationSearch({route}) {
   console.log('params:', route.params);
 
   const mode = route.params?.mode;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={{marginLeft: 5}}>
+          <Ionicons name="chevron-back-outline" size={40} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+    };
+  }, []);
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
 
   useEffect(() => {
     searchBuildings();
@@ -104,7 +133,19 @@ function LocationSearch({route}) {
             <TouchableOpacity
               style={styles.listItem}
               onPress={() => handleBuildingPress(item.buildingName)}>
-              <Text>{item.buildingName}</Text>
+              <View style={styles.childContainer}>
+                <Text
+                  style={({fontSize: 20}, styles.leftArrowContainer)}
+                  lineBreakMode="tail">
+                  {item.buildingName}
+                </Text>
+                <Ionicons
+                  style={styles.rightArrowContainer}
+                  name={'chevron-forward-outline'}
+                  size={30}
+                />
+              </View>
+              {/* <Text>{item.buildingName}</Text> */}
             </TouchableOpacity>
           )}
           keyExtractor={item => item.buildingId}
@@ -119,6 +160,19 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  leftArrowContainer: {
+    alignItems: 'flex-start',
+    fontSize: 25,
+    color: '#000000',
+    marginRight: 8,
+  },
+  rightArrowContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    color: 'black',
+    textAlign: 'right',
+    paddingVertical: 10,
+  },
   title: {
     fontSize: 24,
     marginBottom: 10,
@@ -128,11 +182,16 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    fontSize: 20,
   },
   listItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  childContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
