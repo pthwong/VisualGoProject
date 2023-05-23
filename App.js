@@ -22,10 +22,12 @@ import VILoginPage from './view/visuallyImpaired/VILoginPage';
 import VIRegPage from './view/visuallyImpaired/VIRegPage';
 import VIVisualSuppPage from './view/visuallyImpaired/VIVisualSuppPage';
 import VICommunityPage from './view/visuallyImpaired/VICommunityPage';
+import VICommunityDetailsPage from './view/visuallyImpaired/VICommunityDetailsPage';
 import VISettingsPage from './view/visuallyImpaired/VISettingsPage';
 import VIBarcodeScannerPage from './view/visuallyImpaired/VIBarcodeScannerPage';
 import VIPriceTagScannerPage from './view/visuallyImpaired/VIPriceTagScannerPage';
 import VIProductInfoBarcode from './view/visuallyImpaired/VIProductInfoBarcode';
+import VIProductInfoPriceTag from './view/visuallyImpaired/VIProductInfoPriceTag';
 
 //Pages for Volunteers
 import VTLoginPage from './view/volunteer/VTLoginPage';
@@ -347,10 +349,39 @@ function App() {
           }}
         />
         <Stack.Screen
+          name="VIProductInfoPriceTag"
+          component={VIProductInfoPriceTag}
+          options={{
+            gestureEnabled: false,
+            headerTitle: '價錢牌資訊',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
+          }}
+        />
+        <Stack.Screen
           name="VICommunityPage"
           component={VICommunityPage}
           options={{
             headerTitle: '社區資訊',
+            gestureEnabled: false,
+            backgroundColor: '#97F9F9',
+            headerStyle: {
+              backgroundColor: '#97F9F9',
+              shadowColor: '#171717',
+              shadowOffset: {width: -2, height: 4},
+              shadowOpacity: 2,
+            },
+          }}
+        />
+        <Stack.Screen
+          name="VICommunityDetailsPage"
+          component={VICommunityDetailsPage}
+          options={{
+            headerTitle: '詳細社區資訊',
             gestureEnabled: false,
             backgroundColor: '#97F9F9',
             headerStyle: {
