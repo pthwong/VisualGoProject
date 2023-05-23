@@ -236,34 +236,6 @@ function VIBarcodeScannerPage() {
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
         />
-        {/* <View style={StyleSheet.absoluteFill}>
-          <RNHoleView
-            style={StyleSheet.absoluteFill}
-            hole={[
-              {
-                x: (holeWidth - 200) / 2,
-                y: (holeHeight - 200) / 2,
-                width: 200,
-                height: 200,
-                borderRadius: 10,
-              },
-            ]}
-            color={'rgba(0, 0, 0, 0.6)'}
-          />
-        </View> */}
-
-        {/* <RNHoleView
-          style={StyleSheet.absoluteFill}
-          holes={[
-            {
-              x: (width - holeWidth) / 2,
-              y: (height - holeHeight) / 2,
-              width: holeWidth,
-              height: holeHeight,
-            },
-          ]}
-          backgroundColor={'rgba(0,0,0,0.6)'}
-        /> */}
         <QRCodeMask
           style={StyleSheet.absoluteFill}
           lineDirection="vertical"
@@ -277,7 +249,9 @@ function VIBarcodeScannerPage() {
           showLineAnimated="false"
         />
         {isLoading && (
-          <View style={[styles.loadingContainer, {width, height}]}>
+          <View
+            style={[styles.loadingContainer, {width, height}]}
+            accessibilityLabel="條碼已掃描，載入中">
             <ActivityIndicator size="large" color="#000000" />
             <Text style={styles.loadingText}>載入中...</Text>
           </View>
@@ -367,6 +341,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 10,
+    fontSize: 30,
   },
 });
 
