@@ -21,15 +21,15 @@ router.post("/", async (req, res) => {
     vitamin_c,
     calcium,
     iron,
-    // vtEmail,
+    vtEmail,
   } = req.body;
 
   console.log("Request body:", req.body);
 
-  // vtEmail = vtEmail.replace(/^"|"$/g, "");
+  vtEmail = vtEmail.replace(/^"|"$/g, "");
 
   const query = `
-    INSERT INTO \`Nutrition\` (\`productBarcode\`, \`ingredients\`, \`servings\`, \`energy\`, \`energy_kcal\`, \`fat\`, \`saturated_fat\`, \`trans_fat\`, \`cholesterol\`, \`carbohydrates\`, \`sugars\`, \`proteins\`, \`fiber\`, \`sodium\`, \`vitamin_a\`, \`vitamin_c\`, \`calcium\`, \`iron\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    INSERT INTO \`Nutrition\` (\`productBarcode\`, \`ingredients\`, \`servings\`, \`energy\`, \`energy_kcal\`, \`fat\`, \`saturated_fat\`, \`trans_fat\`, \`cholesterol\`, \`carbohydrates\`, \`sugars\`, \`proteins\`, \`fiber\`, \`sodium\`, \`vitamin_a\`, \`vitamin_c\`, \`calcium\`, \`iron\`, \`vtEmail\`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   `;
 
   global.connection.query(
@@ -53,7 +53,7 @@ router.post("/", async (req, res) => {
       vitamin_c,
       calcium,
       iron,
-      // vtEmail,
+      vtEmail,
     ],
     (err, result) => {
       if (err) {

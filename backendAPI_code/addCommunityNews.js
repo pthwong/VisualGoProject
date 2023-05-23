@@ -11,17 +11,6 @@ function convertToTimeZoneAndFormat(dateString, timeZone) {
   return formattedDate;
 }
 
-function toMySQLDateTimeWithOffset(isoString, offsetInHours) {
-  const date = new Date(isoString);
-  const timezoneOffset = date.getTimezoneOffset() * 60 * 1000;
-  const targetOffset = offsetInHours * 60 * 60 * 1000;
-  const dateWithOffset = new Date(
-    date.getTime() + timezoneOffset + targetOffset
-  );
-
-  return dateWithOffset.toISOString().slice(0, 19).replace("T", " ");
-}
-
 router.post("/", async (req, res) => {
   let {
     postTitle,

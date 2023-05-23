@@ -21,12 +21,15 @@ router.put("/:productBarcode", async (req, res) => {
     vitamin_c,
     calcium,
     iron,
+    vtEmail,
   } = req.body;
 
   console.log("Request body:", req.body);
 
+  vtEmail = vtEmail.replace(/^"|"$/g, "");
+
   const query = `
-    UPDATE \`Nutrition\` SET \`ingredients\` = ?, \`servings\` = ?,\`energy\` = ?,\`energy_kcal\` = ?,\`fat\` = ?, \`saturated_fat\` = ?,\`trans_fat\` = ?,\`cholesterol\` = ?,\`carbohydrates\` = ?,\`sugars\` = ?,\`fiber\` = ?,\`proteins\` = ?,\`sodium\` = ?,\`vitamin_a\` = ?,\`vitamin_c\` = ?,\`calcium\` = ?,\`iron\` = ? WHERE \`productBarcode\` = ?
+    UPDATE \`Nutrition\` SET \`ingredients\` = ?, \`servings\` = ?,\`energy\` = ?,\`energy_kcal\` = ?,\`fat\` = ?, \`saturated_fat\` = ?,\`trans_fat\` = ?,\`cholesterol\` = ?,\`carbohydrates\` = ?,\`sugars\` = ?,\`fiber\` = ?,\`proteins\` = ?,\`sodium\` = ?,\`vitamin_a\` = ?,\`vitamin_c\` = ?,\`calcium\` = ?,\`iron\` = ?,\`vtEmail\` = ? WHERE \`productBarcode\` = ?
   `;
 
   global.connection.query(
@@ -50,6 +53,7 @@ router.put("/:productBarcode", async (req, res) => {
       calcium,
       iron,
       productBarcode,
+      vtEmail,
     ],
     (err, result) => {
       if (err) {

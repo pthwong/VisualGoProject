@@ -1,7 +1,7 @@
 const { utcToZonedTime, format } = require("date-fns-tz");
 const express = require("express");
 const router = express.Router();
-const timeZone = "Asia/Shanghai";
+const timeZone = "Asia/Hong_Kong";
 
 function convertToTimeZoneAndFormat(dateString, timeZone) {
   const date = new Date(dateString);
@@ -35,6 +35,7 @@ router.put("/:postID", async (req, res) => {
   `;
 
   console.log("Start: ", postStartDateTime, "\nEnd: ", postEndDateTime);
+  console.log("building: ", postBuilding);
 
   global.connection.query(
     query,
