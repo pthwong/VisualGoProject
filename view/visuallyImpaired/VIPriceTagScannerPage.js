@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Alert,
+  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -96,15 +97,17 @@ function VIPriceTagScannerPage() {
   async function capturePhoto() {
     if (camera.current !== null) {
       const photo = await camera.current.takePhoto({});
-      setImageSource(photo.path);
+      setImageSource(`file://${photo.path}`);
       setShowCamera(false);
       console.log('Photo path: \n', imageSource);
     }
   }
 
   function retakePhoto() {
+    setLoading(false);
     setShowCamera(true);
     setPrediction(null);
+    setImageSource('');
   }
 
   async function predictPriceTag(imageUri) {
@@ -119,12 +122,14 @@ function VIPriceTagScannerPage() {
       name: filename,
     });
 
+    const axiosInstance = axios.create();
+
     let formRecogEndpt = '';
     let formRecogKey = '';
     let formRegResEndpt = '';
 
     //1. Image classification with different kinds of price tags with MS Azure Custom Vision and return the kind label.
-    await axios
+    await axiosInstance
       .post(cvEndpoint, priceTagFormData, {
         headers: {
           'content-type': 'multipart/form-data',
@@ -159,9 +164,10 @@ function VIPriceTagScannerPage() {
             formRecogKey = 'ffd66fa152074fbebe5673c91d6eddae';
             setPrediction(res.data.predictions[0].tagName);
             //1.1.1 Get Price Tag Info URL by Form recognizer
-            await axios
+            await axiosInstance
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
+                  'content-type': 'multipart/form-data',
                   'Ocp-Apim-Subscription-Key': formRecogKey,
                 },
               })
@@ -178,14 +184,25 @@ function VIPriceTagScannerPage() {
                 do {
                   // delay 2 seconds between requests
                   await new Promise(resolve => setTimeout(resolve, 2000));
-                  result = await axios
+                  result = await axiosInstance
                     .get(formRegResEndpt, {
                       headers: {
                         'Ocp-Apim-Subscription-Key': formRecogKey,
                       },
                     })
                     .catch(err => {
-                      alert('Error');
+                      Alert.alert(
+                        '價錢牌未能掃描',
+                        `價錢牌未能掃描，請重試。`,
+                        [
+                          {
+                            text: '確定',
+                            onPress: () => {
+                              retakePhoto();
+                            },
+                          },
+                        ],
+                      );
                       console.log(`3. error: \n`, err);
                     });
                 } while (result.data.status !== 'succeeded');
@@ -284,30 +301,74 @@ function VIPriceTagScannerPage() {
                     .content || '',
                 );
                 console.log(productNameCN);
+                setLoading(false);
                 Alert.alert(
                   '價錢牌已掃描',
                   `產品名稱：${
                     result.data.analyzeResult.documents[0].fields.ProductNameCN
                       .content || ''
-                  }\n價格：$${
-                    result.data.analyzeResult.documents[0].fields.Price1
-                      .content || ''
-                  }\n需要查看更多價錢牌資訊嗎？`,
+                  }\n${
+                    (result.data.analyzeResult.documents[0].fields.Price2
+                      .content === ''
+                      ? `價格：${result.data.analyzeResult.documents[0].fields.Price2.content}` ||
+                        ''
+                      : `價格：$${result.data.analyzeResult.documents[0].fields.Price1.content}` ||
+                        '',
+                    `\n需要查看更多價錢牌資訊嗎？`)
+                  }`,
                   [
                     {
                       text: '取消',
-                      onPress: () => navigation.goBack(),
-                      style: 'destructive',
+                      onPress: () => {
+                        retakePhoto();
+                      },
                     },
                     {
                       text: '確定',
-                      onPress: () => {},
+                      onPress: () => {
+                        navigation.navigate('VIProductInfoPriceTag', {
+                          ProductNameCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameCN.content || '',
+                          ProductNameEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameEN.content || '',
+                          Price1:
+                            result.data.analyzeResult.documents[0].fields.Price1
+                              .content || '',
+                          Price2:
+                            result.data.analyzeResult.documents[0].fields.Price2
+                              .content || '',
+                          BrandCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandCN.content || '',
+                          BrandEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandEN.content || '',
+                          ProductUnit:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductUnit.content || '',
+                          PriceType1:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType1.content || '',
+                          PriceType2:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType2.content || '',
+                        });
+                      },
                     },
                   ],
                 );
               })
               .catch(err => {
-                alert('Error');
+                Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      retakePhoto();
+                    },
+                  },
+                ]);
                 console.log(`2. error: \n`, err);
               });
             //1.1.3 got info completed if no error
@@ -322,9 +383,10 @@ function VIPriceTagScannerPage() {
             formRecogKey = '00d31480815b4113854aeda80222daba';
             setPrediction(res.data.predictions[0].tagName);
             //1.2.1 Get Price Tag Info URL by Form recognizer
-            await axios
+            await axiosInstance
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
+                  'content-type': 'multipart/form-data',
                   'Ocp-Apim-Subscription-Key': formRecogKey,
                 },
               })
@@ -342,14 +404,25 @@ function VIPriceTagScannerPage() {
                   //loop until the result is displayed
                   // delay 2 seconds between requests
                   await new Promise(resolve => setTimeout(resolve, 2000));
-                  result = await axios
+                  result = await axiosInstance
                     .get(formRegResEndpt, {
                       headers: {
                         'Ocp-Apim-Subscription-Key': formRecogKey,
                       },
                     })
                     .catch(err => {
-                      alert('Error');
+                      Alert.alert(
+                        '價錢牌未能掃描',
+                        `價錢牌未能掃描，請重試。`,
+                        [
+                          {
+                            text: '確定',
+                            onPress: () => {
+                              retakePhoto();
+                            },
+                          },
+                        ],
+                      );
                       console.log(`3. error: \n`, err);
                     });
                 } while (result.data.status !== 'succeeded');
@@ -447,30 +520,75 @@ function VIPriceTagScannerPage() {
                     .content || '',
                 );
                 console.log(productNameCN);
+                setLoading(false);
                 Alert.alert(
                   '價錢牌已掃描',
                   `產品名稱：${
                     result.data.analyzeResult.documents[0].fields.ProductNameCN
                       .content || ''
-                  }\n價格：$${
-                    result.data.analyzeResult.documents[0].fields.Price1
-                      .content || ''
-                  }\n需要查看更多價錢牌資訊嗎？`,
+                  }\n${
+                    (result.data.analyzeResult.documents[0].fields.Price2
+                      .content === ''
+                      ? `價格：${result.data.analyzeResult.documents[0].fields.Price2.content}` ||
+                        ''
+                      : `價格：$${result.data.analyzeResult.documents[0].fields.Price1.content}` ||
+                        '',
+                    `\n需要查看更多價錢牌資訊嗎？`)
+                  }`,
                   [
                     {
                       text: '取消',
-                      onPress: () => navigation.goBack(),
+                      onPress: () => {
+                        retakePhoto();
+                      },
                       style: 'destructive',
                     },
                     {
                       text: '確定',
-                      onPress: () => {},
+                      onPress: () => {
+                        navigation.navigate('VIProductInfoPriceTag', {
+                          ProductNameCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameCN.content || '',
+                          ProductNameEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameEN.content || '',
+                          Price1:
+                            result.data.analyzeResult.documents[0].fields.Price1
+                              .content || '',
+                          Price2:
+                            result.data.analyzeResult.documents[0].fields.Price2
+                              .content || '',
+                          BrandCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandCN.content || '',
+                          BrandEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandEN.content || '',
+                          ProductUnit:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductUnit.content || '',
+                          PriceType1:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType1.content || '',
+                          PriceType2:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType2.content || '',
+                        });
+                      },
                     },
                   ],
                 );
               })
               .catch(err => {
-                alert('Error');
+                Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      retakePhoto();
+                    },
+                  },
+                ]);
                 console.log(`2. error: \n`, err);
               });
             //1.2.3 got info completed if no error
@@ -485,9 +603,10 @@ function VIPriceTagScannerPage() {
             formRecogKey = 'f0ab5363478845fdb8c657dc7b9bef57';
             setPrediction(res.data.predictions[0].tagName);
             //1.3.1 Get Price Tag Info URL by Form recognizer
-            await axios
+            await axiosInstance
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
+                  'content-type': 'multipart/form-data',
                   'Ocp-Apim-Subscription-Key': formRecogKey,
                 },
               })
@@ -505,14 +624,25 @@ function VIPriceTagScannerPage() {
                   //loop until the result is displayed
                   // delay 2 seconds between requests
                   await new Promise(resolve => setTimeout(resolve, 2000));
-                  result = await axios
+                  result = await axiosInstance
                     .get(formRegResEndpt, {
                       headers: {
                         'Ocp-Apim-Subscription-Key': formRecogKey,
                       },
                     })
                     .catch(err => {
-                      alert('Error');
+                      Alert.alert(
+                        '價錢牌未能掃描',
+                        `價錢牌未能掃描，請重試。`,
+                        [
+                          {
+                            text: '確定',
+                            onPress: () => {
+                              retakePhoto();
+                            },
+                          },
+                        ],
+                      );
                       console.log(`3. error: \n`, err);
                     });
                 } while (result.data.status !== 'succeeded');
@@ -610,30 +740,75 @@ function VIPriceTagScannerPage() {
                     .content || '',
                 );
                 console.log(productNameCN);
+                setLoading(false);
                 Alert.alert(
                   '價錢牌已掃描',
                   `產品名稱：${
                     result.data.analyzeResult.documents[0].fields.ProductNameCN
                       .content || ''
-                  }\n價格：$${
-                    result.data.analyzeResult.documents[0].fields.Price1
-                      .content || ''
-                  }\n需要查看更多價錢牌資訊嗎？`,
+                  }\n${
+                    (result.data.analyzeResult.documents[0].fields.Price2
+                      .content === ''
+                      ? `價格：${result.data.analyzeResult.documents[0].fields.Price2.content}` ||
+                        ''
+                      : `價格：$${result.data.analyzeResult.documents[0].fields.Price1.content}` ||
+                        '',
+                    `\n需要查看更多價錢牌資訊嗎？`)
+                  }`,
                   [
                     {
                       text: '取消',
-                      onPress: () => navigation.goBack(),
+                      onPress: () => {
+                        retakePhoto();
+                      },
                       style: 'destructive',
                     },
                     {
                       text: '確定',
-                      onPress: () => {},
+                      onPress: () => {
+                        navigation.navigate('VIProductInfoPriceTag', {
+                          ProductNameCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameCN.content || '',
+                          ProductNameEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameEN.content || '',
+                          Price1:
+                            result.data.analyzeResult.documents[0].fields.Price1
+                              .content || '',
+                          Price2:
+                            result.data.analyzeResult.documents[0].fields.Price2
+                              .content || '',
+                          BrandCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandCN.content || '',
+                          BrandEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandEN.content || '',
+                          ProductUnit:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductUnit.content || '',
+                          PriceType1:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType1.content || '',
+                          PriceType2:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType2.content || '',
+                        });
+                      },
                     },
                   ],
                 );
               })
               .catch(err => {
-                alert('Error');
+                Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      retakePhoto();
+                    },
+                  },
+                ]);
                 console.log(`2. error: \n`, err);
               });
             //1.3.3 got info completed if no error
@@ -644,13 +819,14 @@ function VIPriceTagScannerPage() {
             res.data.predictions[0].probability * 100 >= 40
           ) {
             formRecogEndpt =
-              'https://fypwellcomemarked2.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31';
+              'https://fypwellcomeoffer.cognitiveservices.azure.com/formrecognizer/documentModels/wellcomeofferformmodel2_1:analyze?api-version=2022-08-31';
             formRecogKey = '1c6126a584bc4e6393d2c46d350be72b';
             setPrediction(res.data.predictions[0].tagName);
             //1.4.1 Get Price Tag Info URL by Form recognizer
-            await axios
+            await axiosInstance
               .post(formRecogEndpt, priceTagFormData, {
                 headers: {
+                  'content-type': 'multipart/form-data',
                   'Ocp-Apim-Subscription-Key': formRecogKey,
                 },
               })
@@ -668,14 +844,25 @@ function VIPriceTagScannerPage() {
                   //loop until the result is displayed
                   // delay 2 seconds between requests
                   await new Promise(resolve => setTimeout(resolve, 2000));
-                  result = await axios
+                  result = await axiosInstance
                     .get(formRegResEndpt, {
                       headers: {
                         'Ocp-Apim-Subscription-Key': formRecogKey,
                       },
                     })
                     .catch(err => {
-                      alert('Error');
+                      Alert.alert(
+                        '價錢牌未能掃描',
+                        `價錢牌未能掃描，請重試。`,
+                        [
+                          {
+                            text: '確定',
+                            onPress: () => {
+                              retakePhoto();
+                            },
+                          },
+                        ],
+                      );
                       console.log(`3. error: \n`, err);
                     });
                 } while (result.data.status !== 'succeeded');
@@ -773,31 +960,75 @@ function VIPriceTagScannerPage() {
                     .content || '',
                 );
                 console.log(productNameCN);
-
+                setLoading(false);
                 Alert.alert(
                   '價錢牌已掃描',
                   `產品名稱：${
                     result.data.analyzeResult.documents[0].fields.ProductNameCN
                       .content || ''
-                  }\n價格：$${
-                    result.data.analyzeResult.documents[0].fields.Price1
-                      .content || ''
-                  }\n需要查看更多價錢牌資訊嗎？`,
+                  }\n${
+                    (result.data.analyzeResult.documents[0].fields.Price2
+                      .content === ''
+                      ? `價格：${result.data.analyzeResult.documents[0].fields.Price2.content}` ||
+                        ''
+                      : `價格：$${result.data.analyzeResult.documents[0].fields.Price1.content}` ||
+                        '',
+                    `\n需要查看更多價錢牌資訊嗎？`)
+                  }`,
                   [
                     {
                       text: '取消',
-                      onPress: () => navigation.goBack(),
+                      onPress: () => {
+                        retakePhoto();
+                      },
                       style: 'destructive',
                     },
                     {
                       text: '確定',
-                      onPress: () => {},
+                      onPress: () => {
+                        navigation.navigate('VIProductInfoPriceTag', {
+                          ProductNameCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameCN.content || '',
+                          ProductNameEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductNameEN.content || '',
+                          Price1:
+                            result.data.analyzeResult.documents[0].fields.Price1
+                              .content || '',
+                          Price2:
+                            result.data.analyzeResult.documents[0].fields.Price2
+                              .content || '',
+                          BrandCN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandCN.content || '',
+                          BrandEN:
+                            result.data.analyzeResult.documents[0].fields
+                              .BrandEN.content || '',
+                          ProductUnit:
+                            result.data.analyzeResult.documents[0].fields
+                              .ProductUnit.content || '',
+                          PriceType1:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType1.content || '',
+                          PriceType2:
+                            result.data.analyzeResult.documents[0].fields
+                              .PriceType2.content || '',
+                        });
+                      },
                     },
                   ],
                 );
               })
               .catch(err => {
-                alert('Error');
+                Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+                  {
+                    text: '確定',
+                    onPress: () => {
+                      retakePhoto();
+                    },
+                  },
+                ]);
                 console.log(`2. error: \n`, err);
               });
             //1.4.3 got info completed if no error
@@ -807,8 +1038,17 @@ function VIPriceTagScannerPage() {
       })
       .catch(err => {
         console.log(err);
+        console.log('Axios error:', err.message);
+        console.log('Axios error stack:', err.stack);
         setLoading(false);
-        alert('Error');
+        Alert.alert('價錢牌未能掃描', `價錢牌未能掃描，請重試。`, [
+          {
+            text: '確定',
+            onPress: () => {
+              retakePhoto();
+            },
+          },
+        ]);
         return err;
       });
   }
@@ -820,25 +1060,7 @@ function VIPriceTagScannerPage() {
 
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
-      // <View style={{flex: 1}}>
-      //   {photo && <Image source={{uri: photo}} style={{flex: 1}} />}
-      //   <Camera
-      //     ref={camera}
-      //     style={StyleSheet.absoluteFill}
-      //     device={cameraDevice}
-      //     isActive
-      //   />
-      //   <TouchableOpacity style={styles.regBtn} onPress={takePicture}>
-      //     <Text style={styles.btnTxt}>拍照</Text>
-      //   </TouchableOpacity>
-      // </View>
       <View style={styles.container}>
-        {loading && (
-          <View style={[styles.loadingContainer, {width, height}]}>
-            <ActivityIndicator size="large" color="#000000" />
-            <Text style={styles.loadingText}>載入中...</Text>
-          </View>
-        )}
         {showCamera ? (
           <>
             <Camera
@@ -852,7 +1074,8 @@ function VIPriceTagScannerPage() {
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.camButton}
-                onPress={() => capturePhoto()}>
+                onPress={() => capturePhoto()}
+                accessibilityLabel={'拍攝價錢牌'}>
                 <Text style={styles.btnTxt}>拍照</Text>
               </TouchableOpacity>
             </View>
@@ -861,30 +1084,25 @@ function VIPriceTagScannerPage() {
           <>
             {prediction ? (
               <>
-                <Text>價錢牌已掃描</Text>
-                <Text>結果：{prediction}</Text>
-                <TouchableOpacity
-                  style={styles.camButton}
-                  onPress={() => {
-                    retakePhoto();
-                  }}>
-                  <Text style={styles.btnTxt}>重新拍攝價錢牌</Text>
-                </TouchableOpacity>
+                <Text style={{fontSize: 30, margin: 10}}>價錢牌已掃描</Text>
               </>
             ) : (
               <>
-                <Text>價錢牌已拍攝</Text>
-                <Text>請按以下確認按鈕</Text>
                 <TouchableOpacity
                   style={styles.camButton}
                   onPress={() => {
                     retakePhoto();
-                  }}>
+                  }}
+                  accessible={true}
+                  accessibilityLabel={
+                    '價錢牌已拍攝，如要重新拍攝，請輕按兩下此按鈕'
+                  }>
                   <Text style={styles.btnTxt}>重新拍攝價錢牌</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.camButton}
-                  onPress={() => displayPredictResult()}>
+                  onPress={() => displayPredictResult()}
+                  accessibilityLabel={'確認價錢牌'}>
                   <Text style={styles.btnTxt}>確認</Text>
                 </TouchableOpacity>
               </>
@@ -894,11 +1112,21 @@ function VIPriceTagScannerPage() {
               <Image
                 style={styles.image}
                 source={{
-                  uri: `file://'${imageSource}`,
+                  uri: `${imageSource}`,
                 }}
+                // Set the desired width and height
+                resizeMode="contain" // Adjust the resizing mode according to your needs
               />
             ) : null}
           </>
+        )}
+        {loading && (
+          <View
+            style={[styles.loadingContainer, {width, height}]}
+            accessibilityLabel="載入中">
+            <ActivityIndicator size="large" color="#000000" />
+            <Text style={styles.loadingText}>載入中...</Text>
+          </View>
         )}
       </View>
     );
@@ -929,24 +1157,24 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   camButton: {
-    backgroundColor: '#ffd63f',
+    backgroundColor: '#97F9F9',
     color: 'black',
     width: '75%',
-    marginLeft: '11%',
-    padding: '3%',
+    marginLeft: '8%',
+    padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
   },
   btnTxt: {
     color: 'black',
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 30,
     shadowOpacity: 0.2,
   },
   image: {
-    width: '80%',
-    height: 'auto',
-    aspectRatio: 9 / 16,
+    marginTop: 10,
+    width: 600,
+    height: 600,
   },
   loadingContainer: {
     position: 'absolute',
@@ -956,6 +1184,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 10,
+    fontSize: 30,
   },
 });
 
