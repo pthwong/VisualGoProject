@@ -230,10 +230,10 @@ function VTCommunityPage() {
           <TouchableOpacity onPress={() => editNewsPress(item.postID)}>
             <View style={styles.itemContainer}>
               <Text style={styles.itemTitle}>{item.postTitle}</Text>
-              <Text style={styles.itemSubTitle}>{item.postDescribe}</Text>
-              <Text>{item.building}</Text>
-              <Text>
-                由 {item.startDateTime} 至 {item.endDateTime}
+              <Text
+                style={styles.itemSubSubTitle}
+                accessibilityLabel={`由${item.startDateTime}至${item.endDateTime}`}>
+                {item.startDateTime} - {item.endDateTime}
               </Text>
             </View>
           </TouchableOpacity>
@@ -276,8 +276,8 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     margin: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     flex: 1,
   },
   noNewsText: {

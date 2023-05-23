@@ -118,6 +118,7 @@ function VICommunityPage() {
 
       return {
         ...post,
+        postID: post.postID,
         startDate: format(startDate, 'yyyy-MM-dd'),
         endDate: format(endDate, 'yyyy-MM-dd'),
         startDateTime,
@@ -130,7 +131,7 @@ function VICommunityPage() {
       };
     });
 
-    const reduced = mappedData.reduce((acc, currentItem) => {
+    const postData = mappedData.reduce((acc, currentItem) => {
       const {eventDates} = currentItem;
 
       eventDates.forEach(date => {
@@ -144,13 +145,17 @@ function VICommunityPage() {
       return acc;
     }, {});
 
-    setItems(reduced);
+    setItems(postData);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     getData();
   }, [getData]);
+
+  viewNewsDetailsPress = postID => {
+    navigation.navigate('VICommunityDetailsPage', {data: postID});
+  };
 
   const renderItem = item => {
     if (item.title === undefined) {
@@ -162,23 +167,25 @@ function VICommunityPage() {
     }
 
     return (
-      <View>
-        <View style={styles.itemContainer}>
-          <Text style={styles.itemTitle}>{item.postTitle}</Text>
-          <Text style={styles.itemSubTitle}>{item.postDescribe}</Text>
-          <Text>{item.building}</Text>
-          <Text>
-            由 {item.startDateTime} 至 {item.endDateTime}
-          </Text>
+      <TouchableOpacity onPress={() => viewNewsDetailsPress(item.postID)}>
+        <View>
+          <View style={styles.itemContainer}>
+            <Text style={styles.itemTitle}>{item.postTitle}</Text>
+            <Text
+              style={styles.itemSubSubTitle}
+              accessibilityLabel={`由${item.startDateTime}至${item.endDateTime}`}>
+              {item.startDateTime} - {item.endDateTime}
+            </Text>
+          </View>
+          <View
+            style={{
+              borderBottomColor: 'grey',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              marginTop: '4%',
+            }}
+          />
         </View>
-        <View
-          style={{
-            borderBottomColor: 'grey',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            marginTop: '4%',
-          }}
-        />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -201,17 +208,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemTitle: {
-    fontSize: 25,
+    fontSize: 30,
   },
   itemSubTitle: {
+    fontSize: 25,
+  },
+  itemSubSubTitle: {
     fontSize: 20,
   },
   itemContainer: {
-    backgroundColor: 'white',
     margin: 5,
     borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     flex: 1,
   },
   noNewsText: {
