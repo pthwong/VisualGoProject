@@ -1,7 +1,7 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-router.put("/:productBarcode", async (req, res) => {
+router.put('/:productBarcode', async (req, res) => {
   const productBarcode = req.params.productBarcode;
   let {
     ingredients,
@@ -24,9 +24,9 @@ router.put("/:productBarcode", async (req, res) => {
     vtEmail,
   } = req.body;
 
-  console.log("Request body:", req.body);
+  console.log('Request body:', req.body);
 
-  vtEmail = vtEmail.replace(/^"|"$/g, "");
+  vtEmail = vtEmail.replace(/^"|"$/g, '');
 
   const query = `
     UPDATE \`Nutrition\` SET \`ingredients\` = ?, \`servings\` = ?,\`energy\` = ?,\`energy_kcal\` = ?,\`fat\` = ?, \`saturated_fat\` = ?,\`trans_fat\` = ?,\`cholesterol\` = ?,\`carbohydrates\` = ?,\`sugars\` = ?,\`fiber\` = ?,\`proteins\` = ?,\`sodium\` = ?,\`vitamin_a\` = ?,\`vitamin_c\` = ?,\`calcium\` = ?,\`iron\` = ?,\`vtEmail\` = ? WHERE \`productBarcode\` = ?
@@ -52,21 +52,21 @@ router.put("/:productBarcode", async (req, res) => {
       vitamin_c,
       calcium,
       iron,
-      productBarcode,
       vtEmail,
+      productBarcode,
     ],
     (err, result) => {
       if (err) {
         res
           .status(500)
-          .json({ success: false, message: "Internal server error", err });
+          .json({success: false, message: 'Internal server error', err});
         return;
       }
       res.status(201).json({
         success: true,
-        message: "Nutrition info updated successfully",
+        message: 'Nutrition info updated successfully',
       });
-    }
+    },
   );
 });
 
