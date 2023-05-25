@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 16, 2023 at 11:27 AM
+-- Generation Time: May 25, 2023 at 11:09 PM
 -- Server version: 10.3.32-MariaDB
 -- PHP Version: 7.4.30
 
@@ -80,28 +80,29 @@ CREATE TABLE IF NOT EXISTS `News` (
   PRIMARY KEY (`postID`),
   KEY `FK_News_vtEmail` (`vtEmail`) USING BTREE,
   KEY `FK_News_districtID` (`districtID`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `News`
 --
 
 INSERT INTO `News` (`postID`, `postTitle`, `postDescribe`, `postStartDateTime`, `postEndDateTime`, `postBuilding`, `districtID`, `vtEmail`) VALUES
-(1, 'B樓食水暫停供應', '緊急維修', '2022-04-14 19:00:00', '2022-04-22 19:00:00', '茵翠苑', 'WTS', 'test@gmail.com'),
-(2, '使用2023年第一期消費券', '2023年3月16日開始', '2023-04-16 00:00:00', '2023-07-16 00:00:00', '', 'HOK', 'visualgo202205@gmail.com'),
-(3, '12座13樓食水暫停供應', '例行維修', '2023-04-24 18:00:00', '2023-04-25 10:00:00', '采頤花園', 'WTS', 'visualgo202205@gmail.com'),
+(1, 'B樓食水暫停供應', '緊急維修', '2023-05-20 18:00:00', '2023-05-21 06:00:00', '茵翠苑', 'EAS', 'test@gmail.com'),
+(2, '使用2023年第一期消費券', '2023年4月16日開始', '2023-04-16 00:00:00', '2023-07-16 00:00:00', '', 'HOK', 'test@gmail.com'),
+(3, '12座13樓食水暫停供應', '例行維修', '2023-05-20 13:00:00', '2023-05-20 18:00:00', '采頤花園', 'WTS', 'test@gmail.com'),
 (4, 'C樓食水暫停供應', '例行維修', '2022-04-29 20:10:51', '2022-04-30 20:10:51', NULL, 'WTS', 'test@gmail.com'),
-(5, 'HelloWorld', NULL, '2023-05-06 09:36:00', '2023-05-06 09:40:00', '15W大樓', 'SHT', 'test@gmail.com'),
-(6, 'HelloWorld', 'XXXX', '2023-05-06 09:36:00', '2023-05-06 09:40:00', '15W大樓', 'SHT', 'test@gmail.com'),
-(7, 'Water problem', 'Water prob?', '2023-05-06 10:39:00', '2023-05-06 14:00:00', '+WOO 嘉湖一期', 'YUL', 'test@gmail.com'),
-(8, 'HelloWorld11', '', '2023-05-06 12:30:00', '2023-05-09 13:30:00', '+WOO 嘉湖二期', 'YUL', 'visualgo202205@gmail.com'),
-(9, 'HelloWorld', '', '2023-05-06 08:40:00', '2023-05-06 09:00:00', NULL, 'SSP', 'test@gmail.com'),
-(10, 'HelloWorld2', 'Test', '2023-05-06 08:50:00', '2023-05-07 08:50:00', NULL, 'WTS', 'test@gmail.com'),
-(11, 'Hello', '', '2023-05-06 21:00:00', '2023-05-07 23:00:00', NULL, 'KWT', 'test@gmail.com'),
-(12, '000', '', '2023-05-07 14:24:00', '2023-05-07 14:29:00', NULL, 'WTS', 'test@gmail.com'),
-(13, 'Testing fire', 'Fire alarm', '2023-05-08 18:00:38', '2023-05-08 20:00:45', '1亞太中心', 'KWT', 'visualgo202205@gmail.com'),
-(14, 'Testing', '', '2023-05-15 17:15:00', '2023-05-15 18:00:00', '108商場', 'TAP', 'test@gmail.com'),
-(15, '測試', '', '2023-05-12 18:52:15', '2023-05-12 19:52:19', '1-5座停車場', 'ISL', 'visualgo202205@gmail.com');
+(65, 'HelloWorld', NULL, '2023-05-06 09:36:00', '2023-05-06 09:40:00', '15W大樓', 'SHT', 'test@gmail.com'),
+(67, 'HelloWorld', 'XXXX', '2023-05-06 09:36:00', '2023-05-06 09:40:00', '15W大樓', 'SHT', 'test@gmail.com'),
+(68, 'Water problem', 'Water prob?', '2023-05-06 10:39:00', '2023-05-06 14:00:00', '+WOO 嘉湖一期', 'YUL', 'test@gmail.com'),
+(71, 'HelloWorld11', '', '2023-05-06 12:30:00', '2023-05-09 13:30:00', '+WOO 嘉湖二期', 'YUL', 'visualgo202205@gmail.com'),
+(72, 'HelloWorld', '', '2023-05-06 08:40:00', '2023-05-06 09:00:00', NULL, 'SSP', 'test@gmail.com'),
+(73, 'HelloWorld2', 'Test', '2023-05-06 08:50:00', '2023-05-07 08:50:00', NULL, 'WTS', 'test@gmail.com'),
+(74, 'Hello', '', '2023-05-06 21:00:00', '2023-05-07 23:00:00', NULL, 'KWT', 'test@gmail.com'),
+(75, '000', '', '2023-05-07 14:24:00', '2023-05-07 14:29:00', NULL, 'WTS', 'test@gmail.com'),
+(77, 'Testing fire', 'Fire alarm', '2023-05-08 18:00:38', '2023-05-08 20:00:45', '1亞太中心', 'KWT', 'visualgo202205@gmail.com'),
+(78, 'Testing', '', '2023-05-15 17:15:00', '2023-05-15 18:00:00', '108商場', 'TAP', 'test@gmail.com'),
+(79, '測試', '', '2023-05-12 18:52:15', '2023-05-12 19:52:19', '1-5座停車場', 'ISL', 'visualgo202205@gmail.com'),
+(80, '爆水管', '', '2023-05-21 17:30:00', '2023-05-21 23:00:00', '彩虹邨', 'WTS', 'test@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -134,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `Nutrition` (
   PRIMARY KEY (`nutritionID`),
   KEY `FK_Nutrition_productBarcode` (`productBarcode`),
   KEY `vtEmail` (`vtEmail`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `Nutrition`
@@ -154,7 +155,9 @@ INSERT INTO `Nutrition` (`nutritionID`, `productBarcode`, `ingredients`, `servin
 (12, '9300644121156', '', '每100克', '5大卡', '', '0.2公克', '0.2公克', '0公克', '0毫克', '0.3公克', '0公克', '', '0.6公克', '470毫克', '', '', '', '', 'test@gmail.com'),
 (13, '4891133140550', '', '-', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'test@gmail.com'),
 (14, '8857125746519', '', '盒', '390kcal', '', '5g', '3g', '0g', '', '70g', '3g', '', '16g', '510mg', '', '', '', '', 'test@gmail.com'),
-(15, '6950136288091', '', '', '', '', '', '', '', '', '7.8 g', '6.6 g', '', '', '46 mg', '', '17 mg', '', '', 'test@gmail.com');
+(20, '4892688881776', '', '', '', '100千卡', '4.9克', '', '0克', '', '13.6克', '1.8 g', '0.3 克', '', '161毫克', '', '', '', '', 'test@gmail.com'),
+(21, '6914557181119', '', '30克', '', '162千卡', '9.3克', '4.1克', '0克', '0毫克', '18.5克', '0.2克', '1.1克', '0.9克', '200毫克', '', '', '', '', 'test@gmail.com'),
+(22, '4891118075501', '', '', '1573', '101 kcal', '3.4 g', '1.5 g', '', '', '54 g', '', '1.9 g', '', '39 mg', '', '', '', '', 'test@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -197,23 +200,31 @@ INSERT INTO `Product` (`productBarcode`, `productBrand`, `productName`, `product
 ('4890008100231', '可口可樂', '「可口可樂」汽水500毫升', '「可口可樂」汽水500毫升', '香港', '500毫升', '', NULL, NULL, NULL, 'test@gmail.com'),
 ('4890008109302', '零系可口可樂', '「零系可口可樂」汽水 330毫升', '「零系可口可樂」汽水 330毫升', '香港', '330毫升', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('4891028164616', '維他', '檸檬茶375毫升', NULL, '香港', '375毫升', 'LemonTea', NULL, NULL, NULL, 'test@gmail.com'),
+('4891118075501', NULL, 'Koko Krunch Breakfast Cereal Bar', NULL, NULL, '', '', NULL, NULL, NULL, 'test@gmail.com'),
 ('4891133140550', '屈臣氏', '蒸餾水', '給你安心承諾', '', '430ML', NULL, NULL, NULL, NULL, 'test@gmail.com'),
+('4891133140895', '屈臣氏', '屈臣氏蒸餾水(800毫升)', NULL, '香港', '800 毫升', '', NULL, NULL, NULL, 'test@gmail.com'),
 ('4892214252445', '道地', '道地極品清。烏龍茶 500毫升', '樽裝', '中國', '500毫升', NULL, NULL, NULL, NULL, 'test@gmail.com'),
+('4892368640006', NULL, 'AXION Ultra Washer', NULL, NULL, '500 ml', '', NULL, NULL, '2024-03-30', 'test@gmail.com'),
+('4892688881776', '明輝', '明輝印尼蝦片（原味）', NULL, '香港', '20克', '', '2023-07-19', NULL, NULL, 'test@gmail.com'),
 ('4894251001567', 'ITO', 'ITO 芝麻梳打餅', 'ITO 芝麻梳打餅  480g 12x1', '中國', '1個', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('4894251003240', '菓子町園道', '黑芝麻梳打餅', '黑芝麻梳打餅', '中國', '360克', NULL, NULL, NULL, NULL, 'test@gmail.com'),
+('4895157218226', '私+呵護', '殺菌消毒濕紙巾10片(酒精)', '殺菌消毒濕紙巾10片(酒精)', '中國', '10 件', '', '2025-03-08', NULL, NULL, 'test@gmail.com'),
 ('4897007720156', '康而健 都市漢方', '康而健 都市漢方 肉蓯蓉60粒', '調節身體機能\n固本培元\n補腰養腎\n舒解腰膝酸軟', '香港', '230克', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('4897007720217', '康而健 健知己', '康而健 健知己 巴西綠蜂膠液30ml', '殺菌、消炎、提升免疫力、抗氧化、延緩衰老、喉嚨不適、牙齦不適、口瘡、痱滋、胃部不適、強化肝臟、鎮定安神、消除疲勞\n\n純天然蜂膠提取、不含人工色素及防腐劑', '巴西', '220克', NULL, NULL, NULL, NULL, 'test@gmail.com'),
+('4897087270008', '雅和然', '雅和然原生除菌液 - 60ml', '60ml ', '香港', '60 毫升', '', '2023-09-08', NULL, NULL, 'test@gmail.com'),
 ('4897087270015', '雅和然', '雅和然原生除菌液 - 250ml', '250ml ', '香港', '250 毫升', '', '2023-05-19', NULL, NULL, 'test@gmail.com'),
+('4897878920020', '日清出前一丁', '日清出前一丁棒烏冬鰹魚湯味烏冬', '烏冬', '香港', '159 克', '', '2023-09-28', NULL, NULL, 'test@gmail.com'),
 ('4898828011058', '家樂牌', '雞粉', '', '', '', 'ChickenPowder', NULL, NULL, NULL, 'test@gmail.com'),
 ('4898828031018', '家樂牌', '鷹栗粉', '含有二氧化硫', '中國', '210克', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('4898828031025', '家樂牌', '鷹粟粉', '', '', '', 'CornStarch', NULL, NULL, NULL, 'test@gmail.com'),
 ('4902555207032', '不二家', '白桃汁', '花蜜pêche', '', '380 GM', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('6901012021387', '鷹金錢', '豆豉鯪魚', '', '', '', 'FriedDace', NULL, NULL, NULL, 'test@gmail.com'),
-('6950136288091', '清熱酷', '清熱酷草本檸檬飲料, 350毫升', '檸檬飲料, 樽裝', '中國', '350毫升', NULL, NULL, NULL, NULL, 'test@gmail.com'),
+('6914557181119', '珍珍', '珍珍薯圈（煙肉味）', NULL, '香港', '30克', '', '2023-06-20', NULL, NULL, 'test@gmail.com'),
 ('726003023326', '同珍', '大紅浙醋', '百年經典 香港製造', '中國香港', '300毫升', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('7313161311360', 'Rydbergs', 'Rydberg Rodbetssallad (Rydberg的紅沙拉)', '', '', '200 g', NULL, NULL, NULL, NULL, 'test@gmail.com'),
 ('7613034626844', 'Nestlé', 'Nestle Chocapic Cereals 430g (雀巢Chocapic穀物430g)', '', '法國', '430 g', NULL, NULL, NULL, NULL, 'visualgo202205@gmail.com'),
 ('8715700407760', 'Heinz', 'Tomato Ketchup BIO (番茄醬)', '', '', '580克', NULL, NULL, NULL, NULL, 'visualgo202205@gmail.com'),
+('8809446380330', NULL, 'Wet Tissue', NULL, NULL, '', '', NULL, NULL, NULL, 'test@gmail.com'),
 ('8850329073610', 'Meiji', 'Meiji Milk', NULL, 'Japan', '976 ml', '', NULL, NULL, NULL, 'visualgo202205@gmail.com'),
 ('8857125746519', 'CHIMDOO', '泰國茉莉花香米配馬沙文咖哩雞即食飯', '', '泰國', '260g', NULL, NULL, NULL, NULL, 'visualgo202205@gmail.com'),
 ('8887259882388', 'eg-pro', '新加坡鮮雞蛋', '', '', '10\'S', NULL, NULL, NULL, NULL, 'visualgo202205@gmail.com'),
@@ -222,6 +233,101 @@ INSERT INTO `Product` (`productBarcode`, `productBrand`, `productName`, `product
 ('9555768900105', 'Musang', 'White Coffee', 'Coffee', 'Malaysia', '300g', NULL, NULL, NULL, NULL, 'test@gmail.com');
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `ProductUpdate`
+--
+
+DROP TABLE IF EXISTS `ProductUpdate`;
+CREATE TABLE IF NOT EXISTS `ProductUpdate` (
+  `updateID` int(11) NOT NULL AUTO_INCREMENT,
+  `vtEmail` varchar(50) NOT NULL,
+  `productBarcode` varchar(20) NOT NULL,
+  `updateDatetime` datetime NOT NULL,
+  PRIMARY KEY (`updateID`),
+  KEY `FK_ProductUpdate_vtEmail` (`vtEmail`),
+  KEY `FK_ProductUpdate_productBarcode` (`productBarcode`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `ProductUpdate`
+--
+
+INSERT INTO `ProductUpdate` (`updateID`, `vtEmail`, `productBarcode`, `updateDatetime`) VALUES
+(1, 'new2User@gmail.com', '7313161311360', '2022-04-05 22:51:49'),
+(2, 'new2User@gmail.com', '7313161311360', '2022-04-05 22:54:55'),
+(3, 'new2User@gmail.com', '7313161311360', '2022-04-06 18:43:12'),
+(4, 'new2User@gmail.com', '7313161311360', '2022-04-06 18:48:03'),
+(5, 'visualgo202205@gmail.com', '726003023326', '2022-04-10 11:49:08'),
+(6, 'visualgo202205@gmail.com', '726003023326', '2022-04-10 12:44:49'),
+(7, 'visualgo202205@gmail.com', '4902555207032', '2022-04-10 13:10:26'),
+(8, 'visualgo202205@gmail.com', '7613034626844', '2022-04-11 00:48:37'),
+(9, 'visualgo202205@gmail.com', '7613034626844', '2022-04-11 00:50:51'),
+(10, 'visualgo202205@gmail.com', '4902555207032', '2022-04-11 00:59:52'),
+(11, 'visualgo202205@gmail.com', '4902555207032', '2022-04-11 01:17:43'),
+(12, 'visualgo202205@gmail.com', '078895128789', '2022-04-11 02:04:20'),
+(13, 'visualgo202205@gmail.com', '078895128789', '2022-04-11 02:04:48'),
+(14, 'visualgo202205@gmail.com', '078895128789', '2022-04-11 02:05:17'),
+(15, 'visualgo202205@gmail.com', '4902555207032', '2022-04-10 13:09:08'),
+(16, 'test@gmail.com', '7613034626844', '2022-05-11 20:53:33'),
+(17, 'test@gmail.com', '7613034626844', '2022-05-11 20:56:06'),
+(18, 'test@gmail.com', '4897007720156', '2022-05-12 00:09:36'),
+(19, 'test@gmail.com', '4897007720217', '2022-05-12 00:10:11'),
+(20, 'test@gmail.com', '078895406986', '2022-05-12 00:11:20'),
+(21, 'test@gmail.com', '078895149739', '2022-05-12 00:11:48'),
+(22, 'test@gmail.com', '078895210118', '2022-05-12 00:12:13'),
+(23, 'test@gmail.com', '078895210118', '2022-05-12 00:14:20'),
+(24, 'test@gmail.com', '4894251001567', '2022-05-12 00:15:47'),
+(25, 'test@gmail.com', '4894251003240', '2022-05-12 00:16:15'),
+(26, 'test@gmail.com', '8715700407760', '2022-05-12 00:19:47'),
+(27, 'test@gmail.com', '8715700407760', '2022-05-12 00:19:56'),
+(28, 'test@gmail.com', '8715700407760', '2022-05-12 00:26:21'),
+(29, 'test@gmail.com', '8715700407760', '2022-05-12 00:26:29'),
+(30, 'test@gmail.com', '4892214252445', '2022-05-12 05:41:47'),
+(31, 'test@gmail.com', '4892214252445', '2022-05-12 05:51:00'),
+(32, 'test@gmail.com', '7313161311360', '2022-05-12 09:15:51'),
+(33, 'test@gmail.com', '726003023326', '2022-05-12 11:09:32'),
+(34, 'test@gmail.com', '726003023326', '2022-05-12 11:10:25'),
+(35, 'test@gmail.com', '078895132908', '2022-05-12 11:11:47'),
+(36, 'test@gmail.com', '078895132908', '2022-05-12 11:12:24'),
+(37, 'test@gmail.com', '6950136288091', '2022-05-12 11:13:06'),
+(38, 'test@gmail.com', '6950136288091', '2022-05-12 11:13:27'),
+(39, 'test@gmail.com', '889497000164', '2022-05-12 11:14:44'),
+(40, 'test@gmail.com', '8887259882388', '2022-05-12 11:16:31'),
+(41, 'test@gmail.com', '078895121599', '2022-06-02 17:51:44'),
+(42, 'test@gmail.com', '078895121599', '2022-06-02 17:53:59'),
+(43, 'test@gmail.com', '078895121599', '2022-06-02 17:55:53'),
+(44, 'test@gmail.com', '078895121599', '2022-06-02 18:07:23'),
+(45, 'test@gmail.com', '078895121599', '2022-06-02 18:07:54'),
+(46, 'test@gmail.com', '7613034626844', '2022-06-02 18:23:55'),
+(47, 'test@gmail.com', '7613034626844', '2022-06-02 18:43:20'),
+(48, 'test@gmail.com', '9300644121156', '2022-06-06 10:48:22'),
+(49, 'test@gmail.com', '9300644121156', '2022-06-06 10:50:21'),
+(50, 'test@gmail.com', '078895121599', '2022-06-07 11:48:29'),
+(51, 'test@gmail.com', '078895121599', '2022-06-07 11:48:42'),
+(52, 'test@gmail.com', '078895121599', '2022-06-07 11:58:36'),
+(53, 'test@gmail.com', '4891133140550', '2022-06-07 12:00:41'),
+(54, 'test@gmail.com', '4891133140550', '2022-06-07 12:01:10'),
+(55, 'test@gmail.com', '4891133140550', '2022-06-07 12:01:27'),
+(56, 'test@gmail.com', '078895121599', '2022-06-07 12:10:09'),
+(57, 'test@gmail.com', '078895121599', '2022-06-07 12:10:23'),
+(58, 'test@gmail.com', '078895121599', '2022-06-07 12:10:27'),
+(59, 'test@gmail.com', '078895121599', '2022-06-07 12:10:33'),
+(60, 'test@gmail.com', '078895121599', '2022-06-07 12:10:40'),
+(61, 'test@gmail.com', '078895121599', '2022-06-07 12:10:43'),
+(62, 'test@gmail.com', '9300644121156', '2022-06-07 12:28:05'),
+(63, 'test@gmail.com', '9300644121156', '2022-06-07 12:33:44'),
+(64, 'test@gmail.com', '9300644121156', '2022-06-07 14:40:42'),
+(65, 'test@gmail.com', '9300644121156', '2022-06-07 14:41:01'),
+(66, 'visualgo202205@gmail.com', '8857125746519', '2022-06-21 09:12:56'),
+(67, 'visualgo202205@gmail.com', '8857125746519', '2022-06-21 09:15:08'),
+(68, 'test@gmail.com', '4898828031018', '2022-06-22 10:29:58'),
+(69, 'test@gmail.com', '4898828031018', '2022-07-06 15:37:00'),
+(70, 'test@gmail.com', '4898828031018', '2022-07-06 15:37:43'),
+(71, 'test@gmail.com', '078895121599', '2022-07-08 16:20:48'),
+(72, 'test@gmail.com', '078895406528', '2022-07-12 17:11:58'),
+(73, 'test@gmail.com', '078895406528', '2022-07-12 17:49:59'),
+(74, 'test@gmail.com', '078895406528', '2022-07-12 17:50:49');
 
 -- --------------------------------------------------------
 
