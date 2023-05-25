@@ -253,6 +253,7 @@ function App() {
           component={VILoginPage}
           options={{
             headerShown: true,
+            gestureEnabled: false,
             headerStyle: {
               backgroundColor: '#97F9F9',
               shadowColor: '#171717',
