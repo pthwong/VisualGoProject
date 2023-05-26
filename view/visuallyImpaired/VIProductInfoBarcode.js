@@ -4,14 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Alert,
-  List,
-  ListItem,
-  FlatList,
   ActivityIndicator,
   BackHandler,
 } from 'react-native';
@@ -134,7 +127,6 @@ function VIProductInfoBarcode() {
         //https://world.openfoodfacts.org/api/v0/product/4890008100231.json
       );
       const responseData = await response.json();
-      // console.log('nutrition: ', responseData.product.product.nutriments);
       return responseData || {};
     } catch (error) {
       console.log('Error: \n', error);
@@ -238,8 +230,6 @@ function VIProductInfoBarcode() {
               'saturated-fat_unit'
             ]?.toString() ?? ''),
         );
-        // setTrans_fat(openFoodFactsProduct.trans_fat);
-        // setCholesterol(openFoodFactsProduct.cholesterol);
         setCarbohydrates(
           (openFoodFactsProduct.product?.nutriments?.carbohydrates?.toString() ??
             '') +
@@ -271,10 +261,6 @@ function VIProductInfoBarcode() {
             (openFoodFactsProduct.product?.nutriments?.sodium_unit?.toString() ??
               ''),
         );
-        // setVitamin_a(openFoodFactsProduct.vitamin_a);
-        // setVitamin_c(openFoodFactsProduct.vitamin_c);
-        // setCalcium(openFoodFactsProduct.calcium);
-        // setIron(openFoodFactsProduct.iron);
       }
     } else {
       //2. Otherwise, fetch data from Database
@@ -307,26 +293,6 @@ function VIProductInfoBarcode() {
   };
 
   return (
-    // <View>
-    //   <Text>{pdid}</Text>
-    //   <Text>{productInfo.pdname}</Text>
-    //   <Text>{productInfo.productDesc}</Text>
-    //   <Text>{productInfo.productCountry}</Text>
-
-    //   {/* <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
-    //     <FlatList
-    //       data={productInfo}
-    //       renderItem={({item}) => (
-    //         <ListItem
-    //           roundAvatar
-    //           title={`${item.pdname}`}
-    //           subtitle={item.productDesc}
-    //           containerStyle={{borderBottomWidth: 0}}
-    //         />
-    //       )}
-    //     />
-    //   </List> */}
-    // </View>
     <ScrollView style={styles.container}>
       {loading && (
         <View style={styles.loadingContainer}>
@@ -945,8 +911,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

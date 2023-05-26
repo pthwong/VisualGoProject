@@ -1,29 +1,22 @@
 import React from 'react';
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
   PermissionsAndroid,
   Platform,
   Image,
-  RefreshControl,
   BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
 import {ScrollView} from 'react-native-gesture-handler';
-// import Location from '../../components/Location';
 
 function VTHomepage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
   const [currentLongitude, setCurrentLongitude] = useState('...');
@@ -259,13 +252,6 @@ function VTHomepage() {
     navigation.navigate('VTSettingsPage');
   };
 
-  // const Card = ({title, description, onPress}) => (
-  //   <TouchableOpacity onPress={onPress} style={styles.card}>
-  //     <Text style={styles.cardTitle}>{title}</Text>
-  //     <Text style={styles.cardDescription}>{description}</Text>
-  //   </TouchableOpacity>
-  // );
-
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
@@ -298,7 +284,6 @@ function VTHomepage() {
                 {weatherData.humidity}%
               </Text>
               <Image
-                // source={{uri: 'https://openweathermap.org/img/wn/02n@2x.png'}}
                 source={{
                   uri: `https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`,
                 }}
@@ -376,29 +361,6 @@ function VTHomepage() {
           onPress={this.settingsPress}>
           <Text style={styles.btnTxt}>設定</Text>
         </TouchableOpacity>
-        {/* <Card
-          title="視覺支援"
-          description="Some description here..."
-          onPress={this.visualSuppPress2}
-        />
-        <Card
-          title="社區資訊"
-          description="Some description here..."
-          onPress={this.communityPress}
-          style={{
-            backgroundColor: '#ADECC1',
-            opacity: 1,
-          }}
-        />
-        <Card
-          title="設定"
-          description="Some description here..."
-          onPress={this.settingsPress}
-          style={{
-            backgroundColor: '#ADECC1',
-            opacity: 1,
-          }}
-        /> */}
       </ScrollView>
     </View>
   );
@@ -465,10 +427,8 @@ const styles = StyleSheet.create({
     paddingTop: '14%',
     borderRadius: 20,
     margin: -10,
-    // shadowOpacity: 0.1,
   },
   btnVisual2: {
-    // backgroundColor: btnVisual2Holder ? 'grey' : '#ADECC1',
     backgroundColor: '#ffd63f',
     color: 'black',
     width: '75%',
@@ -476,7 +436,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnPandemic: {
     backgroundColor: '#ADECC1',
@@ -488,7 +447,6 @@ const styles = StyleSheet.create({
     paddingTop: '14%',
     borderRadius: 20,
     margin: -10,
-    // shadowOpacity: 0.1,
   },
   btnCommunity: {
     backgroundColor: '#ADECC1',
@@ -498,7 +456,6 @@ const styles = StyleSheet.create({
     paddingTop: '14%',
     borderRadius: 20,
     margin: -10,
-    // shadowOpacity: 0.1,
   },
   btnSetting: {
     backgroundColor: '#c5e1ff',
@@ -508,7 +465,6 @@ const styles = StyleSheet.create({
     paddingTop: '14%',
     borderRadius: 20,
     margin: -10,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',
@@ -530,24 +486,6 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 120,
   },
-  // card: {
-  //   backgroundColor: '#fff',
-  //   borderRadius: 5,
-  //   padding: 30,
-  //   margin: 10,
-  //   shadowColor: '#000',
-  //   shadowOffset: {width: 0, height: 2},
-  //   shadowOpacity: 0.8,
-  //   shadowRadius: 2,
-  //   elevation: 5,
-  // },
-  // cardTitle: {
-  //   fontSize: 18,
-  //   fontWeight: 'bold',
-  // },
-  // cardDescription: {
-  //   fontSize: 14,
-  // },
 });
 
 export default VTHomepage;

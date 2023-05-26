@@ -1,20 +1,16 @@
 import React from 'react';
-import {useState, useEffect, useLayoutEffect} from 'react';
+import {useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
   BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function VIVisualSuppPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {

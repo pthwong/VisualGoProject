@@ -5,8 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
   Switch,
   Alert,
@@ -62,9 +60,6 @@ function VTEditNewsPage({route}) {
     leaveEditPress();
     return true;
   };
-
-  // const [postID, setPostID] = useState('');
-  // const [postData, setPostData] = useState(null);
 
   const [postTitle, setPostTitle] = useState('');
   const [isEnterPostTitle, setEnterPostTitle] = useState(true);
@@ -294,7 +289,6 @@ function VTEditNewsPage({route}) {
     );
 
     if (postTitle == '') {
-      // alert('請填妥標題');
       Toast.show({
         type: 'error',
         position: 'bottom',
@@ -316,7 +310,6 @@ function VTEditNewsPage({route}) {
         topOffset: 30,
         bottomOffset: 100,
       });
-      // alert('請選取開始及結束日期');
     } else if (district == undefined) {
       Toast.show({
         type: 'error',
@@ -328,7 +321,6 @@ function VTEditNewsPage({route}) {
         topOffset: 30,
         bottomOffset: 100,
       });
-      // alert('請選擇地區');
     } else {
       try {
         const response = await fetch(
@@ -551,11 +543,6 @@ function VTEditNewsPage({route}) {
                   />
                 ))}
               </Picker>
-              {/* {district && (
-            <Text style={styles.selectedDistrict}>
-              Selected District: {district}
-            </Text>
-          )} */}
             </View>
           </View>
           <View

@@ -5,8 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -148,13 +146,9 @@ function VIRegPage() {
       setEnterSecondPassword(false);
       setMatchPassword(false);
     } else if (!email.trim()) {
-      // alert('請輸入電郵地址\nPlease enter your address');
       setEnterEmail(false);
       setValidEmail(true);
     } else if (!email.match(emailRegex)) {
-      // alert(
-      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-      // );
       setValidEmail(false);
     } else if (!firstPassword.trim()) {
       setEnterFirstPassword(false);
@@ -297,7 +291,6 @@ function VIRegPage() {
               <TextInput
                 placeholder={'輸入密碼 Enter your password'}
                 style={{flex: 1, paddingVertical: 0, fontSize: 18}}
-                // secureTextEntry={true}
                 secureTextEntry={notShownFirstPasswordHolder}
                 onChangeText={firstPassword => {
                   setFirstPassword(firstPassword);
@@ -360,7 +353,6 @@ function VIRegPage() {
               <TextInput
                 placeholder={'請再次輸入密碼 Enter your password again'}
                 style={{flex: 1, paddingVertical: 0, fontSize: 18}}
-                // secureTextEntry={true}
                 secureTextEntry={notShownSecondPasswordHolder}
                 onChangeText={secondPassword => {
                   setSecondPassword(secondPassword);
@@ -452,7 +444,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
     marginBottom: '10%',
   },
   inputErr: {

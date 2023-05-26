@@ -2,30 +2,16 @@ import React from 'react';
 import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
   Alert,
   Dimensions,
   ActivityIndicator,
   BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  Camera,
-  CameraPermissionStatus,
-  useCameraDevices,
-  useFrameProcessor,
-} from 'react-native-vision-camera';
-import {
-  Barcodes,
-  useScanBarcodes,
-  BarcodeFormat,
-  scanBarcodes,
-} from 'vision-camera-code-scanner';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 import QRCodeMask from 'react-native-qrcode-mask';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SoundPlayer from 'react-native-sound-player';
@@ -64,7 +50,9 @@ function VTBarcodeScannerNutritionPage() {
   }, [navigation]);
 
   const [frameProcessor, barcodes] = useScanBarcodes([
-    BarcodeFormat.ALL_FORMATS, // You can only specify a particular format
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODE_128,
   ]);
 
   const [isScanned, setIsScanned] = useState(false);
@@ -96,7 +84,6 @@ function VTBarcodeScannerNutritionPage() {
     try {
       const response = await fetch(
         `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`,
-        //https://world.openfoodfacts.org/api/v0/product/4890008100231.json
       );
       const responseData = await response.json();
       return responseData || {};
@@ -227,34 +214,6 @@ function VTBarcodeScannerNutritionPage() {
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
         />
-        {/* <View
-          style={[styles.overlay, {top: 0, bottom: (height + holeHeight) / 2}]}
-        />
-        <View
-          style={[
-            styles.overlay,
-            {
-              top: (height - holeHeight) / 2,
-              bottom: 0,
-              left: 0,
-              right: (width + holeWidth) / 2,
-            },
-          ]}
-        />
-        <View
-          style={[
-            styles.overlay,
-            {
-              top: (height - holeHeight) / 2,
-              bottom: 0,
-              left: (width + holeWidth) / 2,
-              right: 0,
-            },
-          ]}
-        />
-        <View
-          style={[styles.overlay, {top: (height + holeHeight) / 2, bottom: 0}]}
-        />  */}
         <QRCodeMask
           style={StyleSheet.absoluteFill}
           lineDirection="vertical"
@@ -313,7 +272,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -323,7 +281,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',
@@ -355,9 +312,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

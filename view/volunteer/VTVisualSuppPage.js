@@ -1,18 +1,8 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 function VTVisualSuppPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
   barcodeScannerProductPress = () => {
@@ -76,7 +66,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   barcodeBtn: {
     backgroundColor: '#ffd63f',
@@ -86,7 +75,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',

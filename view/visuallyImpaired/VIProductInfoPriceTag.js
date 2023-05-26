@@ -1,17 +1,10 @@
 import React from 'react';
-import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
+import {useState, useEffect, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Alert,
-  List,
-  ListItem,
-  FlatList,
   ActivityIndicator,
   BackHandler,
 } from 'react-native';
@@ -21,7 +14,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 function VIProductInfoPriceTag({route}) {
   const navigation = useNavigation();
-  // const route = useRoute();
   const {ProductNameCN: ProductNameCN} = route.params;
   const {ProductNameEN: ProductNameEN} = route.params;
   const {Price1: Price1} = route.params;

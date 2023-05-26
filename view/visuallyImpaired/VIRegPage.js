@@ -5,8 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -148,13 +146,9 @@ function VIRegPage() {
       setEnterSecondPassword(false);
       setMatchPassword(false);
     } else if (!email.trim()) {
-      // alert('請輸入電郵地址\nPlease enter your address');
       setEnterEmail(false);
       setValidEmail(true);
     } else if (!email.match(emailRegex)) {
-      // alert(
-      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-      // );
       setValidEmail(false);
     } else if (!firstPassword.trim()) {
       setEnterFirstPassword(false);
@@ -206,7 +200,6 @@ function VIRegPage() {
       style={{flex: 1}}>
       <ScrollView>
         <Text style={styles.titleChi}>視障人士註冊</Text>
-        {/* <Text style={styles.titleEng}>Register for Visually Impaired</Text> */}
 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.inputField}>
@@ -454,7 +447,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
     marginBottom: '10%',
   },
   inputErr: {

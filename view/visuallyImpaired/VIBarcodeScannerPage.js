@@ -4,32 +4,17 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
   Alert,
   Dimensions,
   ActivityIndicator,
   BackHandler,
-  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  Camera,
-  CameraPermissionStatus,
-  useCameraDevices,
-  useFrameProcessor,
-} from 'react-native-vision-camera';
-import {
-  Barcodes,
-  useScanBarcodes,
-  BarcodeFormat,
-  scanBarcodes,
-} from 'vision-camera-code-scanner';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import QRCodeMask from 'react-native-qrcode-mask';
-import SoundPlayer from 'react-native-sound-player';
 
 function VIBarcodeScannerPage() {
   const navigation = useNavigation();
@@ -68,13 +53,10 @@ function VIBarcodeScannerPage() {
     });
   }, [navigation]);
 
-  const holeWidth = 400;
-  const holeHeight = 200;
-
   const [frameProcessor, barcodes] = useScanBarcodes([
     BarcodeFormat.EAN_13,
     BarcodeFormat.EAN_8,
-    BarcodeFormat.CODE_128, // You can only specify a particular format
+    BarcodeFormat.CODE_128,
   ]);
 
   const [isScanned, setIsScanned] = useState(false);
@@ -126,23 +108,6 @@ function VIBarcodeScannerPage() {
           setIsLoading(true);
           const dbProduct = await fetchDataFromDB(scannedBarcode.rawValue);
 
-          // if (
-          //   !dbProduct?.response?.productBarcode ||
-          //   !barcodePlusProduct?.pdid
-          // ) {
-          //   Alert.alert(
-          //     '條碼已掃描',
-          //     `沒有此產品的相關資料，請查詢其他產品。(NOT FOUND)`,
-          //     [
-          //       {
-          //         text: '確定',
-          //         onPress: () => {
-          //           navigation.goBack();
-          //         },
-          //       },
-          //     ],
-          //   );
-          // }
           if (!dbProduct?.response?.productBarcode) {
             console.log(
               'Product from db has no result here, \n',
@@ -297,7 +262,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -307,7 +271,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',

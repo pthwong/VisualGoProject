@@ -9,14 +9,9 @@ import {
   ActivityIndicator,
   Dimensions,
   Alert,
-  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  Camera,
-  CameraPermissionStatus,
-  useCameraDevices,
-} from 'react-native-vision-camera';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
 
 import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -83,7 +78,6 @@ function VIPriceTagScannerPage() {
   //MS Azure Custom Vision
   const predictionKey = '7308a0fa8d364428af85ad5431749bdb';
   const cvEndpoint = `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`;
-  //post: `https://fypcustomvisionprice-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/12b272e7-4cf6-4a62-9279-9308aaca3e46/classify/iterations/Iteration4/image`
 
   useEffect(() => {
     (async () => {
@@ -1114,8 +1108,7 @@ function VIPriceTagScannerPage() {
                 source={{
                   uri: `${imageSource}`,
                 }}
-                // Set the desired width and height
-                resizeMode="contain" // Adjust the resizing mode according to your needs
+                resizeMode="contain"
               />
             ) : null}
           </>

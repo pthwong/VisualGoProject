@@ -5,8 +5,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
   Switch,
   Alert,
@@ -19,7 +17,6 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
@@ -258,7 +255,6 @@ function VTAddNewsPage({route}) {
     );
 
     if (postTitle == '') {
-      // alert('請填妥標題');
       Toast.show({
         type: 'error',
         position: 'bottom',
@@ -280,7 +276,6 @@ function VTAddNewsPage({route}) {
         topOffset: 30,
         bottomOffset: 100,
       });
-      // alert('請選取開始及結束日期');
     } else if (district == undefined) {
       Toast.show({
         type: 'error',
@@ -515,11 +510,6 @@ function VTAddNewsPage({route}) {
                   />
                 ))}
               </Picker>
-              {/* {district && (
-            <Text style={styles.selectedDistrict}>
-              Selected District: {district}
-            </Text>
-          )} */}
             </View>
           </View>
           <View
@@ -641,7 +631,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -651,7 +640,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,

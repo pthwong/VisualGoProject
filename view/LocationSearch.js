@@ -6,7 +6,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   FlatList,
   ActivityIndicator,
   Alert,
@@ -79,8 +78,6 @@ function LocationSearch({route}) {
         buildingName,
       }));
 
-      // console.log('Building list: \n', parsedBuildings);
-
       setLocations(parsedBuildings);
     } catch (error) {
       console.error('Error fetching buildings:', error);
@@ -145,7 +142,6 @@ function LocationSearch({route}) {
                   size={30}
                 />
               </View>
-              {/* <Text>{item.buildingName}</Text> */}
             </TouchableOpacity>
           )}
           keyExtractor={item => item.buildingId}

@@ -1,4 +1,4 @@
-import {React, useState, useEffect, useLayoutEffect} from 'react';
+import {React, useState, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,13 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
-  TouchableOpacityComponent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {ScrollView} from 'react-native-gesture-handler';
-import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function VILoginPage() {
@@ -86,8 +82,6 @@ function VILoginPage() {
           JSON.stringify(data.viBuilding),
         );
         await AsyncStorage.setItem('viToken', data.viToken);
-        // navigation.navigate('VTPages', {screen: 'VTHomepage'});
-        // route.params.navigateToVTHomepage(navigation);
         setIsLoading(false);
         navigation.navigate('VIHomepage');
       } else if (data.message == 'Invalid email or password') {
@@ -114,13 +108,9 @@ function VILoginPage() {
       setValidEmail(true);
       setEnterPassword(false);
     } else if (!email.trim()) {
-      // alert('請輸入電郵地址\nPlease enter your address');
       setEnterEmail(false);
       setValidEmail(true);
     } else if (!email.match(emailRegex)) {
-      // alert(
-      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-      // );
       setValidEmail(false);
     } else if (!password.trim()) {
       setEnterPassword(false);
@@ -328,14 +318,11 @@ const styles = StyleSheet.create({
     marginRight: '5%',
   },
   loginBtn: {
-    // backgroundColor: loginBtnHolder ? 'grey' : '#97F9F9',
     color: 'black',
     width: '75%',
     marginLeft: '11%',
     padding: '4%',
     marginTop: '10%',
-    borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -345,7 +332,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,

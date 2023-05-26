@@ -7,7 +7,6 @@ import {
   View,
   RefreshControl,
   Alert,
-  BackHandler,
 } from 'react-native';
 import {Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
@@ -125,7 +124,6 @@ function VTCommunityPage() {
     setPostID(mappedData.postID);
     setItems(reduced);
     setLoading(false);
-    // console.log('News data:\n', newsData);
   }, []);
 
   useEffect(() => {

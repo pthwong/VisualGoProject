@@ -4,9 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
   BackHandler,
   Alert,
 } from 'react-native';
@@ -15,8 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 function VISettingsPage() {
-  //   const [email, onChangeText] = useState('');
-  //   const [password, onChangeText] = useState('');
   const navigation = useNavigation();
 
   const [name, setName] = useState(null);

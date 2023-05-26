@@ -1,20 +1,17 @@
-import {React, useState, useEffect, useLayoutEffect} from 'react';
+import {React, useState, useLayoutEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   ActivityIndicator,
 } from 'react-native';
-import {useRoute, CommonActions} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import {axios} from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Toast from 'react-native-toast-message-large';
@@ -99,7 +96,6 @@ function VTLoginPage() {
         });
       } else if (data.message == 'Invalid email or password') {
         setIsLoading(false);
-        // alert('電郵或密碼錯誤，請重新輸入。');
         Toast.show({
           type: 'error',
           position: 'bottom',
@@ -113,7 +109,6 @@ function VTLoginPage() {
         console.error('failed:\n', data.message);
       } else {
         setIsLoading(false);
-        // alert('網絡錯誤');
         Toast.show({
           type: 'error',
           position: 'bottom',
@@ -128,7 +123,6 @@ function VTLoginPage() {
       }
     } catch (error) {
       setIsLoading(false);
-      // alert('網絡錯誤');
       Toast.show({
         type: 'error',
         position: 'bottom',
@@ -151,13 +145,9 @@ function VTLoginPage() {
       setValidEmail(true);
       setEnterPassword(false);
     } else if (!email.trim()) {
-      // alert('請輸入電郵地址\nPlease enter your address');
       setEnterEmail(false);
       setValidEmail(true);
     } else if (!email.match(emailRegex)) {
-      // alert(
-      //   '電郵地址格式錯誤，請重新輸入\nInvalid format of email address, please type again.',
-      // );
       setValidEmail(false);
     } else if (!password.trim()) {
       setEnterPassword(false);
@@ -371,7 +361,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -381,7 +370,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,

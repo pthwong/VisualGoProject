@@ -1,16 +1,11 @@
 import * as React from 'react';
-import {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Homepage from './view/Homepage';
 
-import {View, Button} from 'react-native-elements';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AsyncStorage} from 'react-native';
-import {Text} from 'react-native-elements';
 import Toast, {BaseToast} from 'react-native-toast-message-large';
 
 import AuthLoad from './view/AuthLoad';
@@ -55,11 +50,11 @@ const toastConfig = {
       style={{borderLeftColor: 'green'}}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
-        fontSize: 18, // Adjust the font size here
+        fontSize: 18,
         fontWeight: '400',
       }}
       text2Style={{
-        fontSize: 13, // Adjust the font size for text2 here
+        fontSize: 13,
         fontWeight: '300',
       }}
       text1={text1}
@@ -73,11 +68,11 @@ const toastConfig = {
       style={{borderLeftColor: 'pink'}}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
-        fontSize: 18, // Adjust the font size here
+        fontSize: 18,
         fontWeight: '400',
       }}
       text2Style={{
-        fontSize: 13, // Adjust the font size for text2 here
+        fontSize: 13,
         fontWeight: '300',
       }}
       text1={text1}
@@ -85,7 +80,6 @@ const toastConfig = {
       {...props}
     />
   ),
-  // ... other toast types
 };
 
 const Stack = createNativeStackNavigator();
@@ -537,13 +531,5 @@ function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  tabIcon: {
-    shadowColor: '#171717',
-    shadowOffset: {width: -2, height: 4},
-    shadowOpacity: 2,
-  },
-});
 
 export default App;

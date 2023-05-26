@@ -1,15 +1,6 @@
 import React from 'react';
-import {useState, useEffect, useLayoutEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  BackHandler,
-  Alert,
-} from 'react-native';
+import {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -260,10 +251,6 @@ function VTSettingsPage() {
         </View>
       </TouchableOpacity>
       <View style={styles.hLine} />
-
-      {/* <TouchableOpacity style={styles.regBtn}>
-        <Text style={styles.btnTxt}>登出</Text>
-      </TouchableOpacity> */}
     </View>
   );
 }
@@ -310,7 +297,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -320,7 +306,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',

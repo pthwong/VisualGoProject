@@ -2,31 +2,16 @@ import React from 'react';
 import {useState, useEffect, useCallback, useLayoutEffect} from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
   Alert,
   Dimensions,
   ActivityIndicator,
   BackHandler,
-  Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  Camera,
-  CameraPermissionStatus,
-  useCameraDevices,
-  useFrameProcessor,
-} from 'react-native-vision-camera';
-import {
-  Barcodes,
-  useScanBarcodes,
-  BarcodeFormat,
-  scanBarcodes,
-} from 'vision-camera-code-scanner';
+import {Camera, useCameraDevices} from 'react-native-vision-camera';
+import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import QRCodeMask from 'react-native-qrcode-mask';
 import SoundPlayer from 'react-native-sound-player';
@@ -64,13 +49,10 @@ function VTBarcodeScannerProductPage() {
     });
   }, [navigation]);
 
-  const holeWidth = 400;
-  const holeHeight = 200;
-
   const [frameProcessor, barcodes] = useScanBarcodes([
     BarcodeFormat.EAN_13,
     BarcodeFormat.EAN_8,
-    BarcodeFormat.CODE_128, // You can only specify a particular format
+    BarcodeFormat.CODE_128,
   ]);
 
   const [isScanned, setIsScanned] = useState(false);
@@ -120,7 +102,6 @@ function VTBarcodeScannerProductPage() {
           console.log('Barcode: ', scannedBarcode.rawValue);
           setIsScanned(true);
 
-          // Play the sound
           try {
             SoundPlayer.playSoundFile('scanner', 'mp3');
           } catch (error) {
@@ -175,7 +156,6 @@ function VTBarcodeScannerProductPage() {
                         pdid: barcodePlusProduct?.pdid,
                         barcode: scannedBarcode.rawValue,
                       });
-                      // navigation.navigate('VTEditProductInfoPage');
                     },
                   },
                 ],
@@ -197,7 +177,6 @@ function VTBarcodeScannerProductPage() {
                     navigation.navigate('VTEditProductInfoPage', {
                       barcode: scannedBarcode.rawValue,
                     });
-                    // navigation.navigate('VTEditProductInfoPage');
                   },
                 },
               ],
@@ -215,10 +194,6 @@ function VTBarcodeScannerProductPage() {
 
   console.log(`Camera permission status: ${cameraPermission}`);
 
-  //   const {width, height} = Dimensions.get('window');
-  //   const holeWidth = 300;
-  //   const holeHeight = 200;
-
   if (cameraDevice && cameraPermission === 'authorized') {
     return (
       <View style={{flex: 1}}>
@@ -229,34 +204,6 @@ function VTBarcodeScannerProductPage() {
           frameProcessor={frameProcessor}
           frameProcessorFps={5}
         />
-        {/* <View style={StyleSheet.absoluteFill}>
-          <RNHoleView
-            style={StyleSheet.absoluteFill}
-            hole={[
-              {
-                x: (holeWidth - 200) / 2,
-                y: (holeHeight - 200) / 2,
-                width: 200,
-                height: 200,
-                borderRadius: 10,
-              },
-            ]}
-            color={'rgba(0, 0, 0, 0.6)'}
-          />
-        </View> */}
-
-        {/* <RNHoleView
-          style={StyleSheet.absoluteFill}
-          holes={[
-            {
-              x: (width - holeWidth) / 2,
-              y: (height - holeHeight) / 2,
-              width: holeWidth,
-              height: holeHeight,
-            },
-          ]}
-          backgroundColor={'rgba(0,0,0,0.6)'}
-        /> */}
         <QRCodeMask
           style={StyleSheet.absoluteFill}
           lineDirection="vertical"
@@ -315,7 +262,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -325,7 +271,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   btnTxt: {
     color: 'black',
@@ -357,9 +302,9 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

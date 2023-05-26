@@ -3,24 +3,14 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
-  Switch,
-  Alert,
   BackHandler,
 } from 'react-native';
 
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
-import Toast from 'react-native-toast-message-large';
 
 function VICommunityDetailsPage({route}) {
   const {data: postID} = route.params;
@@ -57,9 +47,6 @@ function VICommunityDetailsPage({route}) {
       ),
     });
   }, [navigation]);
-
-  // const [postID, setPostID] = useState('');
-  // const [postData, setPostData] = useState(null);
 
   const [postTitle, setPostTitle] = useState('');
   const [isEnterPostTitle, setEnterPostTitle] = useState(true);
@@ -378,7 +365,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -388,7 +374,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,

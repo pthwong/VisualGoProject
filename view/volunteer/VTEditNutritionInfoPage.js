@@ -5,10 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
-  Switch,
   Alert,
   ActivityIndicator,
   BackHandler,
@@ -20,17 +17,13 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
 import Toast from 'react-native-toast-message-large';
 
 function VTEditNutritionInfoPage({route}) {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
-  // const {pdid: pdid} = route.params;
   const {barcode: productBarcode} = route.params;
 
   leaveEditPress = () => {
@@ -131,7 +124,6 @@ function VTEditNutritionInfoPage({route}) {
 
   const getProductInfo = useCallback(async () => {
     setLoading(true);
-    // const productName = await fetchNameFromDB(productBarcode);
     const dbProduct = await fetchDataFromDB(productBarcode);
 
     if (!dbProduct.productBarcode || !productBarcode) {
@@ -730,7 +722,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -740,7 +731,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,
@@ -777,8 +767,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

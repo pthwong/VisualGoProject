@@ -1,17 +1,16 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
 
-router.get("/:postID", function (req, res, next) {
+router.get('/:postID', function (req, res, next) {
   const postID = req.params.postID;
   console.log(postID);
   connection.query(
-    "SELECT * FROM News WHERE postID = ?",
+    'SELECT * FROM News WHERE postID = ?',
     [postID],
     (error, results) => {
       if (error) {
-        res.send({ status: 500, error: error, response: null });
+        res.send({status: 500, error: error, response: null});
       } else {
-        // const result = results[0];
         // Adjusting the start and end datetime to GMT+8
         console.log(results);
         var startDateTime = new Date(results[0].postStartDateTime);
@@ -27,7 +26,7 @@ router.get("/:postID", function (req, res, next) {
           response: results[0],
         });
       }
-    }
+    },
   );
 });
 

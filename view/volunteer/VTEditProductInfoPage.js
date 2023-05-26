@@ -5,10 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
-  Switch,
   Alert,
   ActivityIndicator,
   BackHandler,
@@ -20,17 +17,14 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
 import Toast from 'react-native-toast-message-large';
 
 function VTEditProductInfoPage({route}) {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
-  // const {pdid: pdid} = route.params;
   const {barcode: productBarcode} = route.params;
 
   leaveEditPress = () => {
@@ -148,7 +142,6 @@ function VTEditProductInfoPage({route}) {
       setEatBefore(dbProduct.eatBefore ? new Date(dbProduct.eatBefore) : null);
       setUseBefore(dbProduct.useBefore ? new Date(dbProduct.useBefore) : null);
     }
-    // console.log('best before\n', dbProduct.bestBefore);
     setLoading(false);
   }, [fetchDataFromDB, navigation, productBarcode]);
 
@@ -174,7 +167,7 @@ function VTEditProductInfoPage({route}) {
 
   function formatDateToISOWithoutTimezone(date) {
     const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() is zero-indexed, so we must increment by 1
+    const month = ('0' + (date.getMonth() + 1)).slice(-2); // getMonth() is zero-indexed
     const day = ('0' + date.getDate()).slice(-2);
 
     return `${year}-${month}-${day}`;
@@ -647,7 +640,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -657,7 +649,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,
@@ -694,7 +685,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

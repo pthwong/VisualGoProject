@@ -5,10 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  TouchableOpacityComponent,
   Platform,
-  Switch,
   Alert,
   BackHandler,
   ActivityIndicator,
@@ -20,17 +17,13 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {ScrollView} from 'react-native-gesture-handler';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Picker} from '@react-native-picker/picker';
 import Toast from 'react-native-toast-message-large';
 
 function VTAddNutritionInfoPage({route}) {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
 
-  // const {pdid: pdid} = route.params;
   const productBarcode = route.params?.barcode;
 
   leaveEditPress = () => {
@@ -114,10 +107,8 @@ function VTAddNutritionInfoPage({route}) {
     try {
       const response = await fetch(
         `https://world.openfoodfacts.org/api/v0/product/${barcode}.json`,
-        //https://world.openfoodfacts.org/api/v0/product/4890008100231.json
       );
       const responseData = await response.json();
-      // console.log('nutrition: ', responseData.product.product?.nutriments?);
       return responseData || {};
     } catch (error) {
       console.log('Error: \n', error);
@@ -132,12 +123,8 @@ function VTAddNutritionInfoPage({route}) {
 
   const getProductInfo = useCallback(async () => {
     setLoading(true);
-    // const productName = await fetchNameFromDB(productBarcode);
     const openFoodFactsProduct = await fetchDataFromFacts(productBarcode);
     //1. If data not found from database, fetch data from Open Food Facts
-    // setIngredients(openFoodFactsProduct.ingredients);
-    // setServings(openFoodFactsProduct.servings);
-    // console.log('nutrition 2: ', openFoodFactsProduct);
     if (
       openFoodFactsProduct.status === 0 ||
       openFoodFactsProduct.product.nutriments === {} ||
@@ -171,8 +158,6 @@ function VTAddNutritionInfoPage({route}) {
             'saturated-fat_unit'
           ]?.toString() ?? ''),
       );
-      // setTrans_fat(openFoodFactsProduct.trans_fat);
-      // setCholesterol(openFoodFactsProduct.cholesterol);
       setCarbohydrates(
         (openFoodFactsProduct.product?.nutriments?.carbohydrates?.toString() ??
           '') +
@@ -202,10 +187,6 @@ function VTAddNutritionInfoPage({route}) {
           (openFoodFactsProduct.product?.nutriments?.sodium_unit?.toString() ??
             ''),
       );
-      // setVitamin_a(openFoodFactsProduct.vitamin_a);
-      // setVitamin_c(openFoodFactsProduct.vitamin_c);
-      // setCalcium(openFoodFactsProduct.calcium);
-      // setIron(openFoodFactsProduct.iron);
       setLoading(false);
     }
   }, [fetchDataFromFacts, productBarcode]);
@@ -782,7 +763,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   regBtn: {
     backgroundColor: '#ffd63f',
@@ -792,7 +772,6 @@ const styles = StyleSheet.create({
     padding: '4%',
     marginTop: '10%',
     borderRadius: 50,
-    // shadowOpacity: 0.1,
   },
   inputErr: {
     fontSize: 16,
@@ -829,8 +808,8 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', // This will give a slight dark background
-    alignItems: 'center', // horizontal center
-    justifyContent: 'center', // vertical center
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
